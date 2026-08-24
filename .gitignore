@@ -1,0 +1,19 @@
+# Ignore existing workspace artifacts by default.
+/*
+
+# Keep source and packaging files.
+!/.gitignore
+!/README.md
+!/pyproject.toml
+!/svgflow/
+/svgflow/*
+!/svgflow/__init__.py
+!/svgflow/canvas.py
+!/svgflow/external_figures.py
+
+# Never track generated packaging output or Python caches.
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/

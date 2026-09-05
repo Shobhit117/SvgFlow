@@ -12,4 +12,4 @@ __all__ = [
     "tex2svg",
 ]
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"

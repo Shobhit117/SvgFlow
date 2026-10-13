@@ -17,6 +17,7 @@ optional integrations add LaTeX labels and PNG/PDF export.
 
 - Python 3.10 or newer
 - NumPy 1.23 or newer
+- PyMuPDF 1.24.3 or newer (used for font-aware legend sizing)
 
 The following external programs are optional:
 

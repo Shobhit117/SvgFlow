@@ -13,6 +13,7 @@ import numpy as np
 from .external_figures import ExecutablePaths, import_svg_from_file, tex2svg
 from subprocess import run, CalledProcessError
 from typing import Any, Iterable, Literal, Sequence, TypeAlias
+from .text_metrics import DEFAULT_FONT_FAMILY, text_width
 
 Number: TypeAlias = int | float | np.number
 Point: TypeAlias = tuple[Number, Number]
@@ -94,18 +95,30 @@ class Canvas:
         text_options = ''.join(text_options)
         self.contents.append(f'<text fill="{color}" transform="translate({x:.4f} {y:.4f}) rotate({rotation:.4f})" dominant-baseline="{baseline}" text-anchor="{anchor}" {text_options}>{text}</text>')
 
-    def addMultiLineText(self, lines: Sequence[Any], x: Number, y: Number, color: Color = "black", rotation: Number = 0, baseline: TextBaseline = "middle", anchor: TextAnchor = "middle", size: Number = 16, style: str | None = None, weight: str | Number | None = None) -> None:
+    def addMultiLineText(self, lines: Sequence[Any], x: Number, y: Number, color: Color = "black", rotation: Number = 0, baseline: TextBaseline = "middle", anchor: TextAnchor = "middle", size: Number = 16, style: str | None = None, weight: str | Number | None = None, font_family: str | None = None, text_lengths: Sequence[Number] | None = None) -> None:
         """Add a multi-line SVG text block using ``tspan`` elements."""
+        if not lines:
+            return
+        if text_lengths is not None and len(text_lengths) != len(lines):
+            raise ValueError("text_lengths must contain one value per line")
+
         text_options = [f'font-size="{size}" ']
         if style is not None:
             text_options.append(f'font-style="{style}" ')
         if weight is not None:
             text_options.append(f'font-weight="{weight}"')
+        if font_family is not None:
+            text_options.append(f'font-family="{font_family}" ')
         text_options = ''.join(text_options)
-        
-        svg_text = [f'<tspan dy="0">{lines[0]}</tspan>']
+
+        def length_options(index: int) -> str:
+            if text_lengths is None:
+                return ""
+            return f' textLength="{text_lengths[index]:.4f}" lengthAdjust="spacingAndGlyphs"'
+
+        svg_text = [f'<tspan dy="0"{length_options(0)}>{lines[0]}</tspan>']
         for i in range(1, len(lines)):
-            svg_text.append(f'<tspan x="0" dy="1.2em">{lines[i]}</tspan>')
+            svg_text.append(f'<tspan x="0" dy="1.2em"{length_options(i)}>{lines[i]}</tspan>')
         svg_text = '\n'.join(svg_text)
         self.contents.append(f'<text fill="{color}" transform="translate({x:.4f} {y:.4f}) rotate({rotation:.4f})" dominant-baseline="{baseline}" text-anchor="{anchor}" {text_options}>{svg_text}</text>')
 
@@ -842,8 +855,9 @@ class Plot(Canvas):
         """Draw a legend from the labels registered by plot methods."""
         sorted(self.legend_items, key=lambda x: x[1]['type'])
         lines = [x[0] for x in self.legend_items]
-        
-        legend_width = 0.56 * text_size * max([len(l) for l in lines]) + 20 * marker_scale
+
+        line_widths = [text_width(line, text_size) for line in lines]
+        legend_width = max(line_widths) + 20 * marker_scale
         legend_height = len(lines) * 1.2 * text_size
         
         if (anchor == None) or (position is not None):
@@ -854,7 +868,16 @@ class Plot(Canvas):
         y_text = y + 0.6 * text_size
         self.addRectangle(legend_height, legend_width, x - 5 * marker_scale, y, color=box_color, border=box_border_color, thickness=2, opacity=box_opacity, corner_radius=10)
         
-        self.addMultiLineText(lines, x_text, y_text, text_color, size=text_size, anchor="start")
+        self.addMultiLineText(
+            lines,
+            x_text,
+            y_text,
+            text_color,
+            size=text_size,
+            anchor="start",
+            font_family=DEFAULT_FONT_FAMILY,
+            text_lengths=line_widths,
+        )
         for i, (_, plot_info) in enumerate(self.legend_items):
             y_item = y_text + i * 1.2 * text_size
             if plot_info['type'] == 'plot':

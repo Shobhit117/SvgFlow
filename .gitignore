@@ -10,6 +10,9 @@
 !/svgflow/__init__.py
 !/svgflow/canvas.py
 !/svgflow/external_figures.py
+!/svgflow/text_metrics.py
+!/tests/
+!/tests/*.py
 
 # Never track generated packaging output or Python caches.
 __pycache__/

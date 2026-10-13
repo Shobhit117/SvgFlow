@@ -11,7 +11,7 @@ requires-python = ">=3.10"
 authors = [
   { name = "Shobhit Bhatnagar", email = "shb.bhatnagar.96@gmail.com" },
 ]
-dependencies = ["numpy>=1.23"]
+dependencies = ["numpy>=1.23", "PyMuPDF>=1.24.3"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",

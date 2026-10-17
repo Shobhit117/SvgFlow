@@ -6,14 +6,16 @@
 
 from __future__ import annotations
 
+import base64
 import os
 import re
 import tempfile
+from xml.sax.saxutils import escape as xml_escape
 import numpy as np
 from .external_figures import ExecutablePaths, import_svg_from_file, tex2svg
 from subprocess import run, CalledProcessError
 from typing import Any, Iterable, Literal, Sequence, TypeAlias
-from .text_metrics import DEFAULT_FONT_FAMILY, text_width
+from .text_metrics import DEFAULT_FONT, BOLD, BOLD_ITALIC, ITALIC, get_font, is_bold, is_italic, register_font, text_width, wrap_text
 
 Number: TypeAlias = int | float | np.number
 Point: TypeAlias = tuple[Number, Number]
@@ -27,6 +29,7 @@ LegendAnchor: TypeAlias = Literal["NE", "N", "NW", "W", "E", "SW", "S", "SE"]
 ExportType: TypeAlias = Literal["png", "pdf"]
 GradientSpread: TypeAlias = Literal["pad", "reflect", "repeat"]
 NodeShape: TypeAlias = tuple[Any, ...]
+Port: TypeAlias = Literal["N", "S", "E", "W"]
 
 NAMED_COLORS = {'none', 'aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgreen', 'darkgrey', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkslategrey', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dimgrey', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'greenyellow', 'grey', 'honeydew', 'hotpink', 'indianred', 'indigo', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightgrey', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightslategrey', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen'}
 
@@ -48,6 +51,8 @@ class Canvas:
         self.contents = []
         self.defs = []
         self.is_arrow_def_included = False
+        self.default_font = DEFAULT_FONT
+        self.used_fonts = set()
         self.curr_latex_eq_num = 0
         self.gradients = set()
         self.sub_figs = set()
@@ -83,44 +88,102 @@ class Canvas:
                 return False # invalid gradient reference
         return False
 
-    def addText(self, text: Any, x: Number, y: Number, color: Color = "black", rotation: Number = 0, baseline: TextBaseline = "middle", anchor: TextAnchor = "middle", size: Number = 16, style: str | None = None, weight: str | Number | None = None) -> None:
-        """Add a single SVG ``<text>`` element at ``(x, y)``."""
+    def registerFont(self, name: str, regular: str | os.PathLike[str], bold: str | os.PathLike[str] | None = None, italic: str | os.PathLike[str] | None = None, bold_italic: str | os.PathLike[str] | None = None, *, family: str | None = None, embed: bool = True, make_default: bool = False) -> None:
+        """Register a TTF/OTF font for use with ``addText(..., font=name)``.
+
+        Fonts are measured with the actual font file, and (if ``embed``) the
+        font data is embedded into the saved SVG so it renders identically
+        everywhere. ``make_default`` makes it this canvas's default font.
+        """
+        register_font(name, regular, bold, italic, bold_italic, family=family, embed=embed)
+        if make_default:
+            self.default_font = name
+
+    def _textLines(self, text: Any, size: Number, font: str, bold: bool, italic: bool, max_width: Number | None) -> list[str]:
+        if isinstance(text, (list, tuple)):
+            text = '\n'.join(str(t) for t in text)
+        text = str(text)
+        if max_width is not None:
+            return wrap_text(text, size, max_width, font, bold, italic)
+        return text.split('\n')
+
+    def addText(self, text: Any, x: Number, y: Number, color: Color = "black", rotation: Number = 0, baseline: TextBaseline = "middle", anchor: TextAnchor = "middle", size: Number = 16, style: str | None = None, weight: str | Number | None = None, *, font: str | None = None, line_height: Number = 1.2, max_width: Number | None = None, fit_width: bool = False, valign: Literal["top", "center", "bottom"] | None = None) -> tuple[float, float]:
+        """Add (possibly multi-line) text at ``(x, y)``.
+
+        ``text`` may contain ``\\n`` or be a list of lines. ``max_width`` enables
+        automatic word wrapping. The block is aligned as a whole according to
+        ``baseline``: ``"middle"`` centres it on ``y``, ``"hanging"`` grows
+        downward from ``y`` and ``"text-top"``/``"auto"`` grow upward so the
+        last line sits at ``y``. Pass ``valign`` (top/center/bottom) to place
+        the block independently of the per-line ``baseline``. ``font`` is a
+        registered font name (see
+        :meth:`registerFont`); ``fit_width`` forces each rendered line to the
+        measured width via ``textLength``. Text is XML-escaped automatically.
+
+        Returns the measured ``(width, height)`` of the text block.
+        """
         # dominant-baseline: hanging, middle, text-top, auto
         # text-anchor: start, middle, end
-        text_options = [f'font-size="{size}" ']
+        font = self.default_font if font is None else font
+        spec = get_font(font)
+        bold, italic = is_bold(weight), is_italic(style)
+        self.used_fonts.add(font)
+
+        lines = self._textLines(text, size, font, bold, italic, max_width)
+        widths = [text_width(line, size, font, bold, italic) for line in lines]
+        n = len(lines)
+
+        text_options = [f'font-family="{xml_escape(spec.css_family(), {chr(34): "&quot;"})}"', f'font-size="{size}"']
         if style is not None:
-            text_options.append(f'font-style="{style}" ')
+            text_options.append(f'font-style="{style}"')
         if weight is not None:
             text_options.append(f'font-weight="{weight}"')
-        text_options = ''.join(text_options)
-        self.contents.append(f'<text fill="{color}" transform="translate({x:.4f} {y:.4f}) rotate({rotation:.4f})" dominant-baseline="{baseline}" text-anchor="{anchor}" {text_options}>{text}</text>')
+        text_options = ' '.join(text_options)
 
-    def addMultiLineText(self, lines: Sequence[Any], x: Number, y: Number, color: Color = "black", rotation: Number = 0, baseline: TextBaseline = "middle", anchor: TextAnchor = "middle", size: Number = 16, style: str | None = None, weight: str | Number | None = None, font_family: str | None = None, text_lengths: Sequence[Number] | None = None) -> None:
-        """Add a multi-line SVG text block using ``tspan`` elements."""
+        def length_options(i: int) -> str:
+            return f' textLength="{widths[i]:.4f}" lengthAdjust="spacingAndGlyphs"' if fit_width else ''
+
+        if n == 1:
+            body = f'<text{length_options(0)}'
+            inner = xml_escape(lines[0])
+        else:
+            if valign is None:
+                valign = {'middle': 'center', 'hanging': 'top'}.get(baseline, 'bottom')
+            if valign == 'center':
+                first_dy = -(n - 1) / 2 * line_height
+            elif valign == 'bottom':
+                first_dy = -(n - 1) * line_height
+            else:  # top
+                first_dy = 0
+            spans = [f'<tspan x="0" dy="{first_dy:.4f}em"{length_options(0)}>{xml_escape(lines[0])}</tspan>']
+            spans += [f'<tspan x="0" dy="{line_height}em"{length_options(i)}>{xml_escape(lines[i])}</tspan>' for i in range(1, n)]
+            body = '<text'
+            inner = ''.join(spans)
+        self.contents.append(f'{body} fill="{color}" transform="translate({x:.4f} {y:.4f}) rotate({rotation:.4f})" dominant-baseline="{baseline}" text-anchor="{anchor}" {text_options}>{inner}</text>')
+        return (max(widths, default=0.0), n * line_height * size)
+
+    def addMultiLineText(self, lines: Sequence[Any], x: Number, y: Number, color: Color = "black", rotation: Number = 0, baseline: TextBaseline = "middle", anchor: TextAnchor = "middle", size: Number = 16, style: str | None = None, weight: str | Number | None = None, **kwargs: Any) -> tuple[float, float]:
+        """Deprecated: :meth:`addText` now accepts lists and ``\\n`` directly."""
         if not lines:
-            return
-        if text_lengths is not None and len(text_lengths) != len(lines):
-            raise ValueError("text_lengths must contain one value per line")
+            return (0.0, 0.0)
+        return self.addText(list(lines), x, y, color, rotation, baseline, anchor, size, style, weight, **kwargs)
 
-        text_options = [f'font-size="{size}" ']
-        if style is not None:
-            text_options.append(f'font-style="{style}" ')
-        if weight is not None:
-            text_options.append(f'font-weight="{weight}"')
-        if font_family is not None:
-            text_options.append(f'font-family="{font_family}" ')
-        text_options = ''.join(text_options)
-
-        def length_options(index: int) -> str:
-            if text_lengths is None:
-                return ""
-            return f' textLength="{text_lengths[index]:.4f}" lengthAdjust="spacingAndGlyphs"'
-
-        svg_text = [f'<tspan dy="0"{length_options(0)}>{lines[0]}</tspan>']
-        for i in range(1, len(lines)):
-            svg_text.append(f'<tspan x="0" dy="1.2em"{length_options(i)}>{lines[i]}</tspan>')
-        svg_text = '\n'.join(svg_text)
-        self.contents.append(f'<text fill="{color}" transform="translate({x:.4f} {y:.4f}) rotate({rotation:.4f})" dominant-baseline="{baseline}" text-anchor="{anchor}" {text_options}>{svg_text}</text>')
+    def _fontFaceCss(self) -> str:
+        # Builds @font-face rules for every used, embeddable, file-backed font.
+        formats = {'.ttf': 'truetype', '.otf': 'opentype', '.woff': 'woff', '.woff2': 'woff2'}
+        variants = {BOLD: ('bold', 'normal'), ITALIC: ('normal', 'italic'), BOLD_ITALIC: ('bold', 'italic')}
+        rules = []
+        for name in sorted(self.used_fonts):
+            spec = get_font(name)
+            if not spec.embed:
+                continue
+            for variant, path in spec.file_faces().items():
+                weight, style = variants.get(variant, ('normal', 'normal'))
+                fmt = formats.get(os.path.splitext(path)[1].lower(), 'truetype')
+                with open(path, 'rb') as f:
+                    data = base64.b64encode(f.read()).decode('ascii')
+                rules.append(f"@font-face {{ font-family: '{name}'; font-weight: {weight}; font-style: {style}; src: url(data:font/{fmt};base64,{data}) format('{fmt}'); }}")
+        return '\n'.join(rules)
 
     def addLine(self, x1: Number, y1: Number, x2: Number, y2: Number, color: Color = "black", thickness: Number = 1, dashed: bool = False, directed: bool = False, opacity: Number = 1, label: Any | None = None, text_color: Color = "black", text_size: Number = 16, text_style: str | None = None, arrow_size: Number = 1, latex: bool = False) -> Number:
         """Draw a straight line and optionally add an arrowhead and label."""
@@ -161,7 +224,7 @@ class Canvas:
         """Draw a quadratic Bezier curve controlled by a signed curvature value."""
         (cx, cy) = self._getControlPoint(x1, y1, x2, y2, curvature)
         if curvature == 0:
-            self.addLine(x1, y1, x2, y2, color, thickness, dashed, directed, opacity, label, text_color, text_size, text_style)
+            self.addLine(x1, y1, x2, y2, color, thickness, dashed, directed, opacity, label, text_color, text_size, text_style, arrow_size, latex)
         else:
             if dashed:
                 self.contents.append(f'<path d="M{x1:.4f} {y1:.4f} Q{cx:.4f} {cy:.4f} {x2:.4f} {y2:.4f}" stroke="{color}" stroke-width="{thickness}" stroke-opacity="{opacity}" stroke-dasharray="4" fill="none"/>')
@@ -226,7 +289,7 @@ class Canvas:
 
     def addPolygon(self, points: Sequence[Point], color: Color = "none", border: Color = "black", thickness: Number = 1, opacity: Number = 1) -> None:
         """Add a polygon through the supplied points."""
-        p_str = [f'{float(p[0]):.4f},{float(p[1]):4f}' for p in points]
+        p_str = [f'{float(p[0]):.4f},{float(p[1]):.4f}' for p in points]
         p_str = ' '.join(p_str)
         self.contents.append(f'<polygon points="{p_str}" fill="{color}" stroke="{border}" stroke-width="{thickness}" opacity="{opacity}"/>')
     
@@ -473,6 +536,7 @@ class Canvas:
 
     def getGradient(self, grad_id: int | str) -> Color:
         """Return the SVG paint-server URL for a previously defined gradient."""
+        grad_id = str(grad_id)
         if grad_id not in self.gradients:
             raise KeyError(f'no gradient defined with id: {grad_id}')
         return f'url(#grad_{grad_id})'
@@ -480,8 +544,11 @@ class Canvas:
     def save(self, filename: str | os.PathLike[str]) -> None:
         """Write the accumulated SVG markup to ``filename``."""
         file_contents = [f'<svg width="{self.width}" height="{self.height}" viewBox="0 0 {self.width} {self.height}" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">']
-        if len(self.defs) > 0:
+        font_css = self._fontFaceCss()
+        if len(self.defs) > 0 or font_css:
             file_contents.append('<defs>')
+            if font_css:
+                file_contents.append(f'<style>\n{font_css}\n</style>')
             file_contents.extend(self.defs)
             file_contents.append('</defs>')
         file_contents.extend(self.contents)
@@ -553,9 +620,9 @@ class Canvas:
             return True
     
     def _defSubFigure(self, sub_fig_id: int | str, sub_fig_view_box: Sequence[Number], sub_fig_svg: str) -> None:
+        sub_fig_id = str(sub_fig_id)
         if sub_fig_id in self.sub_figs:
             raise KeyError(f"sub figure id {sub_fig_id} already exists")
-        sub_fig_id = str(sub_fig_id)
         self.sub_figs.add(sub_fig_id)
         (w1, h1, W, H) = sub_fig_view_box
         vb = f"{w1} {h1} {W} {H}"
@@ -853,10 +920,10 @@ class Plot(Canvas):
         
     def addLegend(self, anchor: LegendAnchor | None = 'NE', text_size: Number = 16, text_color: Color = 'black', marker_scale: Number = 1, box_color: Color = 'yellow', box_border_color: Color = 'red', box_opacity: Number = 0.5, position: Point | None = None) -> None:
         """Draw a legend from the labels registered by plot methods."""
-        sorted(self.legend_items, key=lambda x: x[1]['type'])
+        self.legend_items.sort(key=lambda x: x[1]['type'])
         lines = [x[0] for x in self.legend_items]
 
-        line_widths = [text_width(line, text_size) for line in lines]
+        line_widths = [text_width(line, text_size, self.default_font) for line in lines]
         legend_width = max(line_widths) + 20 * marker_scale
         legend_height = len(lines) * 1.2 * text_size
         
@@ -868,15 +935,17 @@ class Plot(Canvas):
         y_text = y + 0.6 * text_size
         self.addRectangle(legend_height, legend_width, x - 5 * marker_scale, y, color=box_color, border=box_border_color, thickness=2, opacity=box_opacity, corner_radius=10)
         
-        self.addMultiLineText(
+        # valign="top" keeps the first line centred on y_text and grows downward,
+        # matching the per-item marker positions computed below.
+        self.addText(
             lines,
             x_text,
             y_text,
             text_color,
             size=text_size,
             anchor="start",
-            font_family=DEFAULT_FONT_FAMILY,
-            text_lengths=line_widths,
+            fit_width=True,
+            valign="top",
         )
         for i, (_, plot_info) in enumerate(self.legend_items):
             y_item = y_text + i * 1.2 * text_size
@@ -936,7 +1005,7 @@ class Flow(Canvas):
                 a, b = shape[1], shape[2]
                 self.nodes[id] = {'x': x, 'y': y, 'a': a, 'b': b, 'label': label, 'type': 'ellipse'}
                 self.addEllipse(x, y, a, b, color=color, border=border, thickness=thickness, opacity=opacity)
-            elif node_type == 'paralellogram':
+            elif node_type in ('parallelogram', 'paralellogram'):  # old spelling kept for compatibility
                 d1, d2, angle = shape[1], shape[2], shape[3] # d1 and d2 are the lengths of the diagonals
                 angle *= np.pi/180
                 a = np.sqrt((d1/2)**2 + (d2/2)**2 - d1 * d2 * np.cos(angle)/2)
@@ -949,10 +1018,10 @@ class Flow(Canvas):
                 p2 = (x + v, y + h/2)
                 p3 = (x - u, y + h/2)
                 p4 = (x - v, y - h/2)
-                self.nodes[id] = {'points': [p1, p2, p3, p4], 'x': x, 'y': y, 'label': label, 'type': 'paralellogram'}
+                self.nodes[id] = {'points': [p1, p2, p3, p4], 'x': x, 'y': y, 'label': label, 'type': 'parallelogram'}
                 self.addPolygon(self.nodes[id]['points'], color=color, border=border, thickness=thickness, opacity=opacity)
             else:
-                raise ValueError(f"invalid node shape {node_type}: supported node shapes are: circle, rectangle, ellipse, paralellogram")
+                raise ValueError(f"invalid node shape {node_type}: supported node shapes are: circle, rectangle, ellipse, parallelogram")
             
             if label is not None:
                 if latex:
@@ -993,12 +1062,12 @@ class Flow(Canvas):
             a, b = self.nodes[node_id]['a'], self.nodes[node_id]['b']
             x1 = x + a * np.cos(theta * np.pi / 180)
             y1 = y + b * np.sin(theta * np.pi / 180)
-        elif self.nodes[node_id]['type'] == 'paralellogram':
+        elif self.nodes[node_id]['type'] == 'parallelogram':
             x, y = self.nodes[node_id]['x'], self.nodes[node_id]['y']
             points = self.nodes[node_id]['points']
             (x1, y1) = self._computeInteresctionWithConvexPolygon(x, y, theta, points)
         else:
-            raise ValueError(f"invalid node shape {self.nodes[node_id]['type']}: supported node shapes are: circle, rectangle, ellipse, paralellogram")
+            raise ValueError(f"invalid node shape {self.nodes[node_id]['type']}: supported node shapes are: circle, rectangle, ellipse, parallelogram")
         return (x1, y1)
     
     def addEdge(self, node1: str, node2: str, label: Any | None = None, curvature: Number = 0, color: Color = "black", thickness: Number = 2, dashed: bool = False, directed: bool = False, opacity: Number = 1, text_color: Color = "black", text_size: Number = 16, text_style: str | None = None, latex: bool = False) -> None:
@@ -1025,13 +1094,194 @@ class Flow(Canvas):
             _curvature = np.sign(curvature) * np.sqrt(((a1+a2)/2 - cx)**2 + ((b1+b2)/2 - cy)**2)
             self.addCurvedLine(a1, b1, a2, b2, _curvature, color, thickness, dashed, directed, opacity, label, text_color, text_size, text_style, latex=latex)
     
-    def addSelfEdge(self, node: str, theta1: Number = 60, theta2: Number = 120, curvature: Number = 100, label: Any | None = None, color: Color = "black", thickness: Number = 2, dashed: bool = False, directed: bool = False, opacity: Number = 1, text_color: Color = "black", text_size: Number = 16, text_style: str | None = None) -> None:
+    def addSelfEdge(self, node: str, theta1: Number = 60, theta2: Number = 120, curvature: Number = 100, label: Any | None = None, color: Color = "black", thickness: Number = 2, dashed: bool = False, directed: bool = False, opacity: Number = 1, text_color: Color = "black", text_size: Number = 16, text_style: str | None = None, arrow_size: Number = 1, latex: bool = False) -> None:
         """Add a curved self-loop edge to a node."""
         if node not in self.nodes.keys():
             raise KeyError(f'node {node} does not exist')
         (x1, y1) = self._getIntersectionWithContainer(node, theta1)
         (x2, y2) = self._getIntersectionWithContainer(node, theta2)
-        self.addCurvedLine(x1, y1, x2, y2, curvature, color, thickness, dashed, directed, opacity, label, text_color, text_size, text_style)
+        self.addCurvedLine(x1, y1, x2, y2, curvature, color, thickness, dashed, directed, opacity, label, text_color, text_size, text_style, arrow_size, latex)
+
+    # ------------------------------------------------------------------ #
+    # Elbow (orthogonal) edges
+    # ------------------------------------------------------------------ #
+
+    # Outward unit direction of each port in SVG coordinates (y grows downward).
+    _PORT_DIRS = {'E': (1, 0), 'S': (0, 1), 'W': (-1, 0), 'N': (0, -1)}
+    _PORT_ANGLES = {'E': 0, 'S': 90, 'W': 180, 'N': 270}
+
+    def getPort(self, node: str, port: Port) -> Point:
+        """Return the boundary point of ``node`` on side ``port`` (N/S/E/W)."""
+        if node not in self.nodes:
+            raise KeyError(f'node {node} does not exist')
+        port = port.upper()
+        if port not in self._PORT_ANGLES:
+            raise ValueError(f"invalid port {port!r}: supported ports are N, S, E, W")
+        (px, py) = self._getIntersectionWithContainer(node, self._PORT_ANGLES[port])
+        return (float(px), float(py))
+
+    def _autoPorts(self, node1: str, node2: str) -> tuple[str, str]:
+        # Face the two nodes towards each other along the dominant axis.
+        dx = self.nodes[node2]['x'] - self.nodes[node1]['x']
+        dy = self.nodes[node2]['y'] - self.nodes[node1]['y']
+        if abs(dx) >= abs(dy):
+            return ('E', 'W') if dx >= 0 else ('W', 'E')
+        return ('S', 'N') if dy >= 0 else ('N', 'S')
+
+    @staticmethod
+    def _portFacing(px: Number, py: Number, qx: Number, qy: Number) -> str:
+        # The port on a node at p that best faces point q.
+        dx, dy = qx - px, qy - py
+        if abs(dx) >= abs(dy):
+            return 'E' if dx >= 0 else 'W'
+        return 'S' if dy >= 0 else 'N'
+
+    @staticmethod
+    def _routeOrthogonal(p1: Point, d1: tuple[int, int], p2: Point, d2: tuple[int, int], stub: Number) -> list[Point]:
+        """Orthogonal route from port ``p1`` (facing ``d1``) to port ``p2`` (facing ``d2``).
+
+        The route always leaves ``p1`` along ``d1`` and enters ``p2`` against ``d2``.
+        """
+        # Work in a frame where the first port is horizontal; transpose back at the end.
+        transposed = d1[0] == 0
+        if transposed:
+            p1, p2 = (p1[1], p1[0]), (p2[1], p2[0])
+            d1, d2 = (d1[1], d1[0]), (d2[1], d2[0])
+        (x1, y1), (x2, y2) = p1, p2
+        s1 = (x1 + stub * d1[0], y1)
+        s2 = (x2 + stub * d2[0], y2 + stub * d2[1])
+
+        if d2[1] == 0:  # both ports horizontal
+            if d1[0] == -d2[0]:  # facing opposite ways, e.g. E -> W
+                if (x2 - x1) * d1[0] >= 2 * stub:
+                    # Target is ahead: Z-shape through the middle.
+                    mx = (x1 + x2) / 2
+                    pts = [p1, (mx, y1), (mx, y2), p2]
+                else:
+                    # Target is behind: step out, cross over at mid-height, step in.
+                    my = (y1 + y2) / 2
+                    pts = [p1, s1, (s1[0], my), (s2[0], my), s2, p2]
+            else:  # same direction, e.g. E -> E: U-shape
+                X = max(s1[0], s2[0]) if d1[0] > 0 else min(s1[0], s2[0])
+                pts = [p1, (X, y1), (X, y2), p2]
+        else:  # perpendicular, e.g. E -> N
+            corner = (x2, y1)
+            ahead_of_1 = (x2 - x1) * d1[0] >= stub
+            ahead_of_2 = (y1 - y2) * d2[1] >= stub
+            if ahead_of_1 and ahead_of_2:
+                pts = [p1, corner, p2]  # simple L
+            elif ahead_of_1:
+                # Go part-way, turn, approach the target port from its side.
+                mx = (x1 + x2) / 2 if (x2 - x1) * d1[0] > 0 else s1[0]
+                pts = [p1, (mx, y1), (mx, s2[1]), s2, p2]
+            else:
+                pts = [p1, s1, (s1[0], s2[1]), s2, p2]
+
+        if transposed:
+            pts = [(b, a) for (a, b) in pts]
+        return Flow._simplifyPath(pts)
+
+    @staticmethod
+    def _simplifyPath(points: Sequence[Point], eps: float = 1e-6) -> list[Point]:
+        # Drop repeated points and interior points on a straight line.
+        out: list[Point] = []
+        for p in points:
+            p = (float(p[0]), float(p[1]))
+            if out and abs(out[-1][0] - p[0]) < eps and abs(out[-1][1] - p[1]) < eps:
+                continue
+            if len(out) >= 2:
+                (ax, ay), (bx, by) = out[-2], out[-1]
+                if abs((bx - ax) * (p[1] - ay) - (by - ay) * (p[0] - ax)) < eps:
+                    out[-1] = p
+                    continue
+            out.append(p)
+        return out
+
+    @staticmethod
+    def _roundedPathData(points: Sequence[Point], radius: Number) -> str:
+        # SVG path data for a polyline whose corners are rounded with quadratic curves.
+        d = [f'M{points[0][0]:.4f} {points[0][1]:.4f}']
+        for i in range(1, len(points) - 1):
+            (ax, ay), (bx, by), (cx, cy) = points[i - 1], points[i], points[i + 1]
+            l1 = np.hypot(bx - ax, by - ay)
+            l2 = np.hypot(cx - bx, cy - by)
+            r = min(radius, l1 / 2, l2 / 2)
+            if r <= 0 or l1 == 0 or l2 == 0:
+                d.append(f'L{bx:.4f} {by:.4f}')
+                continue
+            sx, sy = bx - (bx - ax) / l1 * r, by - (by - ay) / l1 * r
+            ex, ey = bx + (cx - bx) / l2 * r, by + (cy - by) / l2 * r
+            d.append(f'L{sx:.4f} {sy:.4f} Q{bx:.4f} {by:.4f} {ex:.4f} {ey:.4f}')
+        d.append(f'L{points[-1][0]:.4f} {points[-1][1]:.4f}')
+        return ' '.join(d)
+
+    def addElbowEdge(self, node1: str, node2: str, from_port: Port | None = None, to_port: Port | None = None, waypoints: Sequence[Point] | None = None, label: Any | None = None, label_segment: int | Literal['longest'] = 'longest', stub: Number = 20, corner_radius: Number = 6, color: Color = "black", thickness: Number = 2, dashed: bool = False, directed: bool = True, opacity: Number = 1, text_color: Color = "black", text_size: Number = 16, text_style: str | None = None, arrow_size: Number = 1, latex: bool = False) -> list[Point]:
+        """Connect two nodes with an orthogonal (elbow) edge.
+
+        ``from_port``/``to_port`` are the sides of ``node1``/``node2`` the edge
+        attaches to (``'N'``, ``'S'``, ``'E'``, ``'W'``); when omitted they are
+        chosen so the nodes face each other. ``stub`` is the minimum distance
+        the edge travels straight out of a port before bending, and
+        ``corner_radius`` rounds the bends (0 gives sharp corners).
+
+        ``waypoints`` overrides automatic routing: the edge goes from the
+        port, through each waypoint in order, to the target port. Ports that
+        are not given are then chosen to face the first/last waypoint.
+
+        The label is placed on the longest segment by default, or on segment
+        ``label_segment`` (an index into the routed segments).
+
+        Returns the list of route points (useful for debugging/layout).
+        """
+        for n in (node1, node2):
+            if n not in self.nodes:
+                raise KeyError(f'node {n} does not exist')
+        if node1 == node2:
+            raise KeyError('can not add self edge using addElbowEdge - use addSelfEdge instead')
+
+        if waypoints:
+            waypoints = [(float(a), float(b)) for (a, b) in waypoints]
+            n1, n2 = self.nodes[node1], self.nodes[node2]
+            from_port = (from_port or self._portFacing(n1['x'], n1['y'], *waypoints[0])).upper()
+            to_port = (to_port or self._portFacing(n2['x'], n2['y'], *waypoints[-1])).upper()
+            points = self._simplifyPath([self.getPort(node1, from_port), *waypoints, self.getPort(node2, to_port)])
+        else:
+            auto1, auto2 = self._autoPorts(node1, node2)
+            from_port = (from_port or auto1).upper()
+            to_port = (to_port or auto2).upper()
+            p1, p2 = self.getPort(node1, from_port), self.getPort(node2, to_port)
+            points = self._routeOrthogonal(p1, self._PORT_DIRS[from_port], p2, self._PORT_DIRS[to_port], stub)
+
+        if len(points) < 2:
+            return points
+
+        dash = ' stroke-dasharray="4"' if dashed else ''
+        self.contents.append(f'<path d="{self._roundedPathData(points, corner_radius)}" stroke="{color}" stroke-width="{thickness}" stroke-opacity="{opacity}" fill="none"{dash}/>')
+
+        if directed:
+            (ax, ay), (bx, by) = points[-2], points[-1]
+            self._addArrow(bx, by, self._getRot(ax, ay, bx, by), thickness, color, opacity, arrow_size)
+
+        if label is not None:
+            segments = list(zip(points[:-1], points[1:]))
+            if label_segment == 'longest':
+                idx = max(range(len(segments)), key=lambda i: np.hypot(segments[i][1][0] - segments[i][0][0], segments[i][1][1] - segments[i][0][1]))
+            else:
+                idx = int(label_segment)
+            (ax, ay), (bx, by) = segments[idx]
+            mx, my = (ax + bx) / 2, (ay + by) / 2
+            gap = text_size * 0.4
+            if abs(ay - by) < 1e-9:  # horizontal segment: label above it
+                if latex:
+                    self.addLaTeX(label, mx, my - gap, scale=text_size / 16, baseline='text-top', anchor='middle', color=text_color)
+                else:
+                    self.addText(label, mx, my - gap, text_color, baseline='auto', anchor='middle', size=text_size, style=text_style)
+            else:  # vertical segment: label to the right of it
+                if latex:
+                    self.addLaTeX(label, mx + gap, my, scale=text_size / 16, baseline='middle', anchor='start', color=text_color)
+                else:
+                    self.addText(label, mx + gap, my, text_color, baseline='middle', anchor='start', size=text_size, style=text_style)
+        return points
 
     # img.addRectangle(50, 50, 50, 50, color="yellow", border="red", thickness=2, rotation=45, opacity=0.5)
     # img.addCircle(150, 150, 40, color="cyan", border="darkblue", thickness=2)

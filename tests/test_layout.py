@@ -149,6 +149,33 @@ class FigureTests(unittest.TestCase):
         with self.assertRaises(KeyError):
             fig.mapToFigure(Plot(10, 10, origin=None, margins=None), 0, 0)
 
+    def test_axis_arrowheads_clear_max_ticks_and_grid(self):
+        for arrow_style in ("curved", "open", "triangle", "stealth"):
+            for thickness in (1, 2, 4):
+                p = Plot(400, 600, style=PlotStyle.scaled(14), extra_margins=(0, 0, 12, 12))
+                p.easyAxes(thickness=thickness, grid=True, arrow_style=arrow_style)
+                head_len = p._arrowLength(thickness, 1, arrow_style)
+                x_tip = p.width - p.m_x + p._axisOverhang(True, thickness, 1, arrow_style)
+                y_tip = p.m_y - p._axisOverhang(True, thickness, 1, arrow_style)
+                # Rear of the arrowhead is at tip - head_len == plot boundary + axis_gap.
+                self.assertAlmostEqual((x_tip - head_len) - (p.width - p.m_x), p.style.axis_gap)
+                self.assertAlmostEqual(p.m_y - (y_tip + head_len), p.style.axis_gap)
+                self.assertGreater(p.style.axis_gap, 0)
+
+    def test_auto_margins_keep_directed_axes_on_canvas(self):
+        p = Plot(300, 500, style=PlotStyle(outer_pad=2))
+        x_end = p.width - p.m_x + p._axisOverhang(True, 2)
+        y_end = p.m_y - p._axisOverhang(True, 2)
+        self.assertLessEqual(x_end, p.width)
+        self.assertGreaterEqual(y_end, 0)
+
+    def test_axes_warn_when_explicit_margins_clip_arrowheads(self):
+        p = Plot(300, 500, origin=(60, 250), margins=(5, 5))
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always")
+            p.addAxes(thickness=2, directed=True)
+        self.assertTrue(any("arrowheads extend past the canvas" in str(w.message) for w in caught))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -257,6 +257,16 @@ class Canvas:
             return style, scale, 0.0, 5.0 * scale
         return style, scale, float(thickness) / 2, float(thickness)
 
+    def _arrowLength(self, thickness: Number, arrow_size: Number = 1, arrow_style: ArrowStyle | None = None) -> float:
+        """Distance from the target point back to the rear of the drawn head.
+
+        Includes the round stroke caps of stroked heads, so nothing placed
+        further than this behind the tip can touch the arrowhead.
+        """
+        style, scale, tip_back, _ = self._arrowMetrics(thickness, arrow_size, arrow_style)
+        length = 10.0 * scale
+        return length if ARROW_SHAPES[style][1] else length + 2 * tip_back
+
     def _arrowheadMarkup(self, x: Number, y: Number, theta: Number, thickness: Number, color: Color, opacity: Number, style: str, scale: float, tip_back: float) -> str:
         """Build a reusable arrowhead instance, defining its outline on first use."""
         def_id = 'arrow' if style == 'curved' else f'arrow_{style}'
@@ -1025,9 +1035,12 @@ class PlotStyle:
     * ``outer_pad``: blank border (user units) kept around the content when
       margins are computed automatically (``origin="auto"`` / ``margins="auto"``).
     * ``tick_length``: total length of a tick notch (drawn centred on the axis).
+    * ``axis_gap``: clearance (user units) between the edge of the plot area
+      and the back of an axis arrowhead (or the end of an undirected axis), so
+      the last tick and its grid line never touch the arrowhead.
     """
 
-    def __init__(self, tick_size: Number = 16, label_size: Number = 16, title_size: Number = 18, *, tick_length: Number = 10, tick_pad: Number = 0.35, label_pad: Number = 0.5, title_pad: Number = 0.6, outer_pad: Number = 8, line_height: Number = 1.2) -> None:
+    def __init__(self, tick_size: Number = 16, label_size: Number = 16, title_size: Number = 18, *, tick_length: Number = 10, tick_pad: Number = 0.35, label_pad: Number = 0.5, title_pad: Number = 0.6, outer_pad: Number = 8, line_height: Number = 1.2, axis_gap: Number = 6) -> None:
         """Set text sizes, notch length and outer padding in user units.
 
         ``tick_pad``, ``label_pad`` and ``title_pad`` are font-size multipliers;
@@ -1043,11 +1056,12 @@ class PlotStyle:
         self.title_pad = title_pad
         self.outer_pad = outer_pad
         self.line_height = line_height
+        self.axis_gap = axis_gap
 
     @classmethod
     def scaled(cls, base_size: Number = 16, **overrides: Any) -> "PlotStyle":
         """Build a style from one base font size (ticks = base, labels = base, title = 1.15 x base)."""
-        sizes = dict(tick_size=base_size, label_size=base_size, title_size=round(1.15 * base_size, 2), tick_length=round(0.625 * base_size, 2))
+        sizes = dict(tick_size=base_size, label_size=base_size, title_size=round(1.15 * base_size, 2), tick_length=round(0.625 * base_size, 2), axis_gap=round(0.375 * base_size, 2))
         sizes.update(overrides)
         return cls(**sizes)
 
@@ -1139,8 +1153,11 @@ class Plot(Canvas):
         ytick_w = max(label_width(self._y), label_width(self.y_))
         left = s.outer_pad + s.label_size + s.label_pad * s.label_size + ytick_w + s.tick_pad * s.tick_size + tick_out
         bottom = s.outer_pad + s.label_size + s.label_pad * s.label_size + s.tick_size + s.tick_pad * s.tick_size + tick_out
-        right = s.outer_pad + max(label_width(self.x_) / 2, s.outer_pad)
-        top = s.outer_pad + s.line_height * s.title_size + s.title_pad * s.title_size
+        # Directed axes (easyAxes defaults: thickness 2) run past the plot area
+        # by axis_gap + head length; keep that inside the canvas too.
+        overhang = self._axisOverhang(True, 2)
+        right = max(s.outer_pad + max(label_width(self.x_) / 2, s.outer_pad), overhang + s.outer_pad / 2)
+        top = max(s.outer_pad + s.line_height * s.title_size + s.title_pad * s.title_size, overhang + s.outer_pad / 2)
         extra_left, extra_bottom, extra_right, extra_top = getattr(self, '_extra_margins', (0, 0, 0, 0))
         return left + extra_left, bottom + extra_bottom, right + extra_right, top + extra_top
 
@@ -1206,14 +1223,30 @@ class Plot(Canvas):
         else:
             raise ValueError(f"invalid marker type {marker_type}: supported markers are: circle, cross, square")
 
-    def addAxes(self, color: Color = "black", thickness: Number = 1, directed: bool = False) -> None:
+    def _axisOverhang(self, directed: bool, thickness: Number, arrow_size: Number = 1, arrow_style: ArrowStyle | None = None) -> float:
+        """How far an axis runs past the plot area: ``style.axis_gap`` plus the head length."""
+        gap = self.style.axis_gap
+        return gap + self._arrowLength(thickness, arrow_size, arrow_style) if directed else gap
+
+    def addAxes(self, color: Color = "black", thickness: Number = 1, directed: bool = False, *, arrow_size: Number = 1, arrow_style: ArrowStyle | None = None) -> None:
         """Draw axes along the bottom and left plot boundaries.
 
         Axes do not move to data value zero when the ranges include negatives.
         ``directed=True`` adds arrowheads; no ticks or grid lines are added.
+
+        Each axis extends past the plot area by ``style.axis_gap`` plus the
+        arrowhead length, so ticks and grid lines at the range maxima always
+        end before the arrowhead starts. Both axes cross by half a tick notch
+        at the origin.
         """
-        self.addLine(x1 = self.O_x, x2 = self.O_x, y2 = 2 * self.m_y / 3, y1 = self.O_y + self.m_y / 10, color = color, thickness = thickness, directed=directed)
-        self.addLine(y1 = self.O_y, y2 = self.O_y, x1 = self.O_x - self.m_x / 10, x2 = self.width - 2 * self.m_x / 3, color = color, thickness = thickness, directed=directed)
+        overhang = self._axisOverhang(directed, thickness, arrow_size, arrow_style)
+        tail = self.style.tick_length / 2
+        x_end = self.width - self.m_x + overhang
+        y_end = self.m_y - overhang
+        if x_end > self.width + 0.5 or y_end < -0.5:
+            warnings.warn(f"axis arrowheads extend past the canvas edge; increase the right/top margins by about {max(x_end - self.width, -y_end):.0f} or reduce style.axis_gap", stacklevel=2)
+        self.addLine(x1 = self.O_x, x2 = self.O_x, y1 = self.O_y + tail, y2 = y_end, color = color, thickness = thickness, directed=directed, arrow_size=arrow_size, arrow_style=arrow_style)
+        self.addLine(y1 = self.O_y, y2 = self.O_y, x1 = self.O_x - tail, x2 = x_end, color = color, thickness = thickness, directed=directed, arrow_size=arrow_size, arrow_style=arrow_style)
 
     def addTicksX(self, labels: Iterable[tuple[Number, Any]], color: Color = "black", notch_thickness: Number = 2, notch_length: Number | None = None, rotation: Number = 0, text_anchor: TextAnchor | None = None, text_size: Number | None = None, grid: bool = True, *, pad: Number | None = None) -> None:
         """Add x-axis tick labels and optional vertical grid lines.
@@ -1524,9 +1557,9 @@ class Plot(Canvas):
             y_labels = [(y, f'{y:.2f}') for y in y_ticks]
             self.addTicksY(y_labels, color, notch_thickness, notch_length, rot_y, "middle", text_size, grid)
     
-    def easyAxes(self, color: Color = 'black', thickness: Number = 2, directed: bool = True, ticks_per_unit: Number = 0.01, notch_length: Number | None = None, rot_x: Number = 0, rot_y: Number = 0, text_size: Number | None = None, grid: bool = False) -> None:
+    def easyAxes(self, color: Color = 'black', thickness: Number = 2, directed: bool = True, ticks_per_unit: Number = 0.01, notch_length: Number | None = None, rot_x: Number = 0, rot_y: Number = 0, text_size: Number | None = None, grid: bool = False, *, arrow_size: Number = 1, arrow_style: ArrowStyle | None = None) -> None:
         """Draw axes and automatically chosen ticks."""
-        self.addAxes(color, thickness, directed)
+        self.addAxes(color, thickness, directed, arrow_size=arrow_size, arrow_style=arrow_style)
         self.easyTicks(color, ticks_per_unit, thickness, notch_length, rot_x, rot_y, text_size, grid)
 
 class _SubplotSlot:

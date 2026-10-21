@@ -3,10 +3,10 @@
 <path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
 </defs>
 <rect width="700" height="390" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
-<line x1="65.5190" y1="341.4230" x2="65.5190" y2="26.6533" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<use xlink:href="#arrow" transform="translate(65.5190 25.6533) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
-<line x1="62.9676" y1="337.7250" x2="680.9907" y2="337.7250" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<use xlink:href="#arrow" transform="translate(681.9907 337.7250) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<line x1="65.5190" y1="342.1000" x2="65.5190" y2="21.7300" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(65.5190 20.7300) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<line x1="61.1440" y1="337.7250" x2="689.7360" y2="337.7250" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(690.7360 337.7250) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
 <text fill="black" transform="translate(65.5190 347.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">0.00</text>
 <text fill="black" transform="translate(187.3124 347.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">2.00</text>
 <line x1="187.3124" y1="333.3500" x2="187.3124" y2="342.1000" stroke="black" stroke-width="2" fill="none" opacity="1"/>

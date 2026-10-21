@@ -203,6 +203,7 @@ black. Use `addLaTeX()` directly for explicitly colored math annotations.
 | `title_pad` | 0.6 | Plot-top-to-title gap as a multiple of title size |
 | `outer_pad` | 8 | Automatic layout outer border in canvas units |
 | `line_height` | 1.2 | Text extent and margin estimate multiplier |
+| `axis_gap` | 6 | Clearance between the plot boundary and the back of an axis arrowhead (or undirected axis end) in canvas units |
 
 ```python
 from svgflow import Plot, PlotStyle
@@ -216,8 +217,8 @@ p.addTitle("Explicit label gaps", pad=14)
 p.save("spacing.svg")
 ```
 
-`scaled(base)` sets ticks/labels to base, title to `1.15*base`, and notch
-length to `0.625*base` (rounded to two decimals). Gap fractions stay unchanged.
+`scaled(base)` sets ticks/labels to base, title to `1.15*base`, notch
+length to `0.625*base`, and `axis_gap` to `0.375*base` (rounded to two decimals). Gap fractions stay unchanged.
 `copy()` derives a new style; using the same style instance in several plots
 shares a mutable object. Later mutations affect future drawing calls, not
 already emitted text or the layout estimated at construction.

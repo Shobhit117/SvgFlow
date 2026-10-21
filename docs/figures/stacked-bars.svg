@@ -3,8 +3,8 @@
 <rect id="square" height="9" width="9" x="-4.5" y="-4.5"/>
 </defs>
 <rect width="700" height="390" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
-<line x1="73.3030" y1="341.4230" x2="73.3030" y2="24.6533" stroke="black" stroke-width="1" fill="none" opacity="1"/>
-<line x1="71.1408" y1="337.7250" x2="685.5853" y2="337.7250" stroke="black" stroke-width="1" fill="none" opacity="1"/>
+<line x1="73.3030" y1="342.1000" x2="73.3030" y2="31.7300" stroke="black" stroke-width="1" fill="none" opacity="1"/>
+<line x1="68.9280" y1="337.7250" x2="683.6280" y2="337.7250" stroke="black" stroke-width="1" fill="none" opacity="1"/>
 <text fill="black" transform="translate(159.7423 347.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Q1</text>
 <line x1="159.7423" y1="333.3500" x2="159.7423" y2="342.1000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
 <text fill="black" transform="translate(303.8078 347.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Q2</text>

@@ -61,6 +61,39 @@ class FlowGeometryTests(unittest.TestCase):
             self.assertGreater(np.hypot(*(apex - 200)), 40 + 30, (theta1, theta2))
 
 
+class EdgeLabelSideTests(unittest.TestCase):
+    """Labels must grow away from their edge, including for vertical edges."""
+
+    def _label(self, c):
+        el = next(e for e in reversed(c.contents) if e.startswith("<text"))
+        x, y = map(float, re.search(r'translate\(([-0-9.]+) ([-0-9.]+)\)', el).groups())
+        rot = float(re.search(r'rotate\(([-0-9.]+)\)', el).group(1))
+        baseline = re.search(r'dominant-baseline="([^"]+)"', el).group(1)
+        return x, y, rot, baseline
+
+    def _grow_direction(self, rot, baseline):
+        # Unit vector the multi-line block grows towards (text "up" for text-top, "down" for hanging).
+        up = np.array([np.sin(np.deg2rad(rot)), -np.cos(np.deg2rad(rot))])
+        return up if baseline == "text-top" else -up
+
+    def test_straight_edges_all_directions(self):
+        for (x2, y2) in ((100, 0), (-100, 0), (0, 100), (0, -100), (70, 70), (-70, 70)):
+            c = Canvas(300, 300)
+            c.addLine(0, 0, x2, y2, label="a\nb")
+            x, y, rot, baseline = self._label(c)
+            offset = np.array([x - x2 / 2, y - y2 / 2])
+            grow = self._grow_direction(rot, baseline)
+            self.assertGreater(float(offset @ grow), 0, (x2, y2))  # placed on the side it grows toward
+
+    def test_vertical_curved_edges(self):
+        for curvature in (40, -40):
+            c = Canvas(300, 300)
+            c.addCurvedLine(0, 0, 0, 200, curvature, label="a\nb")
+            x, y, rot, baseline = self._label(c)
+            self.assertEqual(np.sign(x), np.sign(curvature))  # outside the bulge
+            self.assertEqual(np.sign(self._grow_direction(rot, baseline)[0]), np.sign(curvature))
+
+
 class FlowStyleTests(unittest.TestCase):
     def test_style_defaults_apply_everywhere(self):
         style = FlowStyle(node_color="aliceblue", node_border="navy", edge_color="gray", edge_thickness=3, arrow_style="stealth", text_size=12)

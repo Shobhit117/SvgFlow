@@ -375,18 +375,16 @@ class Canvas:
         self._emitStroke(f'<line x1="{a1:.4f}" y1="{b1:.4f}" x2="{a2:.4f}" y2="{b2:.4f}"', color, thickness, opacity, dashed, 'none', heads, arrow)
 
         if label is not None:
+            # Keep the text upright-ish and offset it along *its own* "up"
+            # direction; the block grows that way, away from the line.
+            rot = theta if -90 < theta < 90 else theta - 180
+            ux, uy = np.sin(np.deg2rad(rot)), -np.cos(np.deg2rad(rot))
             gap = 0 if latex else text_size * label_gap
-            (x3, y3) = self._getControlPoint(x1, y1, x2, y2, gap)
-            if theta < 90 and theta > -90:
-                if latex:
-                    self.addLaTeX(label, x3, y3, scale=(text_size)/16, rot=theta, baseline="text-top", anchor="middle", color=text_color)
-                else:
-                    self.addText(label, x3, y3, text_color, theta, "text-top", "middle", text_size, text_style)
+            (x3, y3) = ((x1 + x2) / 2 + gap * ux, (y1 + y2) / 2 + gap * uy)
+            if latex:
+                self.addLaTeX(label, x3, y3, scale=(text_size)/16, rot=rot, baseline="text-top", anchor="middle", color=text_color)
             else:
-                if latex:
-                    self.addLaTeX(label, x3, y3, scale=(text_size)/16, rot=theta-180, baseline="text-top", anchor="middle", color=text_color)
-                else:
-                    self.addText(label, x3, y3, text_color, theta-180, "text-top", "middle", text_size, text_style)
+                self.addText(label, x3, y3, text_color, rot, "text-top", "middle", text_size, text_style)
 
         return theta
 
@@ -404,15 +402,18 @@ class Canvas:
     def _curvedLabel(self, x1: Number, y1: Number, x2: Number, y2: Number, curvature: Number, label: Any, text_color: Color, text_size: Number, text_style: str | None, latex: bool, label_gap: Number) -> None:
         # Places a label just outside the apex of a quadratic curve whose
         # control point is offset `curvature` from the chord midpoint.
-        if curvature > 0:
-            gap = curvature/2 if latex else curvature/2 + text_size * label_gap
-            baseline = "text-top"
-        else:
-            gap = curvature/2 if latex else curvature/2 - text_size * label_gap
-            baseline = "hanging"
-        (x3, y3) = self._getControlPoint(x1, y1, x2, y2, gap)
+        nx, ny = self._perpUnit(x1, y1, x2, y2)
+        side = 1 if curvature > 0 else -1
+        ox, oy = side * nx, side * ny                     # outward from the apex
         alpha = self._getRot(x1, y1, x2, y2)
         rot = alpha if -90 < alpha < 90 else alpha - 180
+        ux, uy = np.sin(np.deg2rad(rot)), -np.cos(np.deg2rad(rot))  # text "up"
+        # Grow the (possibly multi-line) block away from the curve: upward in
+        # the text's frame if "outward" is the text's up, otherwise downward.
+        baseline = "text-top" if ox * ux + oy * uy > 0 else "hanging"
+        extra = 0 if latex else text_size * label_gap
+        x3 = (x1 + x2) / 2 + nx * curvature / 2 + ox * extra
+        y3 = (y1 + y2) / 2 + ny * curvature / 2 + oy * extra
         if latex:
             self.addLaTeX(label, x3, y3, scale=(text_size)/16, rot=rot, baseline=baseline, anchor="middle", color=text_color)
         else:

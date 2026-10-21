@@ -1,0 +1,26 @@
+<svg width="720" height="240" viewBox="0 0 720 240" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<g id="fig_icon">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100.0" height="80.0" viewBox="0.0 0.0 100.0 80.0">
+<defs>
+<linearGradient id="figicon_grad_paint" x1="0.0000%" y1="0.0000%" x2="100.0000%" y2="0.0000%">
+<stop offset="0.00%" stop-color="royalblue"/>
+<stop offset="100.00%" stop-color="teal"/>
+</linearGradient>
+<path id="figicon_arrow_triangle" d="M0 0 L-10 -4 L-10 4 Z"/>
+</defs>
+<rect width="80" height="60" fill="url(#figicon_grad_paint)" stroke="none" stroke-width="1" transform="translate(10.0000 10.0000) rotate(0.0000)" opacity="1" rx="10"/>
+<line x1="30.0000" y1="40.0000" x2="62.5000" y2="40.0000" stroke="white" stroke-width="3" fill="none" opacity="1"/>
+<use xlink:href="#figicon_arrow_triangle" transform="translate(70.0000 40.0000) rotate(0.0000) scale(1.5000 1.5000)" fill="white" stroke="none" opacity="1"/>
+</svg>
+</g>
+</defs>
+<rect width="720" height="240" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<text fill="black" transform="translate(360.0000 25.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22">One SVG definition, multiple placements</text>
+<use xlink:href="#fig_icon" transform="translate(70.0000 80.0000) rotate(0.0000) scale(1.0000 1.0000)"/>
+<use xlink:href="#fig_icon" transform="translate(261.1349 93.3673) rotate(-20.0000) scale(1.3000 1.3000)"/>
+<use xlink:href="#fig_icon" transform="translate(635.0000 84.0000) rotate(0.0000) scale(-0.9000 0.9000)"/>
+<text fill="black" transform="translate(120.0000 205.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">original</text>
+<text fill="black" transform="translate(340.0000 205.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">scale + rotation</text>
+<text fill="black" transform="translate(590.0000 205.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">horizontal flip</text>
+</svg>

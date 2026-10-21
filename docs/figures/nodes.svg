@@ -1,0 +1,25 @@
+<svg width="800" height="270" viewBox="0 0 800 270" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<rect width="800" height="270" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<text fill="black" transform="translate(400.0000 25.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22">Node shapes: every position is a center</text>
+<circle cx="90.0000" cy="115.0000" r="42.0000" fill="aliceblue" stroke="#2563eb" stroke-width="2" opacity="1"/>
+<circle cx="90.0000" cy="115.0000" r="3.0000" fill="#c2410c" stroke="none" stroke-width="1" opacity="1"/>
+<text fill="black" transform="translate(90.0000 195.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">circle</text>
+<rect width="135" height="75" fill="aliceblue" stroke="#2563eb" stroke-width="2" transform="translate(212.5000 77.5000) rotate(0.0000)" opacity="1" rx="12"/>
+<circle cx="280.0000" cy="115.0000" r="3.0000" fill="#c2410c" stroke="none" stroke-width="1" opacity="1"/>
+<text fill="black" transform="translate(280.0000 195.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">rectangle</text>
+<ellipse transform="translate(485.0000 115.0000) rotate(0.0000)" rx="75.0000" ry="40.0000" fill="aliceblue" stroke="#2563eb" stroke-width="2" opacity="1"/>
+<circle cx="485.0000" cy="115.0000" r="3.0000" fill="#c2410c" stroke="none" stroke-width="1" opacity="1"/>
+<text fill="black" transform="translate(485.0000 195.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">ellipse</text>
+<polygon points="746.1424,82.2428 727.7752,147.7572 633.8576,147.7572 652.2248,82.2428" fill="aliceblue" stroke="#2563eb" stroke-width="2" opacity="1"/>
+<circle cx="690.0000" cy="115.0000" r="3.0000" fill="#c2410c" stroke="none" stroke-width="1" opacity="1"/>
+<text fill="black" transform="translate(690.0000 195.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">parallelogram</text>
+<circle cx="280.0000" cy="77.5000" r="4.0000" fill="#c2410c" stroke="none" stroke-width="1" opacity="1"/>
+<text fill="#c2410c" transform="translate(280.0000 61.5000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">N</text>
+<circle cx="280.0000" cy="152.5000" r="4.0000" fill="#c2410c" stroke="none" stroke-width="1" opacity="1"/>
+<text fill="#c2410c" transform="translate(280.0000 168.5000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">S</text>
+<circle cx="347.5000" cy="115.0000" r="4.0000" fill="#c2410c" stroke="none" stroke-width="1" opacity="1"/>
+<text fill="#c2410c" transform="translate(363.5000 115.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">E</text>
+<circle cx="212.5000" cy="115.0000" r="4.0000" fill="#c2410c" stroke="none" stroke-width="1" opacity="1"/>
+<text fill="#c2410c" transform="translate(196.5000 115.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">W</text>
+<text fill="black" transform="translate(400.0000 245.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">Orange dots: centers and N/S/E/W port positions</text>
+</svg>

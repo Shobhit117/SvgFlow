@@ -1,0 +1,34 @@
+<svg width="760" height="300" viewBox="0 0 760 300" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
+<path id="arrow_open" d="M-10 -5 L0 0 L-10 5"/>
+<path id="arrow_triangle" d="M0 0 L-10 -4 L-10 4 Z"/>
+<path id="arrow_stealth" d="M0 0 L-10 -4.5 L-7 0 L-10 4.5 Z"/>
+</defs>
+<rect width="760" height="300" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<text fill="black" transform="translate(380.0000 25.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22">Arrow styles and direction</text>
+<text fill="black" transform="translate(25.0000 75.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16">curved</text>
+<line x1="153.0000" y1="75.0000" x2="347.0000" y2="75.0000" stroke="#2563eb" stroke-width="3" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(348.5000 75.0000) rotate(0.0000) scale(1.5000 1.5000)" stroke="#2563eb" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(151.5000 75.0000) rotate(180.0000) scale(1.5000 1.5000)" stroke="#2563eb" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<path d="M440.0000 85.0000 Q569.0534 40.3277 698.1069 84.3495" stroke="#0f766e" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(699.0550 84.6729) rotate(19.0935) scale(1.0000 1.0000)" stroke="#0f766e" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(25.0000 130.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16">open</text>
+<line x1="153.0000" y1="130.0000" x2="347.0000" y2="130.0000" stroke="#2563eb" stroke-width="3" fill="none" opacity="1"/>
+<use xlink:href="#arrow_open" transform="translate(348.5000 130.0000) rotate(0.0000) scale(1.5000 1.5000)" stroke="#2563eb" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<use xlink:href="#arrow_open" transform="translate(151.5000 130.0000) rotate(180.0000) scale(1.5000 1.5000)" stroke="#2563eb" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<path d="M440.0000 140.0000 Q569.0534 95.3277 698.1069 139.3495" stroke="#0f766e" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_open" transform="translate(699.0550 139.6729) rotate(19.0935) scale(1.0000 1.0000)" stroke="#0f766e" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(25.0000 185.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16">triangle</text>
+<line x1="157.5000" y1="185.0000" x2="342.5000" y2="185.0000" stroke="#2563eb" stroke-width="3" fill="none" opacity="1"/>
+<use xlink:href="#arrow_triangle" transform="translate(350.0000 185.0000) rotate(0.0000) scale(1.5000 1.5000)" fill="#2563eb" stroke="none" opacity="1"/>
+<use xlink:href="#arrow_triangle" transform="translate(150.0000 185.0000) rotate(180.0000) scale(1.5000 1.5000)" fill="#2563eb" stroke="none" opacity="1"/>
+<path d="M440.0000 195.0000 Q567.6325 150.8195 695.2650 193.3908" stroke="#0f766e" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_triangle" transform="translate(700.0000 195.0000) rotate(19.0935) scale(1.0000 1.0000)" fill="#0f766e" stroke="none" opacity="1"/>
+<text fill="black" transform="translate(25.0000 240.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16">stealth</text>
+<line x1="157.5000" y1="240.0000" x2="342.5000" y2="240.0000" stroke="#2563eb" stroke-width="3" fill="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(350.0000 240.0000) rotate(0.0000) scale(1.5000 1.5000)" fill="#2563eb" stroke="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(150.0000 240.0000) rotate(180.0000) scale(1.5000 1.5000)" fill="#2563eb" stroke="none" opacity="1"/>
+<path d="M440.0000 250.0000 Q567.6325 205.8195 695.2650 248.3908" stroke="#0f766e" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(700.0000 250.0000) rotate(19.0935) scale(1.0000 1.0000)" fill="#0f766e" stroke="none" opacity="1"/>
+</svg>

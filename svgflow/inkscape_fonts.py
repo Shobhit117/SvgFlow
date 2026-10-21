@@ -27,6 +27,7 @@ from .text_metrics import FontSpec
 
 def _fc_path(path: str) -> str:
     # fontconfig accepts forward slashes on every platform.
+    """Return an absolute forward-slash path suitable for fontconfig XML."""
     return os.path.abspath(path).replace("\\", "/")
 
 

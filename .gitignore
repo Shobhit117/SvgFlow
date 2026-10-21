@@ -14,6 +14,7 @@
 !/svgflow/text_metrics.py
 !/tests/
 !/tests/*.py
+!/docs/
 
 # Never track generated packaging output or Python caches.
 __pycache__/

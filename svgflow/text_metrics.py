@@ -5,8 +5,9 @@ Every font known to svgflow has two faces of the same coin:
 * a CSS ``font-family`` string that is written into the SVG (what is *drawn*);
 * a font file / PyMuPDF built-in used to compute glyph advances (what is *measured*).
 
-Keeping both in one registry guarantees that layout computations (legend sizes,
-word wrapping, ``textLength``) match the rendered text.
+Keeping both in one registry makes layout computations (legend sizes, word
+wrapping, ``textLength``) use consistent font metrics. Built-in CSS fallback
+fonts and viewer font substitution can still change the rendered appearance.
 """
 
 from __future__ import annotations
@@ -33,7 +34,7 @@ class FontSpec:
     ``faces`` maps a variant (regular/bold/italic/bold_italic) to either a path
     to a TTF/OTF file or the name of a PyMuPDF built-in font (e.g. ``"helv"``).
     ``embed`` controls whether file-based faces are embedded into saved SVGs
-    via ``@font-face`` so the figure renders identically on every machine.
+    via ``@font-face`` in viewers that support embedded fonts.
     """
 
     name: str
@@ -81,6 +82,11 @@ def register_font(
     ``regular``/``bold``/``italic``/``bold_italic`` are paths to TTF/OTF files
     (or PyMuPDF built-in names). ``family`` is the CSS family written into the
     SVG; it defaults to ``name``. Re-registering a name replaces it.
+    Registration is process-wide and returns the resulting ``FontSpec``.
+    Faces are loaded immediately; invalid files or built-in names propagate
+    the PyMuPDF loader's exception. Missing variants fall back towards regular.
+    Only file-backed faces can be embedded; ``embed=False`` relies on viewer
+    fonts for SVG display. Inkscape export exposes file faces separately.
     """
     faces = {REGULAR: str(regular)}
     for key, value in ((BOLD, bold), (ITALIC, italic), (BOLD_ITALIC, bold_italic)):
@@ -104,7 +110,11 @@ def get_font(name: str | None) -> FontSpec:
 
 
 def available_fonts() -> list[str]:
-    """Names of all registered fonts."""
+    """Return registered font names in sorted order.
+
+    Initially includes default, sans, serif and mono; registrations are shared
+    across canvases in the current Python process, not saved between runs.
+    """
     return sorted(_REGISTRY)
 
 
@@ -146,6 +156,10 @@ def text_width(text: object, size: float, font: str = DEFAULT_FONT, bold: bool =
 
     ``font`` is a registered font name; for backwards compatibility a raw
     PyMuPDF built-in name (e.g. ``"helv"``) is also accepted.
+    ``text`` is converted to str; this helper measures one line, not a block.
+    ``bold``/``italic`` choose registered face variants. Negative sizes raise
+    ``ValueError``. Invalid unregistered font names reach the font loader.
+    The result is glyph advance width, not a tight ink bounding box.
     """
     if size < 0:
         raise ValueError("font size must be non-negative")
@@ -158,6 +172,10 @@ def wrap_text(text: object, size: float, max_width: float, font: str = DEFAULT_F
 
     Explicit newlines are preserved. A single word wider than ``max_width`` is
     kept on its own line rather than being split.
+    Returns a list of strings, including empty lines for empty paragraphs.
+    Whitespace within paragraphs is normalized to single spaces; there is no
+    hyphenation. ``size``/``max_width`` use the same SVG user units as addText.
+    Font selection and invalid-size behavior follow :func:`text_width`.
     """
     lines: list[str] = []
     space = text_width(" ", size, font, bold, italic)

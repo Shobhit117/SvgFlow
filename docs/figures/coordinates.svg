@@ -1,0 +1,23 @@
+<svg width="700" height="290" viewBox="0 0 700 290" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
+</defs>
+<rect width="700" height="290" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<text fill="black" transform="translate(350.0000 24.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20">SVG: origin at top-left, y increases downward</text>
+<line x1="45.0000" y1="65.0000" x2="643.0000" y2="65.0000" stroke="#2563eb" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(644.0000 65.0000) rotate(0.0000) scale(1.0000 1.0000)" stroke="#2563eb" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<line x1="45.0000" y1="65.0000" x2="45.0000" y2="248.0000" stroke="#2563eb" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(45.0000 249.0000) rotate(90.0000) scale(1.0000 1.0000)" stroke="#2563eb" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(38.0000 45.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="14">(0, 0)</text>
+<text fill="#2563eb" transform="translate(665.0000 65.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">+x</text>
+<text fill="#2563eb" transform="translate(45.0000 270.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">+y</text>
+<rect width="150" height="90" fill="aliceblue" stroke="#2563eb" stroke-width="2" transform="translate(130.0000 120.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<circle cx="130.0000" cy="120.0000" r="4.0000" fill="#c2410c" stroke="none" stroke-width="1" opacity="1"/>
+<text fill="black" transform="translate(205.0000 230.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">rectangle: top-left</text>
+<circle cx="430.0000" cy="165.0000" r="45.0000" fill="honeydew" stroke="#0f766e" stroke-width="2" opacity="1"/>
+<circle cx="430.0000" cy="165.0000" r="4.0000" fill="#c2410c" stroke="none" stroke-width="1" opacity="1"/>
+<text fill="black" transform="translate(430.0000 230.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">circle: center</text>
+<path d="M 630.0000 150.0000 A 40.0000 40.0000 0 0 1 591.9992 189.9500" stroke="#c2410c" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(591.0000 190.0000) rotate(180.0000) scale(1.0000 1.0000)" stroke="#c2410c" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(590.0000 230.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">90 degrees</text>
+</svg>

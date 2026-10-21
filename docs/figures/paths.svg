@@ -1,0 +1,22 @@
+<svg width="760" height="550" viewBox="0 0 760 550" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<rect width="760" height="550" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<text fill="black" transform="translate(380.0000 25.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22">Paths: points and control handles</text>
+<text fill="black" transform="translate(25.0000 95.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="15">polyline</text>
+<text fill="black" transform="translate(25.0000 220.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="15">quadratic</text>
+<text fill="black" transform="translate(25.0000 350.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="15">cubic</text>
+<text fill="black" transform="translate(25.0000 485.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="15">fitted spline</text>
+<path d="M190.0000 95.0000 L320.0000 65.0000 L450.0000 115.0000 L700.0000 95.0000" stroke="#2563eb" stroke-width="3" fill="none" opacity="1"/>
+<path d="M190.0000 220.0000 L445.0000 145.0000 L700.0000 220.0000" stroke="silver" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<path d="M190.0000 220.0000 Q445.0000 145.0000 700.0000 220.0000" stroke="#0f766e" stroke-width="3" fill="none" opacity="1"/>
+<circle cx="445.0000" cy="145.0000" r="4.0000" fill="#c2410c" stroke="none" stroke-width="1" opacity="1"/>
+<line x1="190.0000" y1="350.0000" x2="330.0000" y2="285.0000" stroke="silver" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="560.0000" y1="410.0000" x2="700.0000" y2="350.0000" stroke="silver" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<path d="M190.0000 350.0000 C330.0000 285.0000 560.0000 410.0000 700.0000 350.0000" stroke="#c2410c" stroke-width="3" fill="none" opacity="1"/>
+<circle cx="330.0000" cy="285.0000" r="4.0000" fill="#c2410c" stroke="none" stroke-width="1" opacity="1"/>
+<circle cx="560.0000" cy="410.0000" r="4.0000" fill="#c2410c" stroke="none" stroke-width="1" opacity="1"/>
+<path d="M190.0000 485.0000 C237.3333 462.7778 284.6667 440.5556 330.0000 450.0000 C375.3333 459.4444 418.6667 500.5556 480.0000 510.0000 C541.3333 519.4444 620.6667 497.2222 700.0000 475.0000" stroke="purple" stroke-width="3" fill="none" opacity="1"/>
+<circle cx="190.0000" cy="485.0000" r="4.0000" fill="purple" stroke="none" stroke-width="1" opacity="1"/>
+<circle cx="330.0000" cy="450.0000" r="4.0000" fill="purple" stroke="none" stroke-width="1" opacity="1"/>
+<circle cx="480.0000" cy="510.0000" r="4.0000" fill="purple" stroke="none" stroke-width="1" opacity="1"/>
+<circle cx="700.0000" cy="475.0000" r="4.0000" fill="purple" stroke="none" stroke-width="1" opacity="1"/>
+</svg>

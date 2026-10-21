@@ -1,0 +1,47 @@
+<svg width="700" height="390" viewBox="0 0 700 390" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<rect id="square" height="9" width="9" x="-4.5" y="-4.5"/>
+</defs>
+<rect width="700" height="390" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<line x1="73.3030" y1="341.4230" x2="73.3030" y2="24.6533" stroke="black" stroke-width="1" fill="none" opacity="1"/>
+<line x1="71.1408" y1="337.7250" x2="685.5853" y2="337.7250" stroke="black" stroke-width="1" fill="none" opacity="1"/>
+<text fill="black" transform="translate(159.7423 347.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Q1</text>
+<line x1="159.7423" y1="333.3500" x2="159.7423" y2="342.1000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(303.8078 347.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Q2</text>
+<line x1="303.8078" y1="333.3500" x2="303.8078" y2="342.1000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(447.8732 347.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Q3</text>
+<line x1="447.8732" y1="333.3500" x2="447.8732" y2="342.1000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(591.9387 347.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Q4</text>
+<line x1="591.9387" y1="333.3500" x2="591.9387" y2="342.1000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(64.0280 337.7250) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">0</text>
+<text fill="black" transform="translate(64.0280 277.5760) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">3</text>
+<line x1="68.9280" y1="277.5760" x2="77.6780" y2="277.5760" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="73.3030" y1="277.5760" x2="678.3780" y2="277.5760" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<text fill="black" transform="translate(64.0280 217.4270) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">6</text>
+<line x1="68.9280" y1="217.4270" x2="77.6780" y2="217.4270" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="73.3030" y1="217.4270" x2="678.3780" y2="217.4270" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<text fill="black" transform="translate(64.0280 157.2780) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">9</text>
+<line x1="68.9280" y1="157.2780" x2="77.6780" y2="157.2780" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="73.3030" y1="157.2780" x2="678.3780" y2="157.2780" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<text fill="black" transform="translate(64.0280 97.1290) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">12</text>
+<line x1="68.9280" y1="97.1290" x2="77.6780" y2="97.1290" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="73.3030" y1="97.1290" x2="678.3780" y2="97.1290" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<text fill="black" transform="translate(64.0280 36.9800) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">15</text>
+<line x1="68.9280" y1="36.9800" x2="77.6780" y2="36.9800" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="73.3030" y1="36.9800" x2="678.3780" y2="36.9800" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<rect width="52" height="80.19866666666667" fill="royalblue" stroke="none" stroke-width="1" transform="translate(133.7423 257.5263) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="52" height="120.298" fill="royalblue" stroke="none" stroke-width="1" transform="translate(277.8078 217.4270) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="52" height="100.24833333333333" fill="royalblue" stroke="none" stroke-width="1" transform="translate(421.8732 237.4767) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="52" height="160.39733333333334" fill="royalblue" stroke="none" stroke-width="1" transform="translate(565.9387 177.3277) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="52" height="60.149" fill="teal" stroke="none" stroke-width="1" transform="translate(133.7423 197.3773) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="52" height="40.099333333333334" fill="teal" stroke="none" stroke-width="1" transform="translate(277.8078 177.3277) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="52" height="80.19866666666667" fill="teal" stroke="none" stroke-width="1" transform="translate(421.8732 157.2780) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="52" height="60.149" fill="teal" stroke="none" stroke-width="1" transform="translate(565.9387 117.1787) rotate(0.0000)" opacity="1" rx="0"/>
+<text fill="black" transform="translate(375.8405 368.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Quarter</text>
+<text fill="black" transform="translate(34.4600 187.3525) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Units</text>
+<text fill="black" transform="translate(375.8405 27.3200) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16.1">Stacked bars: top = baseline + component</text>
+<rect width="79.91999959945679" height="33.6" fill="white" stroke="silver" stroke-width="2" transform="translate(98.5567 52.0173) rotate(0.0000)" opacity="0.9" rx="10"/>
+<text fill="black" transform="translate(118.5567 60.4173) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="14"><tspan x="0" dy="0.0000em" textLength="59.9200" lengthAdjust="spacingAndGlyphs">product A</tspan><tspan x="0" dy="1.2em" textLength="59.9200" lengthAdjust="spacingAndGlyphs">product B</tspan></text>
+<use xlink:href="#square" transform="translate(108.5567 60.4173) scale(1.0000 1.0000)" stroke="none" fill="royalblue"/>
+<use xlink:href="#square" transform="translate(108.5567 77.2173) scale(1.0000 1.0000)" stroke="none" fill="teal"/>
+</svg>

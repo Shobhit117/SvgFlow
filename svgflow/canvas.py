@@ -1,6 +1,6 @@
 # Author: Shobhit Bhatnagar
 # email: shb.bhatnagar.96@gmail.com
-# Requires: numpy and inkscape
+# Optional external tools are configured through ExecutablePaths.
 
 """Small SVG generation library for drawings, plots, and flow diagrams."""
 
@@ -55,7 +55,12 @@ class Canvas:
     """
 
     def __init__(self, height: Number, width: Number, *, executables: ExecutablePaths | None = None) -> None:
-        """Create a blank canvas with the given pixel/user-unit dimensions."""
+        """Create a blank canvas, passing ``height`` before ``width``.
+
+        Dimensions, positions, stroke widths and font sizes use SVG user units
+        (normally CSS pixels). The background is transparent. ``executables``
+        configures optional LaTeX/export commands; ordinary SVG needs no tools.
+        """
         # self.arrowLen = 10 # Default arrow size
         self.gap = 7.5
         self.height = height
@@ -79,6 +84,7 @@ class Canvas:
 
     def _isValidColor(self, color: Color) -> bool:
         # Check if the color is one of the named colors:
+        """Recognize supported named/rgb paints and registered gradient references."""
         if color in NAMED_COLORS:
             return True
         # Check if color is specified in rgb format:
@@ -109,14 +115,16 @@ class Canvas:
         """Register a TTF/OTF font for use with ``addText(..., font=name)``.
 
         Fonts are measured with the actual font file, and (if ``embed``) the
-        font data is embedded into the saved SVG so it renders identically
-        everywhere. ``make_default`` makes it this canvas's default font.
+        font data is embedded into saved SVGs for viewers supporting @font-face.
+        Registration is process-wide; ``make_default`` changes this canvas's
+        default only. Missing variants fall back towards the regular face.
         """
         register_font(name, regular, bold, italic, bold_italic, family=family, embed=embed)
         if make_default:
             self.default_font = name
 
     def _textLines(self, text: Any, size: Number, font: str, bold: bool, italic: bool, max_width: Number | None) -> list[str]:
+        """Normalize a value or line sequence and optionally wrap using font metrics."""
         if isinstance(text, (list, tuple)):
             text = '\n'.join(str(t) for t in text)
         text = str(text)
@@ -127,7 +135,7 @@ class Canvas:
     def addText(self, text: Any, x: Number, y: Number, color: Color = "black", rotation: Number = 0, baseline: TextBaseline = "middle", anchor: TextAnchor = "middle", size: Number = 16, style: str | None = None, weight: str | Number | None = None, *, font: str | None = None, line_height: Number = 1.2, max_width: Number | None = None, fit_width: bool = False, valign: Literal["top", "center", "bottom"] | None = None) -> tuple[float, float]:
         """Add (possibly multi-line) text at ``(x, y)``.
 
-        ``text`` may contain ``\\n`` or be a list of lines. ``max_width`` enables
+        ``text`` may contain ``\n`` or be a list of lines. ``max_width`` enables
         automatic word wrapping. The block is aligned as a whole according to
         ``baseline``: ``"middle"`` centres it on ``y``, ``"hanging"`` grows
         downward from ``y`` and ``"text-top"``/``"auto"`` grow upward so the
@@ -138,6 +146,12 @@ class Canvas:
         measured width via ``textLength``. Text is XML-escaped automatically.
 
         Returns the measured ``(width, height)`` of the text block.
+
+        ``anchor`` selects the start, middle or end of each line at ``x``;
+        ``rotation`` is clockwise degrees about ``(x, y)``. ``line_height``
+        is baseline spacing in multiples of ``size``. Overlong words are not
+        split. The returned height is ``line_count * line_height * size``;
+        width is the maximum line advance, not a tight glyph bounding box.
         """
         # dominant-baseline: hanging, middle, text-top, auto
         # text-anchor: start, middle, end
@@ -158,6 +172,7 @@ class Canvas:
         text_options = ' '.join(text_options)
 
         def length_options(i: int) -> str:
+            """Return SVG textLength constraints when measured-width fitting is enabled."""
             return f' textLength="{widths[i]:.4f}" lengthAdjust="spacingAndGlyphs"' if fit_width else ''
 
         if n == 1:
@@ -187,6 +202,7 @@ class Canvas:
 
     def _fontFaceCss(self, fonts: Iterable[str] | None = None) -> str:
         # Builds @font-face rules for every used, embeddable, file-backed font.
+        """Return embedding CSS for used file-backed faces whose embed flag is set."""
         formats = {'.ttf': 'truetype', '.otf': 'opentype', '.woff': 'woff', '.woff2': 'woff2'}
         variants = {BOLD: ('bold', 'normal'), ITALIC: ('normal', 'italic'), BOLD_ITALIC: ('bold', 'italic')}
         rules = []
@@ -217,6 +233,7 @@ class Canvas:
 
     def _arrowEnds(self, directed: Directed) -> tuple[bool, bool]:
         # Decodes the `directed` argument into (arrow at start, arrow at end).
+        """Decode directed into start/end flags, rejecting unsupported values."""
         if directed is True or directed == 'end':
             return (False, True)
         if directed is False or directed is None:
@@ -231,6 +248,7 @@ class Canvas:
         # Returns (style, scale, tip_back, line_back): the head is the unit shape
         # scaled by `scale`; its tip is moved back by `tip_back` so stroked heads
         # don't overshoot the target point; the stroke is shortened by `line_back`.
+        """Return head style, scale, tip setback and stroke setback in user units."""
         style = self.arrow_style if arrow_style is None else arrow_style
         if style not in ARROW_SHAPES:
             raise ValueError(f"invalid arrow style {style!r}: supported styles are {', '.join(ARROW_SHAPES)}")
@@ -240,6 +258,7 @@ class Canvas:
         return style, scale, float(thickness) / 2, float(thickness)
 
     def _arrowheadMarkup(self, x: Number, y: Number, theta: Number, thickness: Number, color: Color, opacity: Number, style: str, scale: float, tip_back: float) -> str:
+        """Build a reusable arrowhead instance, defining its outline on first use."""
         def_id = 'arrow' if style == 'curved' else f'arrow_{style}'
         if def_id not in self._arrow_defs:
             self.defs.append(f'<path id="{def_id}" d="{ARROW_SHAPES[style][0]}"/>')
@@ -265,10 +284,12 @@ class Canvas:
 
     def _addArrow(self, x: Number, y: Number, theta: Number, thickness: Number = 2, color: Color = 'black', opacity: Number = 1, size: Number = 1) -> None:
         # Kept for backwards compatibility; use addArrowhead.
+        """Legacy wrapper for addArrowhead using the canvas default head style."""
         self.addArrowhead(x, y, theta, color, thickness, opacity, size)
 
     def _emitStroke(self, shape: str, color: Color, thickness: Number, opacity: Number, dashed: bool = False, fill: Color = 'none', heads: Sequence[tuple[Number, Number, Number]] = (), arrow: tuple[str, float, float] | None = None) -> None:
         # `shape` is an unterminated SVG element, e.g. '<path d="..."'.
+        """Append a styled SVG stroke and optional heads, sharing group opacity."""
         grouped = bool(heads) and opacity < 1
         op = 1 if grouped else opacity
         dash = ' stroke-dasharray="4"' if dashed else ''
@@ -284,6 +305,7 @@ class Canvas:
     @staticmethod
     def _deCasteljau(ctrl: Sequence[Point], t: float) -> tuple[list[Point], list[Point]]:
         # Splits a Bezier curve of any degree at parameter t.
+        """Split Bezier controls at t and return the left and right control lists."""
         pts = [np.asarray(p, dtype=float) for p in ctrl]
         left, right = [pts[0]], [pts[-1]]
         while len(pts) > 1:
@@ -296,6 +318,7 @@ class Canvas:
     def _trimBezier(cls, ctrl: Sequence[Point], distance: float, at_end: bool = True) -> list[Point]:
         # Shortens a Bezier segment (degree >= 1) by `distance` of arc length at
         # one end, never removing more than 45% of the segment.
+        """Shorten one Bezier end by approximate arc length, capped at 45 percent."""
         if distance <= 0:
             return list(ctrl)
         ts = np.linspace(0, 1, 65)
@@ -314,6 +337,7 @@ class Canvas:
     def _tangentAngle(self, ctrl: Sequence[Point], at_end: bool = True) -> Number:
         # Direction (degrees) in which a Bezier segment leaves its end (or start)
         # point, skipping control points that coincide with it.
+        """Return a Bezier endpoint tangent angle, reversed at the start for an arrow."""
         pts = list(ctrl) if at_end else list(ctrl)[::-1]
         tip = pts[-1]
         for p in reversed(pts[:-1]):
@@ -324,6 +348,7 @@ class Canvas:
     def _strokeSegments(self, segments: list[list[Point]], color: Color, thickness: Number, closed: bool, fill: Color, opacity: Number, directed: Directed, dashed: bool, arrow_size: Number, arrow_style: ArrowStyle | None) -> None:
         # Draws a chain of Bezier segments (2 points = line, 3 = quadratic,
         # 4 = cubic) with optional arrowheads at either end.
+        """Serialize line/quadratic/cubic segments, trimming open ends for arrows."""
         start, end = self._arrowEnds(directed)
         heads: list[tuple[Number, Number, Number]] = []
         arrow = None
@@ -389,7 +414,14 @@ class Canvas:
         return theta
 
     def addCurvedLine(self, x1: Number, y1: Number, x2: Number, y2: Number, curvature: Number, color: Color = "black", thickness: Number = 1, dashed: bool = False, directed: Directed = False, opacity: Number = 1, label: Any | None = None, text_color: Color = "black", text_size: Number = 16, text_style: str | None = None, arrow_size: Number = 1, latex: bool = False, *, arrow_style: ArrowStyle | None = None, label_gap: Number = 0.4) -> Point:
-        """Draw a quadratic Bezier curve controlled by a signed curvature value."""
+        """Draw a quadratic Bezier curve and return its control point.
+
+        ``curvature`` offsets the control point from the chord midpoint in user
+        units; the curve midpoint moves half that distance. For a horizontal
+        chord positive curvature bends upward; for a vertical chord it bends
+        right. Zero draws a straight line. Stroke, label and arrow options
+        have the same meaning as in :meth:`addLine`.
+        """
         (cx, cy) = self._getControlPoint(x1, y1, x2, y2, curvature)
         if curvature == 0:
             self.addLine(x1, y1, x2, y2, color, thickness, dashed, directed, opacity, label, text_color, text_size, text_style, arrow_size, latex, arrow_style=arrow_style, label_gap=label_gap)
@@ -402,6 +434,7 @@ class Canvas:
     def _curvedLabel(self, x1: Number, y1: Number, x2: Number, y2: Number, curvature: Number, label: Any, text_color: Color, text_size: Number, text_style: str | None, latex: bool, label_gap: Number) -> None:
         # Places a label just outside the apex of a quadratic curve whose
         # control point is offset `curvature` from the chord midpoint.
+        """Place a label beyond a quadratic apex with outward block growth."""
         nx, ny = self._perpUnit(x1, y1, x2, y2)
         side = 1 if curvature > 0 else -1
         ox, oy = side * nx, side * ny                     # outward from the apex
@@ -423,16 +456,19 @@ class Canvas:
     def _perpUnit(x1: Number, y1: Number, x2: Number, y2: Number) -> Point:
         # Unit normal used for curvature offsets (positive curvature bends
         # towards this side of the chord from (x1, y1) to (x2, y2)).
+        """Return the curvature normal: upward for nonvertical chords, right for vertical."""
         if x2 - x1 != 0:
             m = (y2 - y1) / (x2 - x1)
             return (m / np.sqrt(1 + m**2), -1 / np.sqrt(1 + m**2))
         return (1.0, 0.0)
 
     def _getControlPoint(self, x1: Number, y1: Number, x2: Number, y2: Number, c: Number) -> Point:
+        """Offset a chord midpoint by c along the library curvature normal."""
         nx, ny = self._perpUnit(x1, y1, x2, y2)
         return ((x1 + x2) / 2 + c * nx, (y1 + y2) / 2 + c * ny)
 
     def _getRot(self, x1: Number, y1: Number, x2: Number, y2: Number) -> Number:
+        """Return the SVG direction from one point to another in clockwise degrees."""
         if x2 - x1 == 0:
             theta = 90 * np.sign(y2 - y1)
         elif x2 - x1 > 0:
@@ -442,25 +478,50 @@ class Canvas:
         return theta # -90 <= theta <= 270
 
     def addRectangle(self, height: Number, width: Number, x: Number, y: Number, color: Color = "none", border: Color = "black", thickness: Number = 1, rotation: Number = 0, opacity: Number = 1, corner_radius: Number = 0) -> None:
-        """Add a rectangle whose top-left corner is transformed to ``(x, y)``."""
+        """Add a rectangle with its local top-left corner at ``(x, y)``.
+
+        ``height`` precedes ``width``. ``rotation`` is clockwise in degrees
+        about that corner; ``corner_radius`` rounds the corners. ``color``
+        is the fill, ``border`` the stroke (``"none"`` disables either),
+        ``thickness`` is in user units and ``opacity`` normally lies in [0, 1].
+        """
         self.contents.append(f'<rect width="{width}" height="{height}" fill="{color}" stroke="{border}" stroke-width="{thickness}" transform="translate({x:.4f} {y:.4f}) rotate({rotation:.4f})" opacity="{opacity}" rx="{corner_radius}"/>')
 
     def addCircle(self, x: Number, y: Number, radius: Number, color: Color = "none", border: Color = "black", thickness: Number = 1, opacity: Number = 1) -> None:
-        """Add a circle centered at ``(x, y)``."""
+        """Add a circle centered at ``(x, y)`` with a user-unit radius.
+
+        ``color`` fills the shape; ``border`` and ``thickness`` set its outline.
+        Use ``"none"`` for no fill or stroke. ``opacity`` applies to both.
+        """
         self.contents.append(f'<circle cx="{x:.4f}" cy="{y:.4f}" r="{radius:.4f}" fill="{color}" stroke="{border}" stroke-width="{thickness}" opacity="{opacity}"/>')
 
     def addEllipse(self, x: Number, y: Number, a: Number, b: Number, color: Color = "none", border: Color = "black", thickness: Number = 1, rotation: Number = 0, opacity: Number = 1) -> None:
-        """Add an ellipse centered at ``(x, y)`` with radii ``a`` and ``b``."""
+        """Add an ellipse centered at ``(x, y)`` with radii ``a`` and ``b``.
+
+        ``a`` is the horizontal radius and ``b`` the vertical radius before
+        clockwise ``rotation`` (degrees about the center). Fill/outline options
+        match :meth:`addCircle`; dimensions are radii, not diameters.
+        """
         self.contents.append(f'<ellipse transform="translate({x:.4f} {y:.4f}) rotate({rotation:.4f})" rx="{a:.4f}" ry="{b:.4f}" fill="{color}" stroke="{border}" stroke-width="{thickness}" opacity="{opacity}"/>')
 
     def addPolygon(self, points: Sequence[Point], color: Color = "none", border: Color = "black", thickness: Number = 1, opacity: Number = 1) -> None:
-        """Add a polygon through the supplied points."""
+        """Add a polygon through canvas-space ``(x, y)`` pairs in order.
+
+        The last point is joined to the first automatically. ``color`` sets
+        the fill, ``border`` the outline, and ``opacity`` applies to both.
+        """
         p_str = [f'{float(p[0]):.4f},{float(p[1]):.4f}' for p in points]
         p_str = ' '.join(p_str)
         self.contents.append(f'<polygon points="{p_str}" fill="{color}" stroke="{border}" stroke-width="{thickness}" opacity="{opacity}"/>')
     
     def addLinePath(self, points: Sequence[Point], color: Color = "black", thickness: Number = 1, closed: bool = False, fill: Color = "none", opacity: Number = 1, directed: Directed = False, dashed: bool = False, arrow_size: Number = 1, *, arrow_style: ArrowStyle | None = None) -> None:
-        """Draw a polyline or closed polygonal path through ``points``."""
+        """Draw a polyline through at least two canvas-space ``points``.
+
+        ``closed=True`` adds a straight closing segment. ``color`` is the
+        stroke and ``fill`` the interior paint; SVG implicitly closes an open
+        path for filling. Arrow options match :meth:`addLine`. Raises
+        ``ValueError`` for fewer than two points.
+        """
         n = len(points)
         if n < 2:
             raise ValueError("failed to add line path. number of points should be >= 2.")
@@ -468,7 +529,14 @@ class Canvas:
         self._strokeSegments(segments, color, thickness, closed, fill, opacity, directed, dashed, arrow_size, arrow_style)
 
     def addQuadraticPath(self, points: Sequence[Point], control_points: Sequence[Point], color: Color = 'black', thickness: Number = 1, closed: bool = False, fill: Color = 'none', opacity: Number = 1, directed: Directed = False, dashed: bool = False, arrow_size: Number = 1, *, arrow_style: ArrowStyle | None = None) -> None:
-        """Draw a path made of quadratic Bezier segments."""
+        """Draw quadratic Bezier segments through canvas-space ``points``.
+
+        Segment i joins ``points[i]`` to ``points[i+1]`` using
+        ``control_points[i]``. At least two points and exactly
+        ``len(points)-1`` controls are required, otherwise ``ValueError``
+        is raised. ``closed=True`` adds a straight closing segment.
+        Stroke/fill/arrow options match :meth:`addLinePath`.
+        """
         num_points = len(points)
         num_control_points = len(control_points)
         if num_points - 1 != num_control_points or num_points < 2:
@@ -477,7 +545,14 @@ class Canvas:
         self._strokeSegments(segments, color, thickness, closed, fill, opacity, directed, dashed, arrow_size, arrow_style)
     
     def addCubicPath(self, points: Sequence[Point], control_points_1: Sequence[Point], control_points_2: Sequence[Point], color: Color = 'black', thickness: Number = 1, closed: bool = False, fill: Color = 'none', opacity: Number = 1, directed: Directed = False, dashed: bool = False, arrow_size: Number = 1, *, arrow_style: ArrowStyle | None = None) -> None:
-        """Draw a path made of cubic Bezier segments."""
+        """Draw cubic Bezier segments through canvas-space ``points``.
+
+        Segment i uses ``control_points_1[i]`` near its start and
+        ``control_points_2[i]`` near its end. Each control list must contain
+        ``len(points)-1`` entries and at least two points are required;
+        mismatches raise ``ValueError``. ``closed=True`` adds a straight
+        closing segment. Other options match :meth:`addLinePath`.
+        """
         num_points = len(points)
         num_control_points_1 = len(control_points_1)
         num_control_points_2 = len(control_points_2)
@@ -489,7 +564,14 @@ class Canvas:
         self._strokeSegments(segments, color, thickness, closed, fill, opacity, directed, dashed, arrow_size, arrow_style)
 
     def addCurve(self, points: Sequence[Point], color: Color = 'black', thickness: Number = 1, closed: bool = False, fill: Color = 'none', opacity: Number = 1, directed: Directed = False, dashed: bool = False, arrow_size: Number = 1, *, arrow_style: ArrowStyle | None = None) -> None:
-        """Fit and draw a smooth cubic Bezier curve through the supplied points."""
+        """Interpolate canvas-space points with a smooth cubic Bezier spline.
+
+        Open curves need at least two points and use natural end conditions;
+        ``closed=True`` needs at least three and fits a periodic smooth seam.
+        Do not repeat the first point to close the curve. Insufficient points
+        raise ``ValueError``. Interpolation may overshoot between samples.
+        Stroke/fill/arrow options match :meth:`addLinePath`.
+        """
         curve_points = list(points)
         a, b = self._fitBezierCurve(curve_points, closed=closed)
         if closed:
@@ -498,8 +580,16 @@ class Canvas:
             self.addCubicPath(curve_points, a, b, color=color, thickness=thickness, directed=directed, fill=fill, opacity=opacity, dashed=dashed, arrow_size=arrow_size, arrow_style=arrow_style)
     
     def addCircularArc(self, x: Number, y: Number, r: Number, theta1: Number, theta2: Number, color: Color = 'black', thickness: Number = 1, fill: Color = 'none', opacity: Number = 1, directed: Directed = False, dashed: bool = False, arrow_size: Number = 1, *, arrow_style: ArrowStyle | None = None) -> None:
-        """Draw a circular SVG arc between two angles in degrees."""
+        """Draw an arc centered at ``(x, y)`` with user-unit radius ``r``.
+
+        Angles are clockwise degrees from +x: 0 is right and 90 is down.
+        Increasing angles sweep clockwise; decreasing angles reverse it.
+        Use a sweep smaller than 360 degrees; draw a circle or multiple arcs
+        for a full revolution. ``fill`` closes the interior with a chord,
+        not radii. Other options match :meth:`addLinePath`.
+        """
         def point(theta: Number) -> Point:
+            """Convert a clockwise circle angle in degrees to a canvas point."""
             return (x + r * np.cos(theta * np.pi / 180), y + r * np.sin(theta * np.pi / 180))
         sgn = -1 if theta1 > theta2 else 1
         start, end = self._arrowEnds(directed)
@@ -525,6 +615,7 @@ class Canvas:
     def _getRotShift(self, W: Number, H: Number, scale: Number, rot: Number, baseline: PositionBaseline, anchor: TextAnchor) -> Point:
         # Outputs how much we should shift a rectangle before applying rotation in order to obtain the same effect as changing the axis of rotation.
         # Useful for rotating latex equations.
+        """Return the scaled/rotated translation for a chosen rectangle alignment."""
         p = [0, 0]
         if baseline == "middle":
             p[1] = H/2
@@ -556,7 +647,19 @@ class Canvas:
         return dx, dy
 
     def addLaTeX(self, tex: str, x: Number, y: Number, scale: Number = 1, rot: Number = 0, baseline: PositionBaseline = "middle", anchor: TextAnchor = "middle", color: Color = "black", backend: SvgBackend = "inkscape") -> None:
-        """Render LaTeX math and embed it as an SVG subfigure."""
+        """Render LaTeX math at ``(x, y)`` using external commands.
+
+        Pass math source without dollar delimiters, using raw Python strings
+        for backslashes. Requires pdflatex (standalone, amsmath, amssymb) and
+        the selected backend: inkscape, dvisvgm or pdf2svg. ``scale`` multiplies
+        the rendered dimensions; ``rot`` is clockwise degrees. ``baseline``
+        selects top (hanging), center (middle) or bottom (text-top); ``anchor``
+        selects left/start, center/middle or right/end before rotation.
+
+        Temporary conversion files are removed automatically. Missing commands
+        raise ``FileNotFoundError``; failing conversions raise ``RuntimeError``.
+        Each call performs a new conversion; expressions are not cached.
+        """
         # baseline: hanging, middle, text-top
         # anchor: start, middle, end
         svg, W, H = tex2svg(tex, self.curr_latex_eq_num, backend=backend, executables=self.executables)
@@ -571,7 +674,17 @@ class Canvas:
         self.contents.append(f'<g transform="translate({x+dx} {y+dy}) rotate({rot}) scale({scale})" {latex_color}>\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{W}" height="{H}" viewBox="0 0 {W} {H}">\n{svg}\n</svg>\n</g>')
     
     def defineLinearGradient(self, grad_id: int | str, x1: Number = 0, y1: Number = 0, x2: Number = 1, y2: Number = 0, spread_method: GradientSpread = 'pad', stop_points: Sequence[Number] = (0, 1), stop_colors: Sequence[Color] = ('yellow', 'red'), stop_opacities: Sequence[Number] | None = None) -> None:
-        """Define a reusable linear gradient in the canvas ``defs`` section."""
+        """Define a linear gradient; use :meth:`getGradient` for its paint value.
+
+        ``grad_id`` must be unique per canvas (integers become strings).
+        Endpoints and stop offsets are fractions in [0, 1] of the painted
+        object's bounding box. Supply at least two matching stop points/colors,
+        ordered by offset, and optionally one opacity per stop. Duplicate IDs
+        raise ``KeyError``; invalid dimensions/counts raise ``ValueError``.
+
+        ``spread_method`` accepts pad/reflect/repeat but is currently validated
+        only: the emitted SVG uses the viewer's default spread (pad).
+        """
         # some basic checks:
         grad_id = str(grad_id)
         if grad_id in self.gradients:
@@ -607,7 +720,14 @@ class Canvas:
         self.gradients.add(grad_id)
 
     def defineRadialGradient(self, grad_id: int | str, cx: Number = 0.5, cy: Number = 0.5, fx: Number = 0.5, fy: Number = 0.5, r: Number = 0.5, spread_method: GradientSpread = 'pad', stop_points: Sequence[Number] = (0, 1), stop_colors: Sequence[Color] = ('yellow', 'red'), stop_opacities: Sequence[Number] | None = None) -> None:
-        """Define a reusable radial gradient in the canvas ``defs`` section."""
+        """Define a radial gradient; retrieve its paint with :meth:`getGradient`.
+
+        ``cx, cy`` give the center, ``fx, fy`` the focus and ``r`` the radius,
+        all as fractions in [0, 1] of the object bounding box. Stops follow
+        :meth:`defineLinearGradient`; radial stop opacities must be in [0, 1].
+        Duplicate IDs raise ``KeyError`` and invalid inputs ``ValueError``.
+        ``spread_method`` is validated but not emitted; SVG defaults to pad.
+        """
         # some basic checks:
         grad_id = str(grad_id)
         if grad_id in self.gradients:
@@ -646,7 +766,11 @@ class Canvas:
         self.gradients.add(grad_id)
 
     def getGradient(self, grad_id: int | str) -> Color:
-        """Return the SVG paint-server URL for a previously defined gradient."""
+        """Return ``url(#grad_ID)`` for a gradient, or raise ``KeyError``.
+
+        Pass the result as a fill or stroke on this canvas. Integer IDs and
+        their string forms refer to the same gradient.
+        """
         grad_id = str(grad_id)
         if grad_id not in self.gradients:
             raise KeyError(f'no gradient defined with id: {grad_id}')
@@ -655,10 +779,16 @@ class Canvas:
     def _renderParts(self) -> tuple[list[str], list[str], set[str]]:
         # Returns (defs, contents, used_fonts). Subclasses that compose other
         # canvases (e.g. Figure) override this to splice in their children.
+        """Collect definitions, drawing markup and used fonts for final serialization."""
         return list(self.defs), list(self.contents), set(self.used_fonts)
 
     def toSvg(self) -> str:
-        """Return the complete SVG document as a string."""
+        """Return a complete SVG document without clearing the drawing.
+
+        Includes definitions, embedded file-backed fonts and any subplots.
+        No file is written; the string can be embedded in a web page or passed
+        to another SVG consumer. The background remains transparent.
+        """
         defs, contents, fonts = self._renderParts()
         file_contents = [f'<svg width="{self.width}" height="{self.height}" viewBox="0 0 {self.width} {self.height}" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">']
         font_css = self._fontFaceCss(fonts)
@@ -673,15 +803,21 @@ class Canvas:
         return '\n'.join(file_contents)
 
     def save(self, filename: str | os.PathLike[str]) -> None:
-        """Write the accumulated SVG markup to ``filename``."""
+        """Write :meth:`toSvg` to a UTF-8 file, replacing existing contents.
+
+        Accepts strings and path-like objects. Parent directories must already
+        exist. Saving does not clear the canvas and needs no external program.
+        """
         with open(filename, 'w', encoding="utf-8") as f:
             f.write(self.toSvg())
     
     def _findAttribute(self, svg_text: str, attribute: str) -> str:
+        """Return the first quoted attribute value; assumes a matching attribute exists."""
         result = re.search(rf'{attribute}=(["\'])(.+?)\1', svg_text)
         return result.group(2)
     
     def _replaceAttribute(self, svg_text: str, attribute: str, new_value: Any) -> str:
+        """Replace quoted attribute values throughout an SVG fragment using a regex."""
         pattern = rf'({attribute}=["\'])(.+?)(["\'])'
         replacement = r"\1" + str(new_value) + r"\3"
         new_svg_text = re.sub(pattern, replacement, svg_text)
@@ -693,6 +829,12 @@ class Canvas:
         Registered file-backed fonts are exposed to Inkscape through a
         temporary fontconfig setup (Inkscape ignores ``@font-face``), so the
         exported text uses the same fonts that were used to measure it.
+
+        ``export_type`` explicitly selects png/pdf (not inferred from the
+        filename); ``dpi`` affects PNG only. No prior :meth:`save` is needed.
+        Parent directories must exist. Unsupported types raise ``ValueError``;
+        missing commands raise ``FileNotFoundError`` and a failing Inkscape
+        process raises ``RuntimeError``. Temporary files are cleaned up.
         """
         if export_type not in {'png', 'pdf'}:
             raise ValueError(f'unexpected export type: {export_type}. supported export types are: png, pdf')
@@ -714,6 +856,7 @@ class Canvas:
     def _computeIntersection(self, x: Number, y: Number, theta: Number, x1: Number, y1: Number, x2: Number, y2: Number) -> tuple[Number | None, Number | None]:
         # computes the point of intersection of two lines: (1) <x + r*cos(theta), y + r*sin(theta)> ; (2) <t*x1 + (1-t)*x2, t*y1 + (1-t)*y2>
         # returns r, t
+        """Solve ray/line parameters (r, t), or (None, None) for parallel lines."""
         theta *= np.pi/180
         det = -np.cos(theta) * (y1-y2) + np.sin(theta) * (x1-x2)
         if det == 0:
@@ -724,6 +867,7 @@ class Canvas:
     
     def _isConvexPolygon(self, points: Sequence[Point]) -> bool:
         # checks whether a polygon specified by a list of points is convex
+        """Check ordered vertices for a consistent nonzero cross-product direction."""
         if len(points) < 3:
             return False
         n = len(points)
@@ -748,6 +892,7 @@ class Canvas:
             return True
     
     def _defSubFigure(self, sub_fig_id: int | str, sub_fig_view_box: Sequence[Number], sub_fig_svg: str) -> None:
+        """Register inner SVG markup and its viewBox under a unique subfigure ID."""
         sub_fig_id = str(sub_fig_id)
         if sub_fig_id in self.sub_figs:
             raise KeyError(f"sub figure id {sub_fig_id} already exists")
@@ -758,12 +903,27 @@ class Canvas:
         self.defs.append(f'<g id="fig_{sub_fig_id}">\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{W}" height="{H}" viewBox="{vb}">\n{sub_fig_svg}\n</svg>\n</g>')
     
     def importSvgFromFile(self, file_name: str | os.PathLike[str], fig_id: int | str) -> None:
-        """Import an SVG file into ``defs`` so it can be placed with :meth:`addSubFig`."""
+        """Register a UTF-8 SVG file for reuse with :meth:`addSubFig`.
+
+        The file must contain a whitespace-separated ``viewBox``. Its inner
+        markup is copied and internal IDs/references are prefixed. ``fig_id``
+        must be unique on this canvas; duplicates raise ``KeyError``. Missing
+        SVG/viewBox structure raises ``RuntimeError``. External image or font
+        resources are not bundled; prefer self-contained SVGs.
+        """
         (svg, vb) = import_svg_from_file(file_name, fig_id)
         self._defSubFigure(fig_id, vb, svg)
     
     def addSubFig(self, fig_id: int | str, x: Number, y: Number, scale: Number = 1, rot: Number = 0, baseline: PositionBaseline = "middle", anchor: TextAnchor = "middle", flip: bool = False) -> None:
-        """Place a previously imported subfigure on the canvas."""
+        """Place a registered SVG at ``(x, y)``; unknown IDs raise ``KeyError``.
+
+        ``scale`` multiplies both dimensions and ``rot`` is clockwise degrees.
+        ``anchor`` selects left/start, center/middle or right/end; ``baseline``
+        selects top/hanging, center/middle or bottom/text-top. Alignment uses
+        the imported viewBox rectangle. ``flip=True`` mirrors horizontally in
+        local coordinates before rotation. Repeated placements share one
+        definition instead of duplicating imported markup.
+        """
         # baseline: hanging, middle, text-top
         # anchor: start, middle, end
         fig_id = str(fig_id)
@@ -789,6 +949,7 @@ class Canvas:
     def _computeInteresctionWithConvexPolygon(self, x: Number, y: Number, theta: Number, points: Sequence[Point]) -> Point:
         # Computes the point of intersection of the ray: <x+r*cos(theta), y+r*sin(theta) | r >= 0> with the polygon defined by the given points.
         # Returns the point of intersection:
+        """Intersect an interior-origin ray with a convex polygon boundary."""
         angles = {p : self._getRot(x, y, p[0], p[1]) for p in points}
         points = sorted(points, key=lambda x: angles[x])
 
@@ -813,6 +974,7 @@ class Canvas:
         #   C2 at each knot:  a_{i-1} + 4 a_i + a_{i+1} = 4 P_i + 2 P_{i+1}
         # Open curves use natural end conditions (zero curvature at both ends);
         # closed curves are periodic, so the seam is as smooth as any other knot.
+        """Return paired cubic controls for a natural or periodic C2 interpolating spline."""
         P = np.asarray([(float(x), float(y)) for (x, y) in points])
         m = len(P)
         if closed:
@@ -866,6 +1028,12 @@ class PlotStyle:
     """
 
     def __init__(self, tick_size: Number = 16, label_size: Number = 16, title_size: Number = 18, *, tick_length: Number = 10, tick_pad: Number = 0.35, label_pad: Number = 0.5, title_pad: Number = 0.6, outer_pad: Number = 8, line_height: Number = 1.2) -> None:
+        """Set text sizes, notch length and outer padding in user units.
+
+        ``tick_pad``, ``label_pad`` and ``title_pad`` are font-size multipliers;
+        ``line_height`` is used in text extent and automatic margin estimates.
+        See :class:`PlotStyle` for the spacing conventions.
+        """
         self.tick_size = tick_size
         self.label_size = label_size
         self.title_size = title_size
@@ -890,12 +1058,19 @@ class PlotStyle:
         return PlotStyle(**values)
 
     def __repr__(self) -> str:
+        """Return the style class name and current keyword field values."""
         args = ', '.join(f'{k}={v!r}' for k, v in self.__dict__.items())
         return f'PlotStyle({args})'
 
 
 class Plot(Canvas):
-    """Canvas with helpers for drawing simple 2D plots."""
+    """A Canvas with linear data mapping, axes, series and legends.
+
+    Series/ticks use data coordinates; inherited Canvas primitives use
+    canvas coordinates. Ranges are explicit: there is no autoscaling,
+    log-axis transform or plot-area clipping. Use :meth:`mapToCanvas`
+    for data annotations.
+    """
 
     def __init__(self, height: Number, width: Number, origin: Point | Literal["auto"] | None = "auto", margins: Point | Literal["auto"] | None = "auto", x_range: Point = (0, 1), y_range: Point = (0, 1), *, style: PlotStyle | None = None, extra_margins: Sequence[Number] = (0, 0, 0, 0), executables: ExecutablePaths | None = None) -> None:
         """Create a plotting canvas with data-to-canvas coordinate mapping.
@@ -907,6 +1082,10 @@ class Plot(Canvas):
         legacy percentage-based layout (15%/15% left/bottom, 10%/10% right/top).
         ``extra_margins`` = ``(left, bottom, right, top)``
         is added on top of the automatic margins (e.g. room for rotated tick labels).
+
+        Range endpoints must be distinct. Automatic margins are estimated at
+        construction time, not recomputed after every drawing call. Too-small
+        automatic layouts warn and fall back to percentage margins.
         """
         Canvas.__init__(self, height, width, executables=executables)
         self.style = style if style is not None else PlotStyle()
@@ -922,6 +1101,7 @@ class Plot(Canvas):
         self._tick_extent: dict[str, float | None] = {'x': None, 'y': None}
 
     def _setLayout(self, origin: Point | Literal["auto"] | None, margins: Point | Literal["auto"] | None) -> None:
+        """Resolve origin/margins and warn/fall back when automatic space is insufficient."""
         width, height = self.width, self.height
         if origin == "auto" or margins == "auto":
             auto_left, auto_bottom, auto_right, auto_top = self._autoMargins()
@@ -949,10 +1129,12 @@ class Plot(Canvas):
         # Estimates (left, bottom, right, top) margins that fit tick labels,
         # axis labels and a title, using the sizes in self.style. Tick label
         # widths are estimated from the axis range formatted like easyTicks.
+        """Estimate left/bottom/right/top margins from endpoint labels, fonts and extras."""
         s = self.style
         font = self.default_font
         tick_out = s.tick_length / 2
         def label_width(v: Number) -> float:
+            """Measure a two-decimal numeric tick label using the plot default font."""
             return text_width(f'{v:.2f}', s.tick_size, font)
         ytick_w = max(label_width(self._y), label_width(self.y_))
         left = s.outer_pad + s.label_size + s.label_pad * s.label_size + ytick_w + s.tick_pad * s.tick_size + tick_out
@@ -965,12 +1147,14 @@ class Plot(Canvas):
     def _blockSize(self, text: Any, size: Number) -> tuple[float, float]:
         # Measured (width, height) of an unrotated text block. A single line is
         # taken to be ~1 em tall (ascender to descender of the glyphs).
+        """Estimate unrotated text width and glyph-block height for plot spacing."""
         lines = self._textLines(text, size, self.default_font, False, False, None)
         width = max((text_width(line, size, self.default_font) for line in lines), default=0.0)
         height = size * (1 + self.style.line_height * (len(lines) - 1))
         return width, height
 
     def _recordTickExtent(self, axis: str, extent: float) -> None:
+        """Retain the maximum recorded outward tick-label extent for an axis."""
         prev = self._tick_extent[axis]
         self._tick_extent[axis] = extent if prev is None else max(prev, extent)
 
@@ -984,7 +1168,12 @@ class Plot(Canvas):
         return self.style.tick_length / 2 if extent is None else extent
 
     def mapToCanvas(self, x: Number, y: Number) -> Point:
-        """Map a data-space point to canvas coordinates."""
+        """Return the user-unit position of data point ``(x, y)``.
+
+        Range minima map to the bottom-left plot corner and maxima to the
+        top-right for increasing ranges. Values outside the ranges extrapolate
+        without clipping. Equal range endpoints cause division by zero.
+        """
         # this function maps where the data point (x, y) will lie on the canvas
         alpha = (x - self._x) / (self.x_ - self._x)
         beta = (y - self._y) / (self.y_ - self._y)
@@ -993,7 +1182,13 @@ class Plot(Canvas):
         return (x_canvas, y_canvas)
 
     def putMarker(self, x: Number, y: Number, marker_type: MarkerType = 'circle', size: Number = 1, color: Color = 'red', on_canvas: bool = True) -> None:
-        """Draw a marker at a data-space or canvas-space point."""
+        """Draw a circle, cross or square marker; invalid types raise ``ValueError``.
+
+        Despite its name, ``on_canvas=True`` maps ``(x, y)`` from DATA space.
+        Pass ``False`` for raw canvas coordinates. ``size`` is a scale factor:
+        circles have radius ``5*size``, squares side ``9*size``, crosses span
+        ``10*size`` user units. Marker sizes do not scale with data ranges.
+        """
         if on_canvas:
             (x, y) = self.mapToCanvas(x, y)
         if marker_type == 'circle':
@@ -1012,7 +1207,11 @@ class Plot(Canvas):
             raise ValueError(f"invalid marker type {marker_type}: supported markers are: circle, cross, square")
 
     def addAxes(self, color: Color = "black", thickness: Number = 1, directed: bool = False) -> None:
-        """Draw x and y axes for the plot area."""
+        """Draw axes along the bottom and left plot boundaries.
+
+        Axes do not move to data value zero when the ranges include negatives.
+        ``directed=True`` adds arrowheads; no ticks or grid lines are added.
+        """
         self.addLine(x1 = self.O_x, x2 = self.O_x, y2 = 2 * self.m_y / 3, y1 = self.O_y + self.m_y / 10, color = color, thickness = thickness, directed=directed)
         self.addLine(y1 = self.O_y, y2 = self.O_y, x1 = self.O_x - self.m_x / 10, x2 = self.width - 2 * self.m_x / 3, color = color, thickness = thickness, directed=directed)
 
@@ -1024,6 +1223,10 @@ class Plot(Canvas):
         end (negative rotation) or start (positive rotation) so they hang off
         the tick without overlapping the axis. ``text_size``/``notch_length``
         default to the plot's :class:`PlotStyle`.
+
+        ``labels`` is an iterable of ``(data_value, display_text)`` pairs.
+        Explicit ``pad`` uses user units. The minimum-range tick has a label
+        but no notch/grid line. Draw ticks before :meth:`addAxisLabels`.
         """
         size = self.style.tick_size if text_size is None else text_size
         notch_length = self.style.tick_length if notch_length is None else notch_length
@@ -1057,6 +1260,10 @@ class Plot(Canvas):
         Labels end ``pad`` to the left of the outer end of the notch (default:
         ``style.tick_pad`` x font size). Rotated labels are centred on the tick
         with their rotated bounding box kept clear of the axis.
+
+        ``labels`` is an iterable of ``(data_value, display_text)`` pairs.
+        Explicit ``pad`` uses user units. The minimum-range tick has a label
+        but no notch/grid line. Draw ticks before :meth:`addAxisLabels`.
         """
         size = self.style.tick_size if text_size is None else text_size
         notch_length = self.style.tick_length if notch_length is None else notch_length
@@ -1082,7 +1289,12 @@ class Plot(Canvas):
         self._recordTickExtent('y', extent)
 
     def addBar(self, x: Number, y: Number, bar_width: Number, _y: Number = 0, bar_color: Color = "orange", opacity: Number = 1) -> None:
-        """Draw a single vertical bar from ``_y`` to ``y``."""
+        """Draw a vertical bar centered at data x, from data ``_y`` to ``y``.
+
+        ``bar_width`` is in canvas units, not data units; ``_y`` defaults to
+        zero here. Use ``y >= _y``: negative-height SVG rectangles are not
+        normalized. ``opacity`` affects the fill; there is no border.
+        """
         (x1, y1) = self.mapToCanvas(x, _y)
         (_, y2) = self.mapToCanvas(x, y)
         self.addRectangle(height=y1-y2, width=bar_width, x=(x1-bar_width/2), y=y2, color=bar_color, border='none', opacity=opacity)
@@ -1140,7 +1352,13 @@ class Plot(Canvas):
             self.addText(title, x_mid, y, color=color, size=size, baseline="auto", anchor="middle")
 
     def addPlot(self, x: Iterable[Number], y: Iterable[Number], color: Color = "blue", thickness: Number = 1, interp: bool = False, opacity: Number = 1, dashed: bool = False, label: str | None = None) -> None:
-        """Draw a line plot from paired x and y data."""
+        """Draw paired data with straight segments or an interpolating spline.
+
+        ``interp=True`` fits a cubic spline and may overshoot. At least two
+        pairs are required. Iterables are consumed with ``zip``: extra values
+        in a longer input are ignored. Data is neither clipped nor autoscaled.
+        A non-None ``label`` registers an entry for :meth:`addLegend`.
+        """
         arr = []
         for (a, b) in zip(x, y):
             arr.append(self.mapToCanvas(a, b))
@@ -1154,7 +1372,13 @@ class Plot(Canvas):
             self.legend_items.append((label, {'type': 'plot', 'color': color, 'thickness': thickness, 'opacity': opacity, 'dashed': dashed}))
     
     def addScatterPlot(self, x: Iterable[Number], y: Iterable[Number], color: Color = "blue", marker_type: MarkerType = "circle", marker_scale: Number = 1, label: str | None = None) -> None:
-        """Draw a scatter plot from paired x and y data."""
+        """Draw circle/cross/square markers at paired data coordinates.
+
+        ``marker_scale`` multiplies user-unit marker size (see :meth:`putMarker`)
+        independently of data ranges. Inputs are consumed with ``zip``;
+        unmatched trailing values are ignored. A non-None ``label`` registers
+        a legend entry.
+        """
         for (a, b) in zip(x, y):
             self.putMarker(a, b, marker_type, marker_scale, color)
         
@@ -1162,7 +1386,13 @@ class Plot(Canvas):
             self.legend_items.append((label, {'type': 'scatter', 'color': color, 'marker_type': marker_type, 'marker_scale': marker_scale}))
     
     def addBarPlot(self, x: Iterable[Number], y: Iterable[Number], _y: Iterable[Number] | None = None, color: Color = "orange", bar_width: Number = 20, label: str | None = None) -> None:
-        """Draw a bar plot, optionally with per-bar baselines."""
+        """Draw data-space bars with a fixed canvas-unit ``bar_width``.
+
+        ``_y`` supplies one baseline per bar; when omitted the baseline is the
+        LOWER Y RANGE endpoint, unlike :meth:`addBar`'s zero default. Top values
+        should be >= baselines. Inputs are zipped, truncating to the shortest.
+        A non-None ``label`` registers a legend entry. See :meth:`addBar`.
+        """
         if _y is None:
             for (a, b) in zip(x, y):
                 self.addBar(a, b, bar_width, bar_color=color, _y=self._y)
@@ -1174,6 +1404,7 @@ class Plot(Canvas):
             self.legend_items.append((label, {'type': 'bar', 'marker_type': 'square', 'marker_scale': 1, 'color': color}))
     
     def _computeLegendPosition(self, legend_width: Number, legend_height: Number, anchor: LegendAnchor = 'NE') -> Point:
+        """Place a legend by compass anchor inside the data rectangle."""
         if anchor == 'NE':
             ax = self._x + (self.x_ - self._x) * 0.95
             ay = self._y + (self.y_ - self._y) * 0.95
@@ -1221,7 +1452,16 @@ class Plot(Canvas):
         return (ax, ay)
         
     def addLegend(self, anchor: LegendAnchor | None = 'NE', text_size: Number | None = None, text_color: Color = 'black', marker_scale: Number = 1, box_color: Color = 'yellow', box_border_color: Color = 'red', box_opacity: Number = 0.5, position: Point | None = None) -> None:
-        """Draw a legend from the labels registered by plot methods."""
+        """Draw a legend from previously labeled line, scatter and bar series.
+
+        At least one labeled series is required. Entries are sorted by type
+        (bar, plot, scatter), preserving order within each type. ``anchor`` is
+        NE/N/NW/W/E/SW/S/SE inside the plot. ``position=(x, y)`` overrides it
+        with a canvas-space reference near the box's top-left; the box begins
+        ``5*marker_scale`` units left of x. Supply position if ``anchor=None``.
+        Marker size and label size are independent. Draw last to keep it above
+        the data; repeated calls add boxes rather than updating an old one.
+        """
         text_size = self.style.tick_size if text_size is None else text_size
         self.legend_items.sort(key=lambda x: x[1]['type'])
         lines = [x[0] for x in self.legend_items]
@@ -1260,7 +1500,13 @@ class Plot(Canvas):
                 self.putMarker(x1, y_item, marker_type=plot_info['marker_type'], size=marker_scale, color=plot_info['color'], on_canvas=False)
     
     def easyTicks(self, color: Color = 'black', ticks_per_unit: Number = 0.01, notch_thickness: Number = 2, notch_length: Number | None = None, rot_x: Number = 0, rot_y: Number = 0, text_size: Number | None = None, grid: bool = False) -> None:
-        """Automatically choose and draw evenly spaced ticks."""
+        """Draw evenly spaced ticks with labels formatted to two decimals.
+
+        ``ticks_per_unit`` is ticks per CANVAS unit, clamped to [0.005, 0.05].
+        Each axis gets ``round(length*ticks_per_unit)`` ticks via linspace;
+        these are not rounded to convenient data intervals. For categories or
+        custom formatting use :meth:`addTicksX` and :meth:`addTicksY`.
+        """
         (x1, y1) = self.mapToCanvas(self._x, self._y)
         (x2, y2) = self.mapToCanvas(self.x_, self.y_)
         X = x2 - x1
@@ -1286,9 +1532,11 @@ class Plot(Canvas):
 class _SubplotSlot:
     # Placeholder stored in Figure.contents marking where (in z-order) a
     # subplot is rendered.
+    """Retain a live subplot and its position within figure drawing order."""
     __slots__ = ("plot", "x", "y", "index")
 
     def __init__(self, plot: Plot, x: float, y: float, index: int) -> None:
+        """Store a subplot, figure-space offset and creation index for composition."""
         self.plot, self.x, self.y, self.index = plot, x, y, index
 
 
@@ -1306,11 +1554,18 @@ class Figure(Canvas):
 
     ``style`` is the default :class:`PlotStyle` for all subplots. Subplots
     use ``origin="auto"``/``margins="auto"`` by default so that subplots
-    sharing a style get identical, aligned plot areas.
+    sharing a style and compatible label-width estimates get aligned plot areas.
     """
 
     def __init__(self, height: Number, width: Number, rows: int = 1, cols: int = 1, *, title: str | None = None, title_size: Number | None = None, style: PlotStyle | None = None, wspace: Number = 10, hspace: Number = 10, padding: Number = 10, width_ratios: Sequence[Number] | None = None, height_ratios: Sequence[Number] | None = None, executables: ExecutablePaths | None = None) -> None:
-        """Create a figure with a ``rows`` x ``cols`` subplot grid."""
+        """Create a grid with user-unit padding, inter-cell gaps and a title band.
+
+        ``rows``/``cols`` must be positive. ``width_ratios`` and ``height_ratios``
+        need one positive entry per column/row and divide space after gaps and
+        padding. Invalid ratios or insufficient grid space raise ``ValueError``.
+        Create plots separately with :meth:`subplot` or :meth:`subplots`;
+        ``style`` supplies their defaults.
+        """
         Canvas.__init__(self, height, width, executables=executables)
         if rows < 1 or cols < 1:
             raise ValueError("rows and cols must both be >= 1")
@@ -1357,6 +1612,11 @@ class Figure(Canvas):
 
         ``row``/``col`` are zero-based. ``origin``/``margins`` are in the
         subplot's local coordinates (see :class:`Plot`).
+
+        Spans must remain inside the grid (``IndexError`` otherwise).
+        Nonpositive spans or occupied cells raise ``ValueError``. Font,
+        arrow-style and executable defaults are inherited at creation. Later
+        drawing on the returned Plot is reflected in subsequent figure saves.
         """
         x, y, w, h = self.cellBox(row, col, rowspan, colspan)
         cells = [(r, c) for r in range(row, row + rowspan) for c in range(col, col + colspan)]
@@ -1375,7 +1635,12 @@ class Figure(Canvas):
         return plot
 
     def subplots(self, *, x_range: Point = (0, 1), y_range: Point = (0, 1), style: PlotStyle | None = None) -> list[list[Plot]]:
-        """Create one subplot per grid cell and return them as ``axes[row][col]``."""
+        """Fill an empty grid and return a nested list ``axes[row][col]``.
+
+        All plots receive the same ranges and style. Use :meth:`subplot` for
+        mixed ranges or spans. An occupied grid can raise ``ValueError`` after
+        plots have been created in earlier unoccupied cells.
+        """
         return [[self.subplot(r, c, x_range=x_range, y_range=y_range, style=style) for c in range(self.cols)] for r in range(self.rows)]
 
     @property
@@ -1384,6 +1649,7 @@ class Figure(Canvas):
         return [slot.plot for slot in self._slots]
 
     def _slotOf(self, plot: Plot) -> _SubplotSlot:
+        """Find a subplot slot by identity, raising KeyError for foreign plots."""
         for slot in self._slots:
             if slot.plot is plot:
                 return slot
@@ -1394,6 +1660,8 @@ class Figure(Canvas):
 
         With ``data=True`` (default) ``(x, y)`` are data coordinates; otherwise
         they are the subplot's local canvas coordinates.
+
+        A plot belonging to another figure raises ``KeyError``.
         """
         slot = self._slotOf(plot)
         if data:
@@ -1401,6 +1669,7 @@ class Figure(Canvas):
         return (slot.x + x, slot.y + y)
 
     def _renderParts(self) -> tuple[list[str], list[str], set[str]]:
+        """Collect definitions, drawing markup and used fonts for final serialization."""
         defs, contents, fonts = list(self.defs), [], set(self.used_fonts)
         separator = '\n<!--svgflow:defs-end-->\n'
         for item in self.contents:
@@ -1436,6 +1705,13 @@ class FlowStyle:
     """
 
     def __init__(self, *, node_shape: NodeShape = ('circle', 20), node_color: Color = 'none', node_border: Color = 'black', node_thickness: Number = 2, text_size: Number = 16, text_color: Color = 'black', text_style: str | None = None, edge_color: Color = 'black', edge_thickness: Number = 2, edge_text_size: Number | None = None, edge_text_color: Color | None = None, label_gap: Number = 0.4, arrow_style: ArrowStyle | None = None, arrow_size: Number = 1, stub: Number = 20, corner_radius: Number = 6, self_loop_size: Number = 100) -> None:
+        """Store defaults for future node/edge calls; existing SVG is unchanged.
+
+        Dimensions and stroke/font sizes use canvas units, ``label_gap`` uses
+        label-font multiples and ``arrow_size`` is a scale factor. See the
+        class docstring for field groups. Omitted edge label size/color follow
+        node text size/color. Individual drawing calls can override defaults.
+        """
         self.node_shape = node_shape
         self.node_color = node_color
         self.node_border = node_border
@@ -1461,12 +1737,18 @@ class FlowStyle:
         return FlowStyle(**values)
 
     def __repr__(self) -> str:
+        """Return the style class name and current keyword field values."""
         args = ', '.join(f'{k}={v!r}' for k, v in self.__dict__.items())
         return f'FlowStyle({args})'
 
 
 class Flow(Canvas):
-    """Canvas with node and edge helpers for flow diagrams."""
+    """A Canvas with manually positioned named nodes and routed edges.
+
+    All coordinates use canvas units and node positions denote centers.
+    Nodes must exist before edges refer to them. Layout and obstacle
+    avoidance are the caller's responsibility; calls append SVG immediately.
+    """
 
     def __init__(self, height: Number, width: Number, *, style: FlowStyle | None = None, executables: ExecutablePaths | None = None) -> None:
         """Create an empty flow-diagram canvas whose defaults come from ``style``."""
@@ -1476,6 +1758,7 @@ class Flow(Canvas):
 
     def _edgeDefaults(self, color: Color | None, thickness: Number | None, text_color: Color | None, text_size: Number | None, arrow_size: Number | None, arrow_style: ArrowStyle | None) -> tuple[Color, Number, Color, Number, Number, ArrowStyle | None]:
         # Resolves edge arguments left as None against self.style.
+        """Resolve omitted edge stroke, label and arrow values from FlowStyle."""
         s = self.style
         return (s.edge_color if color is None else color,
                 s.edge_thickness if thickness is None else thickness,
@@ -1485,14 +1768,25 @@ class Flow(Canvas):
                 s.arrow_style if arrow_style is None else arrow_style)
 
     def _requireNode(self, *ids: str) -> None:
+        """Raise KeyError if any supplied node ID has not been registered."""
         for node_id in ids:
             if node_id not in self.nodes:
                 raise KeyError(f'node {node_id} does not exist')
 
     def addNode(self, id: str, x: Number, y: Number, shape: NodeShape | None = None, label: Any | None = None, color: Color | None = None, border: Color | None = None, thickness: Number | None = None, opacity: Number = 1, text_color: Color | None = None, text_size: Number | None = None, text_style: str | None = None, latex: bool = False) -> None:
-        """Add a named node using a circle, rectangle, ellipse, or parallelogram shape.
+        """Add a uniquely named node centered at canvas point ``(x, y)``.
 
-        Arguments left as ``None`` use the flow's :class:`FlowStyle`.
+        Supported shape tuples are ``('circle', radius)``,
+        ``('rectangle', height, width[, corner_radius])``,
+        ``('ellipse', horizontal_radius, vertical_radius)``, and
+        ``('parallelogram', diagonal1, diagonal2, angle_degrees)``.
+        The legacy spelling ``'paralellogram'`` is also accepted. Diagonals
+        and angle must describe a nondegenerate shape. Duplicate IDs raise
+        ``KeyError``; unknown shapes raise ``ValueError``.
+
+        Arguments left as ``None`` use :class:`FlowStyle`. Labels accept
+        newlines/lists; they do not resize the node or wrap automatically.
+        ``latex=True`` renders math through external tools.
         """
         s = self.style
         shape = s.node_shape if shape is None else shape
@@ -1546,6 +1840,7 @@ class Flow(Canvas):
     def _getIntersectionWithContainer(self, node_id: str, theta: Number) -> Point:
         # Point where the ray from the node centre at angle `theta` (degrees,
         # clockwise from +x) leaves the node's outline.
+        """Intersect a center ray with a node outline, including rounded corners."""
         theta = (theta+90) % (360) - 90
         if node_id not in self.nodes.keys():
             raise KeyError(f"node {node_id} does not exist")
@@ -1587,11 +1882,19 @@ class Flow(Canvas):
         return (x1, y1)
     
     def addEdge(self, node1: str, node2: str, label: Any | None = None, curvature: Number = 0, color: Color | None = None, thickness: Number | None = None, dashed: bool = False, directed: Directed = False, opacity: Number = 1, text_color: Color | None = None, text_size: Number | None = None, text_style: str | None = None, latex: bool = False, *, arrow_size: Number | None = None, arrow_style: ArrowStyle | None = None) -> None:
-        """Connect two distinct nodes with a straight or curved edge.
+        """Connect distinct nodes with a straight or quadratic curved edge.
 
-        With ``curvature != 0`` the edge is a quadratic curve whose control
-        point is offset ``curvature`` from the midpoint of the node centres;
-        it is clipped exactly where the curve leaves each node.
+        ``curvature`` offsets the control point from the center-to-center
+        chord midpoint. Endpoints lie on the node outlines in the directions
+        of that control point, then a new curve is drawn between them (not an
+        exact trim of the original center-to-center curve). Rounded rectangle
+        corners are honored. Positive curvature bends horizontal connections
+        upward and vertical connections right. Zero draws a straight edge.
+
+        ``directed`` defaults to False; arrow options match :meth:`Canvas.addLine`.
+        Missing or equal IDs raise ``KeyError``; use :meth:`addSelfEdge` for
+        loops. Labels sit outside the curve apex. Unspecified style arguments
+        come from :class:`FlowStyle`.
         """
         self._requireNode(node1, node2)
         if node1 == node2:
@@ -1628,6 +1931,10 @@ class Flow(Canvas):
         to the outline; ``curvature`` sets its size (the apex lies about
         ``curvature / 2`` beyond the attachment points; the sign is ignored).
         The label is placed just outside the loop's apex.
+
+        ``curvature=None`` uses ``style.self_loop_size``. ``directed``
+        defaults to False; pass True for a return arrow. A missing node raises
+        ``KeyError``. Unspecified appearance comes from :class:`FlowStyle`.
         """
         self._requireNode(node)
         color, thickness, text_color, text_size, arrow_size, arrow_style = self._edgeDefaults(color, thickness, text_color, text_size, arrow_size, arrow_style)
@@ -1673,7 +1980,12 @@ class Flow(Canvas):
     _PORT_ANGLES = {'E': 0, 'S': 90, 'W': 180, 'N': 270}
 
     def getPort(self, node: str, port: Port) -> Point:
-        """Return the boundary point of ``node`` on side ``port`` (N/S/E/W)."""
+        """Return a canvas-space boundary point on port N/S/E/W.
+
+        Port names are case-insensitive; these are ray intersections from the
+        center, not necessarily edge midpoints for skew shapes. Missing nodes
+        raise ``KeyError``; invalid ports raise ``ValueError``.
+        """
         if node not in self.nodes:
             raise KeyError(f'node {node} does not exist')
         port = port.upper()
@@ -1684,6 +1996,7 @@ class Flow(Canvas):
 
     def _autoPorts(self, node1: str, node2: str) -> tuple[str, str]:
         # Face the two nodes towards each other along the dominant axis.
+        """Choose facing cardinal ports along the dominant center displacement."""
         dx = self.nodes[node2]['x'] - self.nodes[node1]['x']
         dy = self.nodes[node2]['y'] - self.nodes[node1]['y']
         if abs(dx) >= abs(dy):
@@ -1693,6 +2006,7 @@ class Flow(Canvas):
     @staticmethod
     def _portFacing(px: Number, py: Number, qx: Number, qy: Number) -> str:
         # The port on a node at p that best faces point q.
+        """Return the cardinal side at p that most directly faces q."""
         dx, dy = qx - px, qy - py
         if abs(dx) >= abs(dy):
             return 'E' if dx >= 0 else 'W'
@@ -1746,6 +2060,7 @@ class Flow(Canvas):
     @staticmethod
     def _simplifyPath(points: Sequence[Point], eps: float = 1e-6) -> list[Point]:
         # Drop repeated points and interior points on a straight line.
+        """Remove near-duplicate and straight-through collinear route points."""
         out: list[Point] = []
         for p in points:
             p = (float(p[0]), float(p[1]))
@@ -1762,6 +2077,7 @@ class Flow(Canvas):
     @staticmethod
     def _roundedPathData(points: Sequence[Point], radius: Number) -> str:
         # SVG path data for a polyline whose corners are rounded with quadratic curves.
+        """Build path data with quadratic rounded corners bounded by segment lengths."""
         d = [f'M{points[0][0]:.4f} {points[0][1]:.4f}']
         for i in range(1, len(points) - 1):
             (ax, ay), (bx, by), (cx, cy) = points[i - 1], points[i], points[i + 1]
@@ -1794,6 +2110,14 @@ class Flow(Canvas):
         ``label_segment`` (an index into the routed segments).
 
         Returns the list of route points (useful for debugging/layout).
+
+        Waypoints are followed literally: no extra bends or stubs are
+        inserted in waypoint mode. Supply axis-aligned segments yourself.
+        Returned points precede corner rounding and arrow trimming; segment
+        indices refer to the simplified route. Automatic routing does not
+        avoid unrelated nodes. Unlike :meth:`addEdge`, directed defaults to
+        True. Missing/equal IDs raise ``KeyError``; invalid ports raise
+        ``ValueError``. Use :meth:`addSelfEdge` for loops.
         """
         self._requireNode(node1, node2)
         if node1 == node2:

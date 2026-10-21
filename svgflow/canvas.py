@@ -10,9 +10,11 @@ import base64
 import os
 import re
 import tempfile
+import warnings
 from xml.sax.saxutils import escape as xml_escape
 import numpy as np
-from .external_figures import ExecutablePaths, import_svg_from_file, tex2svg
+from .external_figures import ExecutablePaths, import_svg_from_file, tex2svg, uniquify_svg_ids
+from .inkscape_fonts import inkscape_font_env
 from subprocess import run, CalledProcessError
 from typing import Any, Iterable, Literal, Sequence, TypeAlias
 from .text_metrics import DEFAULT_FONT, BOLD, BOLD_ITALIC, ITALIC, get_font, is_bold, is_italic, register_font, text_width, wrap_text
@@ -30,6 +32,17 @@ ExportType: TypeAlias = Literal["png", "pdf"]
 GradientSpread: TypeAlias = Literal["pad", "reflect", "repeat"]
 NodeShape: TypeAlias = tuple[Any, ...]
 Port: TypeAlias = Literal["N", "S", "E", "W"]
+ArrowStyle: TypeAlias = Literal["curved", "open", "triangle", "stealth"]
+Directed: TypeAlias = bool | Literal["start", "end", "both"]
+
+# Unit arrowheads: tip at the origin pointing along +x, length 10.
+# Maps style -> (path data, filled?). Stroked heads take the line's thickness.
+ARROW_SHAPES: dict[str, tuple[str, bool]] = {
+    'curved': ('M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5', False),
+    'open': ('M-10 -5 L0 0 L-10 5', False),
+    'triangle': ('M0 0 L-10 -4 L-10 4 Z', True),
+    'stealth': ('M0 0 L-10 -4.5 L-7 0 L-10 4.5 Z', True),
+}
 
 NAMED_COLORS = {'none', 'aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgreen', 'darkgrey', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkslategrey', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dimgrey', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'greenyellow', 'grey', 'honeydew', 'hotpink', 'indianred', 'indigo', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightgrey', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightslategrey', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen'}
 
@@ -51,6 +64,10 @@ class Canvas:
         self.contents = []
         self.defs = []
         self.is_arrow_def_included = False
+        self._arrow_defs: set[str] = set()
+        # Default arrowhead shape for every directed stroke on this canvas:
+        # "curved" (classic), "open" (straight chevron), "triangle" or "stealth".
+        self.arrow_style: ArrowStyle = "curved"
         self.default_font = DEFAULT_FONT
         self.used_fonts = set()
         self.curr_latex_eq_num = 0
@@ -168,12 +185,12 @@ class Canvas:
             return (0.0, 0.0)
         return self.addText(list(lines), x, y, color, rotation, baseline, anchor, size, style, weight, **kwargs)
 
-    def _fontFaceCss(self) -> str:
+    def _fontFaceCss(self, fonts: Iterable[str] | None = None) -> str:
         # Builds @font-face rules for every used, embeddable, file-backed font.
         formats = {'.ttf': 'truetype', '.otf': 'opentype', '.woff': 'woff', '.woff2': 'woff2'}
         variants = {BOLD: ('bold', 'normal'), ITALIC: ('normal', 'italic'), BOLD_ITALIC: ('bold', 'italic')}
         rules = []
-        for name in sorted(self.used_fonts):
+        for name in sorted(self.used_fonts if fonts is None else fonts):
             spec = get_font(name)
             if not spec.embed:
                 continue
@@ -185,20 +202,180 @@ class Canvas:
                 rules.append(f"@font-face {{ font-family: '{name}'; font-weight: {weight}; font-style: {style}; src: url(data:font/{fmt};base64,{data}) format('{fmt}'); }}")
         return '\n'.join(rules)
 
-    def addLine(self, x1: Number, y1: Number, x2: Number, y2: Number, color: Color = "black", thickness: Number = 1, dashed: bool = False, directed: bool = False, opacity: Number = 1, label: Any | None = None, text_color: Color = "black", text_size: Number = 16, text_style: str | None = None, arrow_size: Number = 1, latex: bool = False) -> Number:
-        """Draw a straight line and optionally add an arrowhead and label."""
-        if dashed:
-            self.contents.append(f'<line x1="{x1:.4f}" y1="{y1:.4f}" x2="{x2:.4f}" y2="{y2:.4f}" stroke="{color}" stroke-width="{thickness}" stroke-opacity="{opacity}" stroke-dasharray="4"></line>')
+    # ------------------------------------------------------------------ #
+    # Strokes and arrowheads
+    # ------------------------------------------------------------------ #
+    #
+    # Every stroked primitive (lines, curves, paths, arcs, edges) goes through
+    # the same pipeline:
+    #   1. `_arrowEnds` decodes `directed` into (start, end) flags;
+    #   2. `_arrowMetrics` sizes the head from the line thickness and style;
+    #   3. the geometry is trimmed so the stroke ends *inside* the head (a butt
+    #      line end would otherwise poke out past a pointed tip);
+    #   4. `_emitStroke` writes the stroke and heads, grouping them when
+    #      translucent so overlaps are not darkened twice.
+
+    def _arrowEnds(self, directed: Directed) -> tuple[bool, bool]:
+        # Decodes the `directed` argument into (arrow at start, arrow at end).
+        if directed is True or directed == 'end':
+            return (False, True)
+        if directed is False or directed is None:
+            return (False, False)
+        if directed == 'start':
+            return (True, False)
+        if directed == 'both':
+            return (True, True)
+        raise ValueError(f"invalid directed value {directed!r}: use True/False, 'start', 'end' or 'both'")
+
+    def _arrowMetrics(self, thickness: Number, arrow_size: Number, arrow_style: ArrowStyle | None) -> tuple[str, float, float, float]:
+        # Returns (style, scale, tip_back, line_back): the head is the unit shape
+        # scaled by `scale`; its tip is moved back by `tip_back` so stroked heads
+        # don't overshoot the target point; the stroke is shortened by `line_back`.
+        style = self.arrow_style if arrow_style is None else arrow_style
+        if style not in ARROW_SHAPES:
+            raise ValueError(f"invalid arrow style {style!r}: supported styles are {', '.join(ARROW_SHAPES)}")
+        scale = float(arrow_size) * max(1.0, float(thickness) / 2)
+        if ARROW_SHAPES[style][1]:  # filled: tip exact, stroke ends mid-head
+            return style, scale, 0.0, 5.0 * scale
+        return style, scale, float(thickness) / 2, float(thickness)
+
+    def _arrowheadMarkup(self, x: Number, y: Number, theta: Number, thickness: Number, color: Color, opacity: Number, style: str, scale: float, tip_back: float) -> str:
+        def_id = 'arrow' if style == 'curved' else f'arrow_{style}'
+        if def_id not in self._arrow_defs:
+            self.defs.append(f'<path id="{def_id}" d="{ARROW_SHAPES[style][0]}"/>')
+            self._arrow_defs.add(def_id)
+            self.is_arrow_def_included = True
+        rad = np.deg2rad(theta)
+        x, y = x - tip_back * np.cos(rad), y - tip_back * np.sin(rad)
+        if ARROW_SHAPES[style][1]:
+            paint = f'fill="{color}" stroke="none"'
         else:
-            self.contents.append(f'<line x1="{x1:.4f}" y1="{y1:.4f}" x2="{x2:.4f}" y2="{y2:.4f}" stroke="{color}" stroke-width="{thickness}" stroke-opacity="{opacity}"></line>')
-        
+            paint = f'stroke="{color}" stroke-width="{thickness / scale:.4f}" stroke-linejoin="round" stroke-linecap="round" fill="none"'
+        return f'<use xlink:href="#{def_id}" transform="translate({x:.4f} {y:.4f}) rotate({theta:.4f}) scale({scale:.4f} {scale:.4f})" {paint} opacity="{opacity}"/>'
+
+    def addArrowhead(self, x: Number, y: Number, angle: Number, color: Color = 'black', thickness: Number = 1, opacity: Number = 1, arrow_size: Number = 1, arrow_style: ArrowStyle | None = None) -> None:
+        """Draw a standalone arrowhead with its tip at ``(x, y)``.
+
+        ``angle`` is the direction the arrow points, in degrees clockwise from
+        the +x axis (SVG convention). The head is sized for a line of the given
+        ``thickness`` (see :attr:`arrow_style` for the available shapes).
+        """
+        style, scale, tip_back, _ = self._arrowMetrics(thickness, arrow_size, arrow_style)
+        self.contents.append(self._arrowheadMarkup(x, y, angle, thickness, color, opacity, style, scale, tip_back))
+
+    def _addArrow(self, x: Number, y: Number, theta: Number, thickness: Number = 2, color: Color = 'black', opacity: Number = 1, size: Number = 1) -> None:
+        # Kept for backwards compatibility; use addArrowhead.
+        self.addArrowhead(x, y, theta, color, thickness, opacity, size)
+
+    def _emitStroke(self, shape: str, color: Color, thickness: Number, opacity: Number, dashed: bool = False, fill: Color = 'none', heads: Sequence[tuple[Number, Number, Number]] = (), arrow: tuple[str, float, float] | None = None) -> None:
+        # `shape` is an unterminated SVG element, e.g. '<path d="..."'.
+        grouped = bool(heads) and opacity < 1
+        op = 1 if grouped else opacity
+        dash = ' stroke-dasharray="4"' if dashed else ''
+        elements = [f'{shape} stroke="{color}" stroke-width="{thickness}" fill="{fill}" opacity="{op}"{dash}/>']
+        if heads:
+            style, scale, tip_back = arrow
+            elements += [self._arrowheadMarkup(x, y, theta, thickness, color, op, style, scale, tip_back) for (x, y, theta) in heads]
+        if grouped:
+            self.contents.append(f'<g opacity="{opacity}">' + ''.join(elements) + '</g>')
+        else:
+            self.contents.extend(elements)
+
+    @staticmethod
+    def _deCasteljau(ctrl: Sequence[Point], t: float) -> tuple[list[Point], list[Point]]:
+        # Splits a Bezier curve of any degree at parameter t.
+        pts = [np.asarray(p, dtype=float) for p in ctrl]
+        left, right = [pts[0]], [pts[-1]]
+        while len(pts) > 1:
+            pts = [(1 - t) * a + t * b for a, b in zip(pts[:-1], pts[1:])]
+            left.append(pts[0])
+            right.append(pts[-1])
+        return [tuple(p) for p in left], [tuple(p) for p in reversed(right)]
+
+    @classmethod
+    def _trimBezier(cls, ctrl: Sequence[Point], distance: float, at_end: bool = True) -> list[Point]:
+        # Shortens a Bezier segment (degree >= 1) by `distance` of arc length at
+        # one end, never removing more than 45% of the segment.
+        if distance <= 0:
+            return list(ctrl)
+        ts = np.linspace(0, 1, 65)
+        samples = np.array([cls._deCasteljau(ctrl, t)[0][-1] for t in ts])
+        cum = np.concatenate([[0], np.cumsum(np.hypot(*np.diff(samples, axis=0).T))])
+        total = cum[-1]
+        if total == 0:
+            return list(ctrl)
+        distance = min(distance, 0.45 * total)
+        if at_end:
+            t = float(np.interp(total - distance, cum, ts))
+            return cls._deCasteljau(ctrl, t)[0]
+        t = float(np.interp(distance, cum, ts))
+        return cls._deCasteljau(ctrl, t)[1]
+
+    def _tangentAngle(self, ctrl: Sequence[Point], at_end: bool = True) -> Number:
+        # Direction (degrees) in which a Bezier segment leaves its end (or start)
+        # point, skipping control points that coincide with it.
+        pts = list(ctrl) if at_end else list(ctrl)[::-1]
+        tip = pts[-1]
+        for p in reversed(pts[:-1]):
+            if np.hypot(tip[0] - p[0], tip[1] - p[1]) > 1e-9:
+                return self._getRot(p[0], p[1], tip[0], tip[1])
+        return 0
+
+    def _strokeSegments(self, segments: list[list[Point]], color: Color, thickness: Number, closed: bool, fill: Color, opacity: Number, directed: Directed, dashed: bool, arrow_size: Number, arrow_style: ArrowStyle | None) -> None:
+        # Draws a chain of Bezier segments (2 points = line, 3 = quadratic,
+        # 4 = cubic) with optional arrowheads at either end.
+        start, end = self._arrowEnds(directed)
+        heads: list[tuple[Number, Number, Number]] = []
+        arrow = None
+        if start or end:
+            style, scale, tip_back, line_back = self._arrowMetrics(thickness, arrow_size, arrow_style)
+            arrow = (style, scale, tip_back)
+            segments = [list(s) for s in segments]
+            if end:
+                heads.append((*segments[-1][-1], self._tangentAngle(segments[-1], at_end=True)))
+                if not closed:
+                    segments[-1] = self._trimBezier(segments[-1], line_back, at_end=True)
+            if start:
+                heads.append((*segments[0][0], self._tangentAngle(segments[0], at_end=False)))
+                if not closed:
+                    segments[0] = self._trimBezier(segments[0], line_back, at_end=False)
+        commands = {2: 'L', 3: 'Q', 4: 'C'}
+        d = [f'M{segments[0][0][0]:.4f} {segments[0][0][1]:.4f}']
+        for seg in segments:
+            if len(seg) not in commands:
+                raise ValueError("path segments must have 2, 3 or 4 points")
+            d.append(commands[len(seg)] + ' '.join(f'{float(px):.4f} {float(py):.4f}' for (px, py) in seg[1:]))
+        if closed:
+            d.append('Z')
+        self._emitStroke(f'<path d="{" ".join(d)}"', color, thickness, opacity, dashed, fill, heads, arrow)
+
+    def addLine(self, x1: Number, y1: Number, x2: Number, y2: Number, color: Color = "black", thickness: Number = 1, dashed: bool = False, directed: Directed = False, opacity: Number = 1, label: Any | None = None, text_color: Color = "black", text_size: Number = 16, text_style: str | None = None, arrow_size: Number = 1, latex: bool = False, *, arrow_style: ArrowStyle | None = None, label_gap: Number = 0.4) -> Number:
+        """Draw a straight line and optionally add arrowheads and a label.
+
+        ``directed`` is ``True``/``"end"`` (arrow at ``(x2, y2)``), ``"start"``,
+        ``"both"`` or ``False``. ``arrow_size`` scales the head relative to its
+        default size for this ``thickness``; ``arrow_style`` overrides the
+        canvas-wide :attr:`arrow_style`. ``label_gap`` is the label offset from the
+        line in units of ``text_size``. Returns the line angle in degrees.
+        """
         theta = self._getRot(x1, y1, x2, y2)
-        
-        if directed:
-            self._addArrow(x2, y2, theta, thickness, color, opacity, arrow_size)
-        
+        start, end = self._arrowEnds(directed)
+        (a1, b1), (a2, b2) = (x1, y1), (x2, y2)
+        heads: list[tuple[Number, Number, Number]] = []
+        arrow = None
+        if start or end:
+            style, scale, tip_back, line_back = self._arrowMetrics(thickness, arrow_size, arrow_style)
+            arrow = (style, scale, tip_back)
+            if end:
+                heads.append((x2, y2, theta))
+                (a2, b2) = self._trimBezier([(a1, b1), (a2, b2)], line_back, at_end=True)[-1]
+            if start:
+                heads.append((x1, y1, theta + 180))
+                (a1, b1) = self._trimBezier([(a1, b1), (a2, b2)], line_back, at_end=False)[0]
+        self._emitStroke(f'<line x1="{a1:.4f}" y1="{b1:.4f}" x2="{a2:.4f}" y2="{b2:.4f}"', color, thickness, opacity, dashed, 'none', heads, arrow)
+
         if label is not None:
-            gap = 0 if latex else text_size * 0.4
+            gap = 0 if latex else text_size * label_gap
             (x3, y3) = self._getControlPoint(x1, y1, x2, y2, gap)
             if theta < 90 and theta > -90:
                 if latex:
@@ -210,61 +387,49 @@ class Canvas:
                     self.addLaTeX(label, x3, y3, scale=(text_size)/16, rot=theta-180, baseline="text-top", anchor="middle", color=text_color)
                 else:
                     self.addText(label, x3, y3, text_color, theta-180, "text-top", "middle", text_size, text_style)
-        
-        return theta
-    
-    def _addArrow(self, x: Number, y: Number, theta: Number, thickness: Number = 2, color: Color = 'black', opacity: Number = 1, size: Number = 1) -> None:
-        if not self.is_arrow_def_included:
-            self.defs.append(f'<path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>')
-            self.is_arrow_def_included = True
-        thickness /= size
-        self.contents.append(f'<use xlink:href="#arrow" transform="translate({x:.4f} {y:.4f}) rotate({theta:.4f}) scale({size:.4f} {size:.4f})" stroke="{color}" stroke-width="{thickness}" opacity="{opacity}" fill="none"/>')
 
-    def addCurvedLine(self, x1: Number, y1: Number, x2: Number, y2: Number, curvature: Number, color: Color = "black", thickness: Number = 1, dashed: bool = False, directed: bool = False, opacity: Number = 1, label: Any | None = None, text_color: Color = "black", text_size: Number = 16, text_style: str | None = None, arrow_size: Number = 1, latex: bool = False) -> Point:
+        return theta
+
+    def addCurvedLine(self, x1: Number, y1: Number, x2: Number, y2: Number, curvature: Number, color: Color = "black", thickness: Number = 1, dashed: bool = False, directed: Directed = False, opacity: Number = 1, label: Any | None = None, text_color: Color = "black", text_size: Number = 16, text_style: str | None = None, arrow_size: Number = 1, latex: bool = False, *, arrow_style: ArrowStyle | None = None, label_gap: Number = 0.4) -> Point:
         """Draw a quadratic Bezier curve controlled by a signed curvature value."""
         (cx, cy) = self._getControlPoint(x1, y1, x2, y2, curvature)
         if curvature == 0:
-            self.addLine(x1, y1, x2, y2, color, thickness, dashed, directed, opacity, label, text_color, text_size, text_style, arrow_size, latex)
+            self.addLine(x1, y1, x2, y2, color, thickness, dashed, directed, opacity, label, text_color, text_size, text_style, arrow_size, latex, arrow_style=arrow_style, label_gap=label_gap)
         else:
-            if dashed:
-                self.contents.append(f'<path d="M{x1:.4f} {y1:.4f} Q{cx:.4f} {cy:.4f} {x2:.4f} {y2:.4f}" stroke="{color}" stroke-width="{thickness}" stroke-opacity="{opacity}" stroke-dasharray="4" fill="none"/>')
-            else:
-                self.contents.append(f'<path d="M{x1:.4f} {y1:.4f} Q{cx:.4f} {cy:.4f} {x2:.4f} {y2:.4f}" stroke="{color}" stroke-width="{thickness}" stroke-opacity="{opacity}" fill="none"/>')
-            if directed:
-                theta = self._getRot(cx, cy, x2, y2)
-                self._addArrow(x2, y2, theta, thickness, color, opacity, arrow_size)
-            
+            self._strokeSegments([[(x1, y1), (cx, cy), (x2, y2)]], color, thickness, False, 'none', opacity, directed, dashed, arrow_size, arrow_style)
             if label is not None:
-                if curvature > 0:
-                    gap = curvature/2 if latex else curvature/2 + text_size * 0.4
-                    (x3, y3) = self._getControlPoint(x1, y1, x2, y2, gap)
-                    baseline = "text-top"
-                else:
-                    gap = curvature/2 if latex else curvature/2 - text_size * 0.4
-                    (x3, y3) = self._getControlPoint(x1, y1, x2, y2, gap)
-                    baseline = "hanging"
-                alpha = self._getRot(x1,y1,x2,y2)
-                if alpha < 90 and alpha > -90:
-                    if latex:
-                        self.addLaTeX(label, x3, y3, scale=(text_size)/16, rot=alpha, baseline=baseline, anchor="middle", color=text_color)
-                    else:
-                        self.addText(label, x3, y3, text_color, alpha, baseline, "middle", text_size, text_style)
-                else:
-                    if latex:
-                        self.addLaTeX(label, x3, y3, scale=(text_size)/16, rot=(alpha-180), baseline=baseline, anchor="middle", color=text_color)
-                    else:
-                        self.addText(label, x3, y3, text_color, alpha-180, baseline, "middle", text_size, text_style)
+                self._curvedLabel(x1, y1, x2, y2, curvature, label, text_color, text_size, text_style, latex, label_gap)
         return (cx, cy)
 
-    def _getControlPoint(self, x1: Number, y1: Number, x2: Number, y2: Number, c: Number) -> Point:
+    def _curvedLabel(self, x1: Number, y1: Number, x2: Number, y2: Number, curvature: Number, label: Any, text_color: Color, text_size: Number, text_style: str | None, latex: bool, label_gap: Number) -> None:
+        # Places a label just outside the apex of a quadratic curve whose
+        # control point is offset `curvature` from the chord midpoint.
+        if curvature > 0:
+            gap = curvature/2 if latex else curvature/2 + text_size * label_gap
+            baseline = "text-top"
+        else:
+            gap = curvature/2 if latex else curvature/2 - text_size * label_gap
+            baseline = "hanging"
+        (x3, y3) = self._getControlPoint(x1, y1, x2, y2, gap)
+        alpha = self._getRot(x1, y1, x2, y2)
+        rot = alpha if -90 < alpha < 90 else alpha - 180
+        if latex:
+            self.addLaTeX(label, x3, y3, scale=(text_size)/16, rot=rot, baseline=baseline, anchor="middle", color=text_color)
+        else:
+            self.addText(label, x3, y3, text_color, rot, baseline, "middle", text_size, text_style)
+
+    @staticmethod
+    def _perpUnit(x1: Number, y1: Number, x2: Number, y2: Number) -> Point:
+        # Unit normal used for curvature offsets (positive curvature bends
+        # towards this side of the chord from (x1, y1) to (x2, y2)).
         if x2 - x1 != 0:
             m = (y2 - y1) / (x2 - x1)
-            cx = (x1 + x2) / 2 + c * m / np.sqrt(1 + m**2)
-            cy = (y1 + y2) / 2 - c / np.sqrt(1 + m**2)
-        else:
-            cx = (x1 + x2) / 2 + c
-            cy = (y1 + y2) / 2
-        return (cx, cy)
+            return (m / np.sqrt(1 + m**2), -1 / np.sqrt(1 + m**2))
+        return (1.0, 0.0)
+
+    def _getControlPoint(self, x1: Number, y1: Number, x2: Number, y2: Number, c: Number) -> Point:
+        nx, ny = self._perpUnit(x1, y1, x2, y2)
+        return ((x1 + x2) / 2 + c * nx, (y1 + y2) / 2 + c * ny)
 
     def _getRot(self, x1: Number, y1: Number, x2: Number, y2: Number) -> Number:
         if x2 - x1 == 0:
@@ -293,65 +458,24 @@ class Canvas:
         p_str = ' '.join(p_str)
         self.contents.append(f'<polygon points="{p_str}" fill="{color}" stroke="{border}" stroke-width="{thickness}" opacity="{opacity}"/>')
     
-    def addLinePath(self, points: Sequence[Point], color: Color = "black", thickness: Number = 1, closed: bool = False, fill: Color = "none", opacity: Number = 1, directed: bool = False, dashed: bool = False, arrow_size: Number = 1) -> None:
+    def addLinePath(self, points: Sequence[Point], color: Color = "black", thickness: Number = 1, closed: bool = False, fill: Color = "none", opacity: Number = 1, directed: Directed = False, dashed: bool = False, arrow_size: Number = 1, *, arrow_style: ArrowStyle | None = None) -> None:
         """Draw a polyline or closed polygonal path through ``points``."""
         n = len(points)
         if n < 2:
             raise ValueError("failed to add line path. number of points should be >= 2.")
-        
-        (x0, y0) = points[0]
-        path_contents = [f'<path d="M {round(x0,4)} {round(y0,4)}']
-        for i in range(1, n):
-            (x, y) = points[i]
-            path_contents.append(f'L{round(x,4)} {round(y,4)} ')
+        segments = [[points[i], points[i + 1]] for i in range(n - 1)]
+        self._strokeSegments(segments, color, thickness, closed, fill, opacity, directed, dashed, arrow_size, arrow_style)
 
-        if closed:
-            path_contents.append('Z"')
-        else:
-            path_contents.append('"')
-
-        if dashed:
-            path_contents.append(' stroke-dasharray="4"')
-        
-        path_contents.append(f' stroke="{color}" stroke-width="{thickness}" fill="{fill}" opacity="{opacity}"/>')
-        path = ''.join(path_contents)
-        self.contents.append(path)
-
-        if directed:
-            (x1, y1) = points[-2]
-            (x2, y2) = points[-1]
-            theta = self._getRot(x1, y1, x2, y2)
-            self._addArrow(x2, y2, theta, thickness, color, opacity, arrow_size)
-
-    def addQuadraticPath(self, points: Sequence[Point], control_points: Sequence[Point], color: Color = 'black', thickness: Number = 1, closed: bool = False, fill: Color = 'none', opacity: Number = 1, directed: bool = False, dashed: bool = False, arrow_size: Number = 1) -> None:
+    def addQuadraticPath(self, points: Sequence[Point], control_points: Sequence[Point], color: Color = 'black', thickness: Number = 1, closed: bool = False, fill: Color = 'none', opacity: Number = 1, directed: Directed = False, dashed: bool = False, arrow_size: Number = 1, *, arrow_style: ArrowStyle | None = None) -> None:
         """Draw a path made of quadratic Bezier segments."""
         num_points = len(points)
         num_control_points = len(control_points)
         if num_points - 1 != num_control_points or num_points < 2:
             raise ValueError("failed to add quadratic path")
-        (x0, y0) = points[0]
-        path_contents = [f'<path d="M {x0} {y0}']
-        for i in range(1, num_points):
-            (x, y) = points[i]
-            (cx, cy) = control_points[i-1]
-            path_contents.append(f'Q{round(cx,4)} {round(cy,4)} {round(x,4)} {round(y,4)} ')
-        if closed:
-            path_contents.append('Z"')
-        else:
-            path_contents.append('"')
-        
-        if dashed:
-            path_contents.append(' stroke-dasharray="4"')
-        
-        path_contents.append(f' stroke="{color}" stroke-width="{thickness}" fill="{fill}" opacity="{opacity}"/>')
-        path = ''.join(path_contents)
-        self.contents.append(path)
-
-        if directed:
-            theta = self._getRot(cx, cy, x, y)
-            self._addArrow(x, y, theta, thickness, color, opacity, arrow_size)
+        segments = [[points[i], control_points[i], points[i + 1]] for i in range(num_points - 1)]
+        self._strokeSegments(segments, color, thickness, closed, fill, opacity, directed, dashed, arrow_size, arrow_style)
     
-    def addCubicPath(self, points: Sequence[Point], control_points_1: Sequence[Point], control_points_2: Sequence[Point], color: Color = 'black', thickness: Number = 1, closed: bool = False, fill: Color = 'none', opacity: Number = 1, directed: bool = False, dashed: bool = False, arrow_size: Number = 1) -> None:
+    def addCubicPath(self, points: Sequence[Point], control_points_1: Sequence[Point], control_points_2: Sequence[Point], color: Color = 'black', thickness: Number = 1, closed: bool = False, fill: Color = 'none', opacity: Number = 1, directed: Directed = False, dashed: bool = False, arrow_size: Number = 1, *, arrow_style: ArrowStyle | None = None) -> None:
         """Draw a path made of cubic Bezier segments."""
         num_points = len(points)
         num_control_points_1 = len(control_points_1)
@@ -360,56 +484,42 @@ class Canvas:
         if (num_points - 1 != num_control_points_1) or (num_points - 1 != num_control_points_2) \
             or num_control_points_1 != num_control_points_2 or num_points < 2:
             raise ValueError("failed to add cubic path")
-        
-        (x0, y0) = points[0]
-        path_contents = [f'<path d="M {x0} {y0}']
-        for i in range(1, num_points):
-            (x, y) = points[i]
-            (x1, y1) = control_points_1[i-1]
-            (x2, y2) = control_points_2[i-1]
-            path_contents.append(f'C{round(x1,4)} {round(y1,4)} {round(x2,4)} {round(y2,4)} {round(x,4)} {round(y,4)} ')
-        if closed:
-            path_contents.append('Z"')
-        else:
-            path_contents.append('"')
-        
-        if dashed:
-            path_contents.append(' stroke-dasharray="4"')
-        
-        path_contents.append(f' stroke="{color}" stroke-width="{thickness}" fill="{fill}" opacity="{opacity}"/>')
-        path = ''.join(path_contents)
-        self.contents.append(path)
+        segments = [[points[i], control_points_1[i], control_points_2[i], points[i + 1]] for i in range(num_points - 1)]
+        self._strokeSegments(segments, color, thickness, closed, fill, opacity, directed, dashed, arrow_size, arrow_style)
 
-        if directed:
-            theta = self._getRot(x2, y2, x, y)
-            self._addArrow(x, y, theta, thickness, color, opacity, arrow_size)
-
-    def addCurve(self, points: Sequence[Point], color: Color = 'black', thickness: Number = 1, closed: bool = False, fill: Color = 'none', opacity: Number = 1, directed: bool = False, dashed: bool = False, arrow_size: Number = 1) -> None:
+    def addCurve(self, points: Sequence[Point], color: Color = 'black', thickness: Number = 1, closed: bool = False, fill: Color = 'none', opacity: Number = 1, directed: Directed = False, dashed: bool = False, arrow_size: Number = 1, *, arrow_style: ArrowStyle | None = None) -> None:
         """Fit and draw a smooth cubic Bezier curve through the supplied points."""
         curve_points = list(points)
         a, b = self._fitBezierCurve(curve_points, closed=closed)
         if closed:
-            self.addCubicPath(curve_points + [curve_points[0]], a, b, color=color, thickness=thickness, directed=directed, fill=fill, opacity=opacity, dashed=dashed, arrow_size=arrow_size)
+            self.addCubicPath(curve_points + [curve_points[0]], a, b, color=color, thickness=thickness, directed=directed, fill=fill, opacity=opacity, dashed=dashed, arrow_size=arrow_size, arrow_style=arrow_style)
         else:
-            self.addCubicPath(curve_points, a, b, color=color, thickness=thickness, directed=directed, fill=fill, opacity=opacity, dashed=dashed, arrow_size=arrow_size)
+            self.addCubicPath(curve_points, a, b, color=color, thickness=thickness, directed=directed, fill=fill, opacity=opacity, dashed=dashed, arrow_size=arrow_size, arrow_style=arrow_style)
     
-    def addCircularArc(self, x: Number, y: Number, r: Number, theta1: Number, theta2: Number, color: Color = 'black', thickness: Number = 1, fill: Color = 'none', opacity: Number = 1, directed: bool = False, dashed: bool = False, arrow_size: Number = 1) -> None:
+    def addCircularArc(self, x: Number, y: Number, r: Number, theta1: Number, theta2: Number, color: Color = 'black', thickness: Number = 1, fill: Color = 'none', opacity: Number = 1, directed: Directed = False, dashed: bool = False, arrow_size: Number = 1, *, arrow_style: ArrowStyle | None = None) -> None:
         """Draw a circular SVG arc between two angles in degrees."""
-        x1 = x + r * np.cos(theta1 * np.pi / 180)
-        y1 = y + r * np.sin(theta1 * np.pi / 180)
-        x2 = x + r * np.cos(theta2 * np.pi / 180)
-        y2 = y + r * np.sin(theta2 * np.pi / 180)
-        largeArcFlag = 1 if ((theta2 - theta1 > 180) or (theta2 - theta1 < -180)) else 0
-        if theta1 > theta2:
-            sweepFlag = 0
-            sgn = -1
-        else:
-            sweepFlag = 1
-            sgn = 1
-        dash_array = 'stroke-dasharray="4"' if dashed else ''
-        self.contents.append(f'<path d="M {x1:.4f} {y1:.4f} A {r:.4f} {r:.4f} 0 {largeArcFlag} {sweepFlag} {x2:.4f} {y2:.4f}" stroke="{color}" stroke-width="{thickness}" fill="{fill}" opacity="{opacity}" {dash_array}/>')
-        if directed:
-            self._addArrow(x2, y2, 90 * sgn + theta2, thickness, color, opacity, arrow_size)
+        def point(theta: Number) -> Point:
+            return (x + r * np.cos(theta * np.pi / 180), y + r * np.sin(theta * np.pi / 180))
+        sgn = -1 if theta1 > theta2 else 1
+        start, end = self._arrowEnds(directed)
+        heads: list[tuple[Number, Number, Number]] = []
+        arrow = None
+        t1, t2 = theta1, theta2
+        if start or end:
+            style, scale, tip_back, line_back = self._arrowMetrics(thickness, arrow_size, arrow_style)
+            arrow = (style, scale, tip_back)
+            # Trim by arc length, keeping at least 10% of the sweep.
+            trim = min(line_back / r * 180 / np.pi, 0.45 * abs(theta2 - theta1)) if r > 0 else 0
+            if end:
+                heads.append((*point(theta2), theta2 + 90 * sgn))
+                t2 = theta2 - sgn * trim
+            if start:
+                heads.append((*point(theta1), theta1 - 90 * sgn))
+                t1 = theta1 + sgn * trim
+        (x1, y1), (x2, y2) = point(t1), point(t2)
+        largeArcFlag = 1 if abs(t2 - t1) > 180 else 0
+        sweepFlag = 0 if sgn < 0 else 1
+        self._emitStroke(f'<path d="M {x1:.4f} {y1:.4f} A {r:.4f} {r:.4f} 0 {largeArcFlag} {sweepFlag} {x2:.4f} {y2:.4f}"', color, thickness, opacity, dashed, fill, heads, arrow)
     
     def _getRotShift(self, W: Number, H: Number, scale: Number, rot: Number, baseline: PositionBaseline, anchor: TextAnchor) -> Point:
         # Outputs how much we should shift a rectangle before applying rotation in order to obtain the same effect as changing the axis of rotation.
@@ -541,21 +651,30 @@ class Canvas:
             raise KeyError(f'no gradient defined with id: {grad_id}')
         return f'url(#grad_{grad_id})'
 
-    def save(self, filename: str | os.PathLike[str]) -> None:
-        """Write the accumulated SVG markup to ``filename``."""
+    def _renderParts(self) -> tuple[list[str], list[str], set[str]]:
+        # Returns (defs, contents, used_fonts). Subclasses that compose other
+        # canvases (e.g. Figure) override this to splice in their children.
+        return list(self.defs), list(self.contents), set(self.used_fonts)
+
+    def toSvg(self) -> str:
+        """Return the complete SVG document as a string."""
+        defs, contents, fonts = self._renderParts()
         file_contents = [f'<svg width="{self.width}" height="{self.height}" viewBox="0 0 {self.width} {self.height}" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">']
-        font_css = self._fontFaceCss()
-        if len(self.defs) > 0 or font_css:
+        font_css = self._fontFaceCss(fonts)
+        if len(defs) > 0 or font_css:
             file_contents.append('<defs>')
             if font_css:
                 file_contents.append(f'<style>\n{font_css}\n</style>')
-            file_contents.extend(self.defs)
+            file_contents.extend(defs)
             file_contents.append('</defs>')
-        file_contents.extend(self.contents)
+        file_contents.extend(contents)
         file_contents.append('</svg>')
-        filetxt = '\n'.join(file_contents)
+        return '\n'.join(file_contents)
+
+    def save(self, filename: str | os.PathLike[str]) -> None:
+        """Write the accumulated SVG markup to ``filename``."""
         with open(filename, 'w', encoding="utf-8") as f:
-            f.write(filetxt)
+            f.write(self.toSvg())
     
     def _findAttribute(self, svg_text: str, attribute: str) -> str:
         result = re.search(rf'{attribute}=(["\'])(.+?)\1', svg_text)
@@ -568,21 +687,29 @@ class Canvas:
         return new_svg_text
 
     def export(self, filename: str | os.PathLike[str], export_type: ExportType = 'png', dpi: int = 200) -> None:
-        """Export the canvas to PNG or PDF via Inkscape."""
+        """Export the canvas to PNG or PDF via Inkscape.
+
+        Registered file-backed fonts are exposed to Inkscape through a
+        temporary fontconfig setup (Inkscape ignores ``@font-face``), so the
+        exported text uses the same fonts that were used to measure it.
+        """
         if export_type not in {'png', 'pdf'}:
             raise ValueError(f'unexpected export type: {export_type}. supported export types are: png, pdf')
 
+        _, _, fonts = self._renderParts()
+        args = [f'--export-type={export_type}', f'--export-filename={os.fspath(filename)}']
+        if export_type == 'png':
+            args.append(f'--export-dpi={dpi}')
         with tempfile.TemporaryDirectory() as temp_dir:
             svg_path = os.path.join(temp_dir, 'tmp.svg')
-            self.save(svg_path)
-            try:
-                if export_type == 'png':
-                    run([self.executables.inkscape, svg_path, f'--export-type={export_type}', f'--export-filename={filename}', f'--export-dpi={dpi}'], check=True, capture_output=True)
-                elif export_type == 'pdf':
-                    run([self.executables.inkscape, svg_path, f'--export-type={export_type}', f'--export-filename={filename}'], check=True, capture_output=True)
-            except CalledProcessError as e:
-                raise RuntimeError(f"inkscape failed to export the figure : {e.stderr.decode(errors='ignore')}")
-    
+            with open(svg_path, 'w', encoding='utf-8') as f:
+                f.write(self.toSvg())
+            with inkscape_font_env([get_font(name) for name in sorted(fonts)], self.executables.inkscape) as env:
+                try:
+                    run([self.executables.inkscape, svg_path, *args], check=True, capture_output=True, env=env)
+                except CalledProcessError as e:
+                    raise RuntimeError(f"inkscape failed to export the figure : {e.stderr.decode(errors='ignore')}")
+
     def _computeIntersection(self, x: Number, y: Number, theta: Number, x1: Number, y1: Number, x2: Number, y2: Number) -> tuple[Number | None, Number | None]:
         # computes the point of intersection of two lines: (1) <x + r*cos(theta), y + r*sin(theta)> ; (2) <t*x1 + (1-t)*x2, t*y1 + (1-t)*y2>
         # returns r, t
@@ -679,72 +806,181 @@ class Canvas:
         return (a, b)
 
     def _fitBezierCurve(self, points: Sequence[Point], closed: bool = False) -> tuple[list[Point], list[Point]]:
-        # A helper function that computes the control points of a bezier curve passing through the given list of points.
-        n = len(points)-1
-        x = np.array([i for (i,_) in points])
-        y = np.array([j for (_,j) in points])
-        A = 4 * np.identity(n)
-        np.fill_diagonal(A[1:], 1)
-        np.fill_diagonal(A[:, 1:], 1)
-        A[0, 0] = 2
-        A[n-1, n-1] = 7
-        A[n-1, n-2] = 2
-        b = 4 * np.ones(n)
-        b[0] = 1
-        b[n-1] = 8
-        c = 2 * np.ones(n)
-        c[n-1] = 1
-        X = x[:n] * b + x[1:] * c
-        Y = y[:n] * b + y[1:] * c
-        ax = np.linalg.solve(A, X)
-        ay = np.linalg.solve(A, Y)
-        bx = np.zeros(n)
-        by = np.zeros(n)
-        bx[:n-1] = 2 * x[1:n] - ax[1:]
-        by[:n-1] = 2 * y[1:n] - ay[1:]
-        bx[n-1] = (ax[n-1] + x[n]) / 2
-        by[n-1] = (ay[n-1] + y[n]) / 2
+        # Control points (a_i, b_i) of a C2-continuous cubic Bezier spline whose
+        # i-th segment runs P_i -> a_i -> b_i -> P_{i+1}.
+        #   C1 at each knot:  a_i + b_{i-1} = 2 P_i
+        #   C2 at each knot:  a_{i-1} + 4 a_i + a_{i+1} = 4 P_i + 2 P_{i+1}
+        # Open curves use natural end conditions (zero curvature at both ends);
+        # closed curves are periodic, so the seam is as smooth as any other knot.
+        P = np.asarray([(float(x), float(y)) for (x, y) in points])
+        m = len(P)
+        if closed:
+            if m < 3:
+                raise ValueError("a closed curve needs at least 3 points")
+            A = 4 * np.identity(m)
+            for i in range(m):
+                A[i, (i - 1) % m] = 1
+                A[i, (i + 1) % m] = 1
+            P_next = np.roll(P, -1, axis=0)
+            a = np.linalg.solve(A, 4 * P + 2 * P_next)
+            b = 2 * P_next - np.roll(a, -1, axis=0)
+        else:
+            if m < 2:
+                raise ValueError("a curve needs at least 2 points")
+            n = m - 1  # number of segments
+            if n == 1:
+                a = P[:1] + (P[1:] - P[:1]) / 3
+                b = P[:1] + 2 * (P[1:] - P[:1]) / 3
+            else:
+                A = 4 * np.identity(n)
+                np.fill_diagonal(A[1:], 1)
+                np.fill_diagonal(A[:, 1:], 1)
+                A[0, 0] = 2
+                A[n-1, n-1] = 7
+                A[n-1, n-2] = 2
+                rhs = 4 * P[:n] + 2 * P[1:]
+                rhs[0] = P[0] + 2 * P[1]
+                rhs[n-1] = 8 * P[n-1] + P[n]
+                a = np.linalg.solve(A, rhs)
+                b = np.empty_like(a)
+                b[:n-1] = 2 * P[1:n] - a[1:]
+                b[n-1] = (a[n-1] + P[n]) / 2
+        return [tuple(p) for p in a], [tuple(p) for p in b]
 
-        if closed == True:
-            gx = -bx[n-1] + x[n]
-            gy = -by[n-1] + y[n]
-            hx = -x[0] + ax[0]
-            hy = -y[0] + ay[0]
+class PlotStyle:
+    """Font sizes and font-relative spacing shared by a plot's text elements.
 
-            a1_x = gx + x[n]
-            a1_y = gy + y[n]
-            b1_x = x[0] - hx
-            b1_y = y[0] - hy
-            ax = np.append(ax, a1_x)
-            ay = np.append(ay, a1_y)
-            bx = np.append(bx, b1_x)
-            by = np.append(by, b1_y)
+    Every gap is expressed as a fraction of the font size of the text it
+    separates, so layouts stay balanced when font sizes change:
 
-        a = list(zip(ax, ay))
-        b = list(zip(bx, by))
-        return (a, b)
+    * ``tick_pad``: gap between the outer end of a tick notch and its label,
+      in units of ``tick_size``.
+    * ``label_pad``: gap between the outer edge of the tick labels and the
+      axis label, in units of ``label_size``.
+    * ``title_pad``: gap between the top of the plot area and the title, in
+      units of ``title_size``.
+    * ``outer_pad``: blank border (user units) kept around the content when
+      margins are computed automatically (``origin="auto"`` / ``margins="auto"``).
+    * ``tick_length``: total length of a tick notch (drawn centred on the axis).
+    """
+
+    def __init__(self, tick_size: Number = 16, label_size: Number = 16, title_size: Number = 18, *, tick_length: Number = 10, tick_pad: Number = 0.35, label_pad: Number = 0.5, title_pad: Number = 0.6, outer_pad: Number = 8, line_height: Number = 1.2) -> None:
+        self.tick_size = tick_size
+        self.label_size = label_size
+        self.title_size = title_size
+        self.tick_length = tick_length
+        self.tick_pad = tick_pad
+        self.label_pad = label_pad
+        self.title_pad = title_pad
+        self.outer_pad = outer_pad
+        self.line_height = line_height
+
+    @classmethod
+    def scaled(cls, base_size: Number = 16, **overrides: Any) -> "PlotStyle":
+        """Build a style from one base font size (ticks = base, labels = base, title = 1.15 x base)."""
+        sizes = dict(tick_size=base_size, label_size=base_size, title_size=round(1.15 * base_size, 2), tick_length=round(0.625 * base_size, 2))
+        sizes.update(overrides)
+        return cls(**sizes)
+
+    def copy(self, **overrides: Any) -> "PlotStyle":
+        """Return a copy with some attributes replaced."""
+        values = dict(self.__dict__)
+        values.update(overrides)
+        return PlotStyle(**values)
+
+    def __repr__(self) -> str:
+        args = ', '.join(f'{k}={v!r}' for k, v in self.__dict__.items())
+        return f'PlotStyle({args})'
+
 
 class Plot(Canvas):
     """Canvas with helpers for drawing simple 2D plots."""
 
-    def __init__(self, height: Number, width: Number, origin: Point | None = None, margins: Point | None = None, x_range: Point = (0, 1), y_range: Point = (0, 1), *, executables: ExecutablePaths | None = None) -> None:
-        """Create a plotting canvas with data-to-canvas coordinate mapping."""
+    def __init__(self, height: Number, width: Number, origin: Point | Literal["auto"] | None = "auto", margins: Point | Literal["auto"] | None = "auto", x_range: Point = (0, 1), y_range: Point = (0, 1), *, style: PlotStyle | None = None, extra_margins: Sequence[Number] = (0, 0, 0, 0), executables: ExecutablePaths | None = None) -> None:
+        """Create a plotting canvas with data-to-canvas coordinate mapping.
+
+        ``origin`` is the canvas position of the bottom-left corner of the plot
+        area and ``margins`` the ``(right, top)`` space left around it. Both
+        default to ``"auto"``: they are sized from the fonts in ``style`` so
+        tick labels, axis labels and the title fit. ``None`` restores the
+        legacy percentage-based layout (15%/15% left/bottom, 10%/10% right/top).
+        ``extra_margins`` = ``(left, bottom, right, top)``
+        is added on top of the automatic margins (e.g. room for rotated tick labels).
+        """
         Canvas.__init__(self, height, width, executables=executables)
+        self.style = style if style is not None else PlotStyle()
+        (self._x, self.x_) = x_range # the values on the x axis will range between [_x, x_]
+        (self._y, self.y_) = y_range # the values on the y axis will range between [_y, y_]
+        self._extra_margins = tuple(extra_margins)
+        self._setLayout(origin, margins)
+        self.is_cross_def_included = False
+        self.is_square_def_included = False
+        self.legend_items = []
+        # Distance from each axis line to the outer edge of its tick labels;
+        # used to place axis labels automatically. None until ticks are drawn.
+        self._tick_extent: dict[str, float | None] = {'x': None, 'y': None}
+
+    def _setLayout(self, origin: Point | Literal["auto"] | None, margins: Point | Literal["auto"] | None) -> None:
+        width, height = self.width, self.height
+        if origin == "auto" or margins == "auto":
+            auto_left, auto_bottom, auto_right, auto_top = self._autoMargins()
         if origin is None:
             self.O_x = 0.15 * width
             self.O_y = 0.85 * height
+        elif origin == "auto":
+            self.O_x = auto_left
+            self.O_y = height - auto_bottom
         else:
             (self.O_x, self.O_y) = origin # this is where the bottom left corner of our plot will be positioned on the canvas
         if margins is None:
             self.m_x = 0.1 * width
             self.m_y = 0.1 * height
+        elif margins == "auto":
+            self.m_x = auto_right
+            self.m_y = auto_top
         else:
             (self.m_x, self.m_y) = margins # this is how much space will be left out on the right hand side and on the top
-        (self._x, self.x_) = x_range # the values on the x axis will range between [_x, x_]
-        (self._y, self.y_) = y_range # the values on the y axis will range between [_y, y_]
-        self.is_cross_def_included = False
-        self.is_square_def_included = False
-        self.legend_items = []
+        if (origin == "auto" or margins == "auto") and (self.O_x >= width - self.m_x or self.m_y >= self.O_y):
+            warnings.warn(f"the {width}x{height} canvas is too small for automatic margins with the current font sizes; falling back to percentage margins (pass origin/margins or a smaller PlotStyle)", stacklevel=3)
+            self._setLayout(None if origin == "auto" else origin, None if margins == "auto" else margins)
+
+    def _autoMargins(self) -> tuple[float, float, float, float]:
+        # Estimates (left, bottom, right, top) margins that fit tick labels,
+        # axis labels and a title, using the sizes in self.style. Tick label
+        # widths are estimated from the axis range formatted like easyTicks.
+        s = self.style
+        font = self.default_font
+        tick_out = s.tick_length / 2
+        def label_width(v: Number) -> float:
+            return text_width(f'{v:.2f}', s.tick_size, font)
+        ytick_w = max(label_width(self._y), label_width(self.y_))
+        left = s.outer_pad + s.label_size + s.label_pad * s.label_size + ytick_w + s.tick_pad * s.tick_size + tick_out
+        bottom = s.outer_pad + s.label_size + s.label_pad * s.label_size + s.tick_size + s.tick_pad * s.tick_size + tick_out
+        right = s.outer_pad + max(label_width(self.x_) / 2, s.outer_pad)
+        top = s.outer_pad + s.line_height * s.title_size + s.title_pad * s.title_size
+        extra_left, extra_bottom, extra_right, extra_top = getattr(self, '_extra_margins', (0, 0, 0, 0))
+        return left + extra_left, bottom + extra_bottom, right + extra_right, top + extra_top
+
+    def _blockSize(self, text: Any, size: Number) -> tuple[float, float]:
+        # Measured (width, height) of an unrotated text block. A single line is
+        # taken to be ~1 em tall (ascender to descender of the glyphs).
+        lines = self._textLines(text, size, self.default_font, False, False, None)
+        width = max((text_width(line, size, self.default_font) for line in lines), default=0.0)
+        height = size * (1 + self.style.line_height * (len(lines) - 1))
+        return width, height
+
+    def _recordTickExtent(self, axis: str, extent: float) -> None:
+        prev = self._tick_extent[axis]
+        self._tick_extent[axis] = extent if prev is None else max(prev, extent)
+
+    def tickExtent(self, axis: Literal["x", "y"]) -> float:
+        """Distance from the x or y axis to the outer edge of its tick labels.
+
+        Falls back to the outward half of a default tick notch if no tick
+        labels have been drawn on that axis yet.
+        """
+        extent = self._tick_extent[axis]
+        return self.style.tick_length / 2 if extent is None else extent
 
     def mapToCanvas(self, x: Number, y: Number) -> Point:
         """Map a data-space point to canvas coordinates."""
@@ -779,25 +1015,70 @@ class Plot(Canvas):
         self.addLine(x1 = self.O_x, x2 = self.O_x, y2 = 2 * self.m_y / 3, y1 = self.O_y + self.m_y / 10, color = color, thickness = thickness, directed=directed)
         self.addLine(y1 = self.O_y, y2 = self.O_y, x1 = self.O_x - self.m_x / 10, x2 = self.width - 2 * self.m_x / 3, color = color, thickness = thickness, directed=directed)
 
-    def addTicksX(self, labels: Iterable[tuple[Number, Any]], color: Color = "black", notch_thickness: Number = 2, notch_length: Number = 10, rotation: Number = 0, text_anchor: TextAnchor = "middle", text_size: Number = 16, grid: bool = True) -> None:
-        """Add x-axis tick labels and optional vertical grid lines."""
+    def addTicksX(self, labels: Iterable[tuple[Number, Any]], color: Color = "black", notch_thickness: Number = 2, notch_length: Number | None = None, rotation: Number = 0, text_anchor: TextAnchor | None = None, text_size: Number | None = None, grid: bool = True, *, pad: Number | None = None) -> None:
+        """Add x-axis tick labels and optional vertical grid lines.
+
+        Labels are placed ``pad`` below the outer end of the notch (default:
+        ``style.tick_pad`` x font size). Rotated labels are anchored at their
+        end (negative rotation) or start (positive rotation) so they hang off
+        the tick without overlapping the axis. ``text_size``/``notch_length``
+        default to the plot's :class:`PlotStyle`.
+        """
+        size = self.style.tick_size if text_size is None else text_size
+        notch_length = self.style.tick_length if notch_length is None else notch_length
+        pad = self.style.tick_pad * size if pad is None else pad
+        offset = notch_length / 2 + pad
+        theta = np.deg2rad(rotation)
+        sin_t, cos_t = np.sin(theta), abs(np.cos(theta))
+        extent = offset
         for x, label in labels:
             (x_tick, y_tick) = self.mapToCanvas(x, self._y)
-            self.addText(label, x = x_tick, y = y_tick + notch_length, color = color, rotation = rotation, baseline = "hanging", anchor = text_anchor, size = text_size)
+            w, h = self._blockSize(label, size)
+            if abs(sin_t) < 1e-9:
+                anchor, baseline, y_text = (text_anchor or "middle"), "hanging", y_tick + offset
+                extent = max(extent, offset + h)
+            else:
+                # The label's text-centre line passes through the anchor point;
+                # shift down so the corner nearest the axis sits at `offset`.
+                anchor = text_anchor or ("end" if sin_t < 0 else "start")
+                baseline, y_text = "middle", y_tick + offset + cos_t * h / 2
+                extent = max(extent, offset + w * abs(sin_t) + h * cos_t)
+            self.addText(label, x = x_tick, y = y_text, color = color, rotation = rotation, baseline = baseline, anchor = anchor, size = size)
             if x != self._x:
                 self.addLine(x1 = x_tick, x2 = x_tick, y1 = y_tick - notch_length / 2, y2 = y_tick + notch_length / 2, color = color, thickness = notch_thickness)
                 if grid:
                     self.addLine(x1 = x_tick, x2 = x_tick, y1 = self.O_y, y2 = self.m_y, color = "gray", thickness = 1, dashed = True)
+        self._recordTickExtent('x', extent)
 
-    def addTicksY(self, labels: Iterable[tuple[Number, Any]], color: Color = "black", notch_thickness: Number = 2, notch_length: Number = 10, rotation: Number = 0, text_baseline: TextBaseline = "middle", text_size: Number = 16, grid: bool = True) -> None:
-        """Add y-axis tick labels and optional horizontal grid lines."""
+    def addTicksY(self, labels: Iterable[tuple[Number, Any]], color: Color = "black", notch_thickness: Number = 2, notch_length: Number | None = None, rotation: Number = 0, text_baseline: TextBaseline = "middle", text_size: Number | None = None, grid: bool = True, *, pad: Number | None = None) -> None:
+        """Add y-axis tick labels and optional horizontal grid lines.
+
+        Labels end ``pad`` to the left of the outer end of the notch (default:
+        ``style.tick_pad`` x font size). Rotated labels are centred on the tick
+        with their rotated bounding box kept clear of the axis.
+        """
+        size = self.style.tick_size if text_size is None else text_size
+        notch_length = self.style.tick_length if notch_length is None else notch_length
+        pad = self.style.tick_pad * size if pad is None else pad
+        offset = notch_length / 2 + pad
+        theta = np.deg2rad(rotation)
+        sin_t, cos_t = abs(np.sin(theta)), abs(np.cos(theta))
+        extent = offset
         for y, label in labels:
             (x_tick, y_tick) = self.mapToCanvas(self._x, y)
-            self.addText(label, y = y_tick, x = x_tick - notch_length, color = color, rotation = rotation, baseline = text_baseline, anchor = "end", size = text_size)
+            w, h = self._blockSize(label, size)
+            if sin_t < 1e-9:
+                self.addText(label, y = y_tick, x = x_tick - offset, color = color, rotation = rotation, baseline = text_baseline, anchor = "end", size = size)
+                extent = max(extent, offset + w)
+            else:
+                box_w = w * cos_t + h * sin_t
+                self.addText(label, y = y_tick, x = x_tick - offset - box_w / 2, color = color, rotation = rotation, baseline = "middle", anchor = "middle", size = size)
+                extent = max(extent, offset + box_w)
             if y != self._y:
                 self.addLine(y1 = y_tick, y2 = y_tick, x1 = x_tick - notch_length / 2, x2 = x_tick + notch_length / 2, color = color, thickness = notch_thickness)
                 if grid:
                     self.addLine(y1 = y_tick, y2 = y_tick, x1 = self.O_x, x2 = self.width - self.m_x, color = "gray", thickness = 1, dashed = True)
+        self._recordTickExtent('y', extent)
 
     def addBar(self, x: Number, y: Number, bar_width: Number, _y: Number = 0, bar_color: Color = "orange", opacity: Number = 1) -> None:
         """Draw a single vertical bar from ``_y`` to ``y``."""
@@ -805,16 +1086,25 @@ class Plot(Canvas):
         (_, y2) = self.mapToCanvas(x, y)
         self.addRectangle(height=y1-y2, width=bar_width, x=(x1-bar_width/2), y=y2, color=bar_color, border='none', opacity=opacity)
 
-    def addAxisLabels(self, xlabel: str | None = None, ylabel: str | None = None, xsize: Number = 16, ysize: Number = 16, color: Color = "black", xpad: Number | None = None, ypad: Number | None = None, xrot: Number = 0, yrot: Number = 0, xlatex: bool = False, ylatex: bool = False) -> None:
-        """Add optional x- and y-axis labels."""
-        if xpad is None:
-            xpad = (self.height - self.O_y)/2
-        if ypad is None:
-            ypad = self.O_x/2
-        
+    def addAxisLabels(self, xlabel: str | None = None, ylabel: str | None = None, xsize: Number | None = None, ysize: Number | None = None, color: Color = "black", xpad: Number | None = None, ypad: Number | None = None, xrot: Number = 0, yrot: Number = 0, xlatex: bool = False, ylatex: bool = False) -> None:
+        """Add optional x- and y-axis labels.
+
+        By default labels are placed just outside the tick labels already
+        drawn on that axis (plus ``style.label_pad`` x font size), so call this
+        after ``addTicksX``/``addTicksY``/``easyTicks``. ``xpad`` overrides the
+        distance from the x axis to the top of the x label; ``ypad`` overrides
+        the distance from the y axis to the centre line of the y label.
+        """
+        xsize = self.style.label_size if xsize is None else xsize
+        ysize = self.style.label_size if ysize is None else ysize
+
         if xlabel is not None:
+            if xpad is None:
+                xpad = self.tickExtent('x') + self.style.label_pad * xsize
             x_mid, y_axis = self.mapToCanvas((self._x + self.x_)/2, self._y)
             y = y_axis + xpad
+            if not xlatex and y + self._blockSize(xlabel, xsize)[1] > self.height + 0.5:
+                warnings.warn(f"x axis label {xlabel!r} extends below the canvas; increase the bottom margin (e.g. extra_margins=(0, 30, 0, 0) with auto margins, or an explicit origin) or reduce font sizes", stacklevel=2)
             if xlatex:
                 self.addLaTeX(xlabel, x_mid, y, baseline="hanging", anchor="middle", scale=(xsize/16), rot=xrot)
             else:
@@ -822,18 +1112,29 @@ class Plot(Canvas):
 
         if ylabel is not None:
             x_axis, y_mid = self.mapToCanvas(self._x, (self._y + self.y_)/2)
-            x = x_axis - ypad
+            edge = self.tickExtent('y') + self.style.label_pad * ysize  # axis -> near edge of the label
             if ylatex:
-                self.addLaTeX(ylabel, x, y_mid, baseline="middle", anchor="middle", scale=(ysize/16), rot=(yrot-90))
+                if ypad is None:
+                    # "text-top" pins the bottom of the rendered box (which faces the axis after the -90 deg rotation).
+                    self.addLaTeX(ylabel, x_axis - edge, y_mid, baseline="text-top", anchor="middle", scale=(ysize/16), rot=(yrot-90))
+                else:
+                    self.addLaTeX(ylabel, x_axis - ypad, y_mid, baseline="middle", anchor="middle", scale=(ysize/16), rot=(yrot-90))
             else:
-                self.addText(ylabel, x, y_mid, color=color, rotation=(yrot-90), baseline="middle", anchor="middle", size=ysize)
+                if ypad is None:
+                    _, h = self._blockSize(ylabel, ysize)
+                    ypad = edge + h / 2
+                    if x_axis - ypad - h / 2 < -0.5:
+                        warnings.warn(f"y axis label {ylabel!r} extends past the left edge of the canvas; increase the left margin (e.g. extra_margins=(30, 0, 0, 0) with auto margins, or an explicit origin) or reduce font sizes", stacklevel=2)
+                self.addText(ylabel, x_axis - ypad, y_mid, color=color, rotation=(yrot-90), baseline="middle", anchor="middle", size=ysize)
 
-    def addTitle(self, title: str, size: Number = 18, color: Color = "black", pad: Number = 18, latex: bool = False) -> None:
-        """Add a title above the plot area."""
+    def addTitle(self, title: str, size: Number | None = None, color: Color = "black", pad: Number | None = None, latex: bool = False) -> None:
+        """Add a title ``pad`` above the plot area (default: ``style.title_pad`` x size)."""
+        size = self.style.title_size if size is None else size
+        pad = self.style.title_pad * size if pad is None else pad
         x_mid, y_top = self.mapToCanvas((self._x + self.x_)/2, self.y_)
         y = y_top - pad
         if latex:
-            self.addLaTeX(title, x_mid, y, scale=size/16)
+            self.addLaTeX(title, x_mid, y, scale=size/16, baseline="text-top")
         else:
             self.addText(title, x_mid, y, color=color, size=size, baseline="auto", anchor="middle")
 
@@ -918,8 +1219,9 @@ class Plot(Canvas):
             raise ValueError(f"invalid legend anchor: {anchor}. supported anchor types are: 'NE', 'N', 'NW', 'W', 'E', 'SW', 'S', 'SE'")
         return (ax, ay)
         
-    def addLegend(self, anchor: LegendAnchor | None = 'NE', text_size: Number = 16, text_color: Color = 'black', marker_scale: Number = 1, box_color: Color = 'yellow', box_border_color: Color = 'red', box_opacity: Number = 0.5, position: Point | None = None) -> None:
+    def addLegend(self, anchor: LegendAnchor | None = 'NE', text_size: Number | None = None, text_color: Color = 'black', marker_scale: Number = 1, box_color: Color = 'yellow', box_border_color: Color = 'red', box_opacity: Number = 0.5, position: Point | None = None) -> None:
         """Draw a legend from the labels registered by plot methods."""
+        text_size = self.style.tick_size if text_size is None else text_size
         self.legend_items.sort(key=lambda x: x[1]['type'])
         lines = [x[0] for x in self.legend_items]
 
@@ -956,7 +1258,7 @@ class Plot(Canvas):
                 x1 = x + 5 * marker_scale
                 self.putMarker(x1, y_item, marker_type=plot_info['marker_type'], size=marker_scale, color=plot_info['color'], on_canvas=False)
     
-    def easyTicks(self, color: Color = 'black', ticks_per_unit: Number = 0.01, notch_thickness: Number = 2, notch_length: Number = 15, rot_x: Number = 0, rot_y: Number = 0, text_size: Number = 16, grid: bool = False) -> None:
+    def easyTicks(self, color: Color = 'black', ticks_per_unit: Number = 0.01, notch_thickness: Number = 2, notch_length: Number | None = None, rot_x: Number = 0, rot_y: Number = 0, text_size: Number | None = None, grid: bool = False) -> None:
         """Automatically choose and draw evenly spaced ticks."""
         (x1, y1) = self.mapToCanvas(self._x, self._y)
         (x2, y2) = self.mapToCanvas(self.x_, self.y_)
@@ -969,27 +1271,236 @@ class Plot(Canvas):
         if num_x_ticks > 0:
             x_ticks = np.linspace(self._x, self.x_, num=num_x_ticks)
             x_labels = [(x, f'{x:.2f}') for x in x_ticks]
-            self.addTicksX(x_labels, color, notch_thickness, notch_length, rot_x, "middle", text_size, grid)
+            self.addTicksX(x_labels, color, notch_thickness, notch_length, rot_x, None, text_size, grid)
         if num_y_ticks > 0:
             y_ticks = np.linspace(self._y, self.y_, num=num_y_ticks)
             y_labels = [(y, f'{y:.2f}') for y in y_ticks]
             self.addTicksY(y_labels, color, notch_thickness, notch_length, rot_y, "middle", text_size, grid)
     
-    def easyAxes(self, color: Color = 'black', thickness: Number = 2, directed: bool = True, ticks_per_unit: Number = 0.01, notch_length: Number = 15, rot_x: Number = 0, rot_y: Number = 0, text_size: Number = 16, grid: bool = False) -> None:
+    def easyAxes(self, color: Color = 'black', thickness: Number = 2, directed: bool = True, ticks_per_unit: Number = 0.01, notch_length: Number | None = None, rot_x: Number = 0, rot_y: Number = 0, text_size: Number | None = None, grid: bool = False) -> None:
         """Draw axes and automatically chosen ticks."""
         self.addAxes(color, thickness, directed)
         self.easyTicks(color, ticks_per_unit, thickness, notch_length, rot_x, rot_y, text_size, grid)
 
+class _SubplotSlot:
+    # Placeholder stored in Figure.contents marking where (in z-order) a
+    # subplot is rendered.
+    __slots__ = ("plot", "x", "y", "index")
+
+    def __init__(self, plot: Plot, x: float, y: float, index: int) -> None:
+        self.plot, self.x, self.y, self.index = plot, x, y, index
+
+
+class Figure(Canvas):
+    """A canvas holding a grid of :class:`Plot` subplots.
+
+    The figure area (minus ``padding`` and an optional title band) is split
+    into ``rows`` x ``cols`` cells separated by ``wspace``/``hspace``. Each
+    call to :meth:`subplot` returns an ordinary :class:`Plot` sized to its
+    cell(s) and drawn in its own local coordinates; on save, every subplot is
+    translated into place and its SVG ids are prefixed so markers, gradients,
+    LaTeX glyphs, etc. never collide. The figure is itself a :class:`Canvas`,
+    so you can draw annotations (e.g. arrows between subplots) in figure
+    coordinates; use :meth:`mapToFigure` to convert subplot data coordinates.
+
+    ``style`` is the default :class:`PlotStyle` for all subplots. Subplots
+    use ``origin="auto"``/``margins="auto"`` by default so that subplots
+    sharing a style get identical, aligned plot areas.
+    """
+
+    def __init__(self, height: Number, width: Number, rows: int = 1, cols: int = 1, *, title: str | None = None, title_size: Number | None = None, style: PlotStyle | None = None, wspace: Number = 10, hspace: Number = 10, padding: Number = 10, width_ratios: Sequence[Number] | None = None, height_ratios: Sequence[Number] | None = None, executables: ExecutablePaths | None = None) -> None:
+        """Create a figure with a ``rows`` x ``cols`` subplot grid."""
+        Canvas.__init__(self, height, width, executables=executables)
+        if rows < 1 or cols < 1:
+            raise ValueError("rows and cols must both be >= 1")
+        width_ratios = [1] * cols if width_ratios is None else list(width_ratios)
+        height_ratios = [1] * rows if height_ratios is None else list(height_ratios)
+        if len(width_ratios) != cols or len(height_ratios) != rows:
+            raise ValueError("width_ratios must have `cols` entries and height_ratios must have `rows` entries")
+        if min(width_ratios) <= 0 or min(height_ratios) <= 0:
+            raise ValueError("width/height ratios must be positive")
+        self.rows, self.cols = rows, cols
+        self.style = style if style is not None else PlotStyle()
+        self._slots: list[_SubplotSlot] = []
+        self._occupied: dict[tuple[int, int], int] = {}
+
+        top = padding
+        if title is not None:
+            size = round(1.25 * self.style.title_size, 2) if title_size is None else title_size
+            _, h = self.addText(title, width / 2, top, size=size, baseline="hanging", valign="top")
+            top += h + self.style.title_pad * size
+        grid_w = width - 2 * padding - wspace * (cols - 1)
+        grid_h = height - top - padding - hspace * (rows - 1)
+        if grid_w <= 0 or grid_h <= 0:
+            raise ValueError("figure is too small for the requested padding/spacing")
+        col_w = [grid_w * r / sum(width_ratios) for r in width_ratios]
+        row_h = [grid_h * r / sum(height_ratios) for r in height_ratios]
+        self._col_x = [padding + sum(col_w[:i]) + wspace * i for i in range(cols)]
+        self._row_y = [top + sum(row_h[:i]) + hspace * i for i in range(rows)]
+        self._col_w, self._row_h = col_w, row_h
+        self.wspace, self.hspace = wspace, hspace
+
+    def cellBox(self, row: int, col: int, rowspan: int = 1, colspan: int = 1) -> tuple[float, float, float, float]:
+        """Return ``(x, y, width, height)`` of a (possibly spanning) grid cell in figure coordinates."""
+        if rowspan < 1 or colspan < 1:
+            raise ValueError("rowspan and colspan must be >= 1")
+        if not (0 <= row and row + rowspan <= self.rows and 0 <= col and col + colspan <= self.cols):
+            raise IndexError(f"cell (row={row}, col={col}, rowspan={rowspan}, colspan={colspan}) is outside the {self.rows}x{self.cols} grid")
+        x, y = self._col_x[col], self._row_y[row]
+        w = sum(self._col_w[col:col + colspan]) + self.wspace * (colspan - 1)
+        h = sum(self._row_h[row:row + rowspan]) + self.hspace * (rowspan - 1)
+        return x, y, w, h
+
+    def subplot(self, row: int, col: int, rowspan: int = 1, colspan: int = 1, *, x_range: Point = (0, 1), y_range: Point = (0, 1), origin: Point | Literal["auto"] | None = "auto", margins: Point | Literal["auto"] | None = "auto", style: PlotStyle | None = None, extra_margins: Sequence[Number] = (0, 0, 0, 0)) -> Plot:
+        """Create a :class:`Plot` occupying the given grid cell(s) and return it.
+
+        ``row``/``col`` are zero-based. ``origin``/``margins`` are in the
+        subplot's local coordinates (see :class:`Plot`).
+        """
+        x, y, w, h = self.cellBox(row, col, rowspan, colspan)
+        cells = [(r, c) for r in range(row, row + rowspan) for c in range(col, col + colspan)]
+        taken = [cell for cell in cells if cell in self._occupied]
+        if taken:
+            raise ValueError(f"grid cell(s) {taken} are already used by another subplot")
+        plot = Plot(h, w, None, None, x_range, y_range, style=style if style is not None else self.style, extra_margins=extra_margins, executables=self.executables)
+        plot.default_font = self.default_font
+        plot.arrow_style = self.arrow_style
+        plot._setLayout(origin, margins)  # re-run now that the figure's font is set
+        slot = _SubplotSlot(plot, x, y, len(self._slots))
+        for cell in cells:
+            self._occupied[cell] = slot.index
+        self._slots.append(slot)
+        self.contents.append(slot)
+        return plot
+
+    def subplots(self, *, x_range: Point = (0, 1), y_range: Point = (0, 1), style: PlotStyle | None = None) -> list[list[Plot]]:
+        """Create one subplot per grid cell and return them as ``axes[row][col]``."""
+        return [[self.subplot(r, c, x_range=x_range, y_range=y_range, style=style) for c in range(self.cols)] for r in range(self.rows)]
+
+    @property
+    def plots(self) -> list[Plot]:
+        """All subplots in creation order."""
+        return [slot.plot for slot in self._slots]
+
+    def _slotOf(self, plot: Plot) -> _SubplotSlot:
+        for slot in self._slots:
+            if slot.plot is plot:
+                return slot
+        raise KeyError("plot is not a subplot of this figure")
+
+    def mapToFigure(self, plot: Plot, x: Number, y: Number, data: bool = True) -> Point:
+        """Convert a point of ``plot`` to figure coordinates.
+
+        With ``data=True`` (default) ``(x, y)`` are data coordinates; otherwise
+        they are the subplot's local canvas coordinates.
+        """
+        slot = self._slotOf(plot)
+        if data:
+            (x, y) = plot.mapToCanvas(x, y)
+        return (slot.x + x, slot.y + y)
+
+    def _renderParts(self) -> tuple[list[str], list[str], set[str]]:
+        defs, contents, fonts = list(self.defs), [], set(self.used_fonts)
+        separator = '\n<!--svgflow:defs-end-->\n'
+        for item in self.contents:
+            if not isinstance(item, _SubplotSlot):
+                contents.append(item)
+                continue
+            sub_defs, sub_contents, sub_fonts = item.plot._renderParts()
+            block = '\n'.join(sub_defs) + separator + '\n'.join(sub_contents)
+            block = uniquify_svg_ids(block, f'sp{item.index}')
+            sub_defs_txt, sub_contents_txt = block.split(separator)
+            if sub_defs_txt:
+                defs.append(sub_defs_txt)
+            contents.append(f'<g transform="translate({item.x:.4f} {item.y:.4f})">\n{sub_contents_txt}\n</g>')
+            fonts |= sub_fonts
+        return defs, contents, fonts
+
+class FlowStyle:
+    """Default appearance of nodes and edges in a :class:`Flow`.
+
+    Every ``Flow`` drawing method falls back to these values for arguments
+    left as ``None``, so a whole diagram can be restyled in one place::
+
+        flow = Flow(400, 600, style=FlowStyle(node_color="aliceblue", edge_color="gray", arrow_style="stealth"))
+
+    * ``node_shape``/``node_color``/``node_border``/``node_thickness``: node defaults.
+    * ``text_size``/``text_color``/``text_style``: node label text.
+    * ``edge_color``/``edge_thickness``: edge strokes.
+    * ``edge_text_size``/``edge_text_color``: edge labels (``None`` = same as node text).
+    * ``label_gap``: gap between an edge and its label, in units of the label font size.
+    * ``arrow_style``/``arrow_size``: arrowheads (``None`` style = the canvas' :attr:`arrow_style`).
+    * ``stub``/``corner_radius``: elbow-edge routing defaults.
+    * ``self_loop_size``: default size of self-loops.
+    """
+
+    def __init__(self, *, node_shape: NodeShape = ('circle', 20), node_color: Color = 'none', node_border: Color = 'black', node_thickness: Number = 2, text_size: Number = 16, text_color: Color = 'black', text_style: str | None = None, edge_color: Color = 'black', edge_thickness: Number = 2, edge_text_size: Number | None = None, edge_text_color: Color | None = None, label_gap: Number = 0.4, arrow_style: ArrowStyle | None = None, arrow_size: Number = 1, stub: Number = 20, corner_radius: Number = 6, self_loop_size: Number = 100) -> None:
+        self.node_shape = node_shape
+        self.node_color = node_color
+        self.node_border = node_border
+        self.node_thickness = node_thickness
+        self.text_size = text_size
+        self.text_color = text_color
+        self.text_style = text_style
+        self.edge_color = edge_color
+        self.edge_thickness = edge_thickness
+        self.edge_text_size = edge_text_size
+        self.edge_text_color = edge_text_color
+        self.label_gap = label_gap
+        self.arrow_style = arrow_style
+        self.arrow_size = arrow_size
+        self.stub = stub
+        self.corner_radius = corner_radius
+        self.self_loop_size = self_loop_size
+
+    def copy(self, **overrides: Any) -> "FlowStyle":
+        """Return a copy with some attributes replaced."""
+        values = dict(self.__dict__)
+        values.update(overrides)
+        return FlowStyle(**values)
+
+    def __repr__(self) -> str:
+        args = ', '.join(f'{k}={v!r}' for k, v in self.__dict__.items())
+        return f'FlowStyle({args})'
+
+
 class Flow(Canvas):
     """Canvas with node and edge helpers for flow diagrams."""
 
-    def __init__(self, height: Number, width: Number, *, executables: ExecutablePaths | None = None) -> None:
-        """Create an empty flow-diagram canvas."""
+    def __init__(self, height: Number, width: Number, *, style: FlowStyle | None = None, executables: ExecutablePaths | None = None) -> None:
+        """Create an empty flow-diagram canvas whose defaults come from ``style``."""
         Canvas.__init__(self, height, width, executables=executables)
+        self.style = style if style is not None else FlowStyle()
         self.nodes = dict()
-    
-    def addNode(self, id: str, x: Number, y: Number, shape: NodeShape = ('circle', 20), label: Any | None = None, color: Color = "none", border: Color = "black", thickness: Number = 2, opacity: Number = 1, text_color: Color = "black", text_size: Number = 16, text_style: str | None = None, latex: bool = False) -> None:
-        """Add a named node using a circle, rectangle, ellipse, or parallelogram shape."""
+
+    def _edgeDefaults(self, color: Color | None, thickness: Number | None, text_color: Color | None, text_size: Number | None, arrow_size: Number | None, arrow_style: ArrowStyle | None) -> tuple[Color, Number, Color, Number, Number, ArrowStyle | None]:
+        # Resolves edge arguments left as None against self.style.
+        s = self.style
+        return (s.edge_color if color is None else color,
+                s.edge_thickness if thickness is None else thickness,
+                (s.edge_text_color or s.text_color) if text_color is None else text_color,
+                (s.edge_text_size or s.text_size) if text_size is None else text_size,
+                s.arrow_size if arrow_size is None else arrow_size,
+                s.arrow_style if arrow_style is None else arrow_style)
+
+    def _requireNode(self, *ids: str) -> None:
+        for node_id in ids:
+            if node_id not in self.nodes:
+                raise KeyError(f'node {node_id} does not exist')
+
+    def addNode(self, id: str, x: Number, y: Number, shape: NodeShape | None = None, label: Any | None = None, color: Color | None = None, border: Color | None = None, thickness: Number | None = None, opacity: Number = 1, text_color: Color | None = None, text_size: Number | None = None, text_style: str | None = None, latex: bool = False) -> None:
+        """Add a named node using a circle, rectangle, ellipse, or parallelogram shape.
+
+        Arguments left as ``None`` use the flow's :class:`FlowStyle`.
+        """
+        s = self.style
+        shape = s.node_shape if shape is None else shape
+        color = s.node_color if color is None else color
+        border = s.node_border if border is None else border
+        thickness = s.node_thickness if thickness is None else thickness
+        text_color = s.text_color if text_color is None else text_color
+        text_size = s.text_size if text_size is None else text_size
+        text_style = s.text_style if text_style is None else text_style
         node_type = shape[0]
         if id not in self.nodes.keys():
             if node_type == 'circle':
@@ -999,7 +1510,7 @@ class Flow(Canvas):
             elif node_type == 'rectangle':
                 h, w = shape[1], shape[2]
                 corner = shape[3] if len(shape) >= 4 else 0
-                self.nodes[id] = {'x': x, 'y': y, 'h': h, 'w': w, 'label': label, 'type': 'rectangle'}
+                self.nodes[id] = {'x': x, 'y': y, 'h': h, 'w': w, 'rx': corner, 'label': label, 'type': 'rectangle'}
                 self.addRectangle(h, w, x-w/2, y-h/2, color=color, border=border, thickness=thickness, opacity=opacity, corner_radius=corner)
             elif node_type == 'ellipse':
                 a, b = shape[1], shape[2]
@@ -1032,75 +1543,125 @@ class Flow(Canvas):
             raise KeyError(f'another node with id: {id} already exists')
     
     def _getIntersectionWithContainer(self, node_id: str, theta: Number) -> Point:
+        # Point where the ray from the node centre at angle `theta` (degrees,
+        # clockwise from +x) leaves the node's outline.
         theta = (theta+90) % (360) - 90
         if node_id not in self.nodes.keys():
             raise KeyError(f"node {node_id} does not exist")
+        node = self.nodes[node_id]
+        x, y = node['x'], node['y']
+        ux, uy = np.cos(theta * np.pi / 180), np.sin(theta * np.pi / 180)
 
-        if self.nodes[node_id]['type'] == 'circle':
-            x, y = self.nodes[node_id]['x'], self.nodes[node_id]['y']
-            r = self.nodes[node_id]['r']
-            x1 = x + r * np.cos(theta * np.pi / 180)
-            y1 = y + r * np.sin(theta * np.pi / 180)
-        elif self.nodes[node_id]['type'] == 'rectangle':
-            x, y = self.nodes[node_id]['x'], self.nodes[node_id]['y']
-            h, w = self.nodes[node_id]['h'], self.nodes[node_id]['w']
-            phi = 180 * np.arctan(h / w) / np.pi
-            if (theta >= -phi) and (theta <= phi):
-                x1 = x + w/2
-                y1 = y + (w/2) * np.tan(theta * np.pi / 180)
-            elif (theta > phi) and (theta <= 180 - phi):
-                y1 = y + h/2
-                x1 = x + (h/2) / np.tan(theta * np.pi / 180)
-            elif (theta > 180 - phi) and (theta <= 180 + phi):
-                x1 = x - w/2
-                y1 = y - (w/2) * np.tan(theta * np.pi / 180) 
-            else:
-                y1 = y - h/2
-                x1 = x - (h/2) / np.tan(theta * np.pi / 180)
-        elif self.nodes[node_id]['type'] == 'ellipse':
-            x, y = self.nodes[node_id]['x'], self.nodes[node_id]['y']
-            a, b = self.nodes[node_id]['a'], self.nodes[node_id]['b']
-            x1 = x + a * np.cos(theta * np.pi / 180)
-            y1 = y + b * np.sin(theta * np.pi / 180)
-        elif self.nodes[node_id]['type'] == 'parallelogram':
-            x, y = self.nodes[node_id]['x'], self.nodes[node_id]['y']
-            points = self.nodes[node_id]['points']
+        if node['type'] == 'circle':
+            r = node['r']
+            x1, y1 = x + r * ux, y + r * uy
+        elif node['type'] == 'rectangle':
+            h, w = node['h'], node['w']
+            # Distance along the ray to the first vertical / horizontal side.
+            tx = (w / 2) / abs(ux) if abs(ux) > 1e-12 else np.inf
+            ty = (h / 2) / abs(uy) if abs(uy) > 1e-12 else np.inf
+            t = min(tx, ty)
+            x1, y1 = x + t * ux, y + t * uy
+            # Rounded corners: if the hit lies in a corner zone, intersect the corner arc instead.
+            r = min(node.get('rx', 0), w / 2, h / 2)
+            if r > 0:
+                ix, iy = w / 2 - r, h / 2 - r
+                dx, dy = x1 - x, y1 - y
+                if abs(dx) > ix + 1e-9 and abs(dy) > iy + 1e-9:
+                    ccx, ccy = x + np.sign(dx) * ix, y + np.sign(dy) * iy
+                    fx, fy = x - ccx, y - ccy
+                    b = fx * ux + fy * uy
+                    t = -b + np.sqrt(max(b * b - (fx * fx + fy * fy - r * r), 0.0))
+                    x1, y1 = x + t * ux, y + t * uy
+        elif node['type'] == 'ellipse':
+            # Polar radius of the ellipse in direction theta (not the parametric angle).
+            a, b = node['a'], node['b']
+            r = a * b / np.hypot(b * ux, a * uy)
+            x1, y1 = x + r * ux, y + r * uy
+        elif node['type'] == 'parallelogram':
+            points = node['points']
             (x1, y1) = self._computeInteresctionWithConvexPolygon(x, y, theta, points)
         else:
-            raise ValueError(f"invalid node shape {self.nodes[node_id]['type']}: supported node shapes are: circle, rectangle, ellipse, parallelogram")
+            raise ValueError(f"invalid node shape {node['type']}: supported node shapes are: circle, rectangle, ellipse, parallelogram")
         return (x1, y1)
     
-    def addEdge(self, node1: str, node2: str, label: Any | None = None, curvature: Number = 0, color: Color = "black", thickness: Number = 2, dashed: bool = False, directed: bool = False, opacity: Number = 1, text_color: Color = "black", text_size: Number = 16, text_style: str | None = None, latex: bool = False) -> None:
-        """Connect two distinct nodes with a straight or curved edge."""
-        if node1 not in self.nodes.keys():
-            raise KeyError(f'node {node1} does not exist')
-        if node2 not in self.nodes.keys():
-            raise KeyError(f'node {node2} does not exist')
+    def addEdge(self, node1: str, node2: str, label: Any | None = None, curvature: Number = 0, color: Color | None = None, thickness: Number | None = None, dashed: bool = False, directed: Directed = False, opacity: Number = 1, text_color: Color | None = None, text_size: Number | None = None, text_style: str | None = None, latex: bool = False, *, arrow_size: Number | None = None, arrow_style: ArrowStyle | None = None) -> None:
+        """Connect two distinct nodes with a straight or curved edge.
+
+        With ``curvature != 0`` the edge is a quadratic curve whose control
+        point is offset ``curvature`` from the midpoint of the node centres;
+        it is clipped exactly where the curve leaves each node.
+        """
+        self._requireNode(node1, node2)
         if node1 == node2:
             raise KeyError('can not add self edge using addEdge - use addSelfEdge instead')
-        
+        color, thickness, text_color, text_size, arrow_size, arrow_style = self._edgeDefaults(color, thickness, text_color, text_size, arrow_size, arrow_style)
+        gap = self.style.label_gap
+
         (x1, y1) = (self.nodes[node1]['x'], self.nodes[node1]['y'])
         (x2, y2) = (self.nodes[node2]['x'], self.nodes[node2]['y'])
-        theta = self._getRot(x1, y1, x2, y2)
         if curvature == 0:
+            theta = self._getRot(x1, y1, x2, y2)
             (a1, b1) = self._getIntersectionWithContainer(node1, theta)
             (a2, b2) = self._getIntersectionWithContainer(node2, 180 + theta)
-            self.addLine(a1, b1, a2, b2, color, thickness, dashed, directed, opacity, label, text_color, text_size, text_style, latex=latex)
+            self.addLine(a1, b1, a2, b2, color, thickness, dashed, directed, opacity, label, text_color, text_size, text_style, arrow_size, latex, arrow_style=arrow_style, label_gap=gap)
         else:
-            alpha = 180 * np.arctan(2 * curvature / np.sqrt((x1-x2)**2 + (y1-y2)**2)) / np.pi
-            (a1, b1) = self._getIntersectionWithContainer(node1, theta - np.sign(x2-x1) * alpha)
-            (a2, b2) = self._getIntersectionWithContainer(node2, 180 + theta + np.sign(x2-x1) * alpha)
+            # The curve leaves each centre heading straight for the control point,
+            # so clip along those directions; this works for any orientation.
             (cx, cy) = self._getControlPoint(x1, y1, x2, y2, curvature)
-            _curvature = np.sign(curvature) * np.sqrt(((a1+a2)/2 - cx)**2 + ((b1+b2)/2 - cy)**2)
-            self.addCurvedLine(a1, b1, a2, b2, _curvature, color, thickness, dashed, directed, opacity, label, text_color, text_size, text_style, latex=latex)
-    
-    def addSelfEdge(self, node: str, theta1: Number = 60, theta2: Number = 120, curvature: Number = 100, label: Any | None = None, color: Color = "black", thickness: Number = 2, dashed: bool = False, directed: bool = False, opacity: Number = 1, text_color: Color = "black", text_size: Number = 16, text_style: str | None = None, arrow_size: Number = 1, latex: bool = False) -> None:
-        """Add a curved self-loop edge to a node."""
-        if node not in self.nodes.keys():
-            raise KeyError(f'node {node} does not exist')
-        (x1, y1) = self._getIntersectionWithContainer(node, theta1)
-        (x2, y2) = self._getIntersectionWithContainer(node, theta2)
-        self.addCurvedLine(x1, y1, x2, y2, curvature, color, thickness, dashed, directed, opacity, label, text_color, text_size, text_style, arrow_size, latex)
+            (a1, b1) = self._getIntersectionWithContainer(node1, self._getRot(x1, y1, cx, cy))
+            (a2, b2) = self._getIntersectionWithContainer(node2, self._getRot(x2, y2, cx, cy))
+            self._strokeSegments([[(a1, b1), (cx, cy), (a2, b2)]], color, thickness, False, 'none', opacity, directed, dashed, arrow_size, arrow_style)
+            if label is not None:
+                # Signed offset of the control point from the clipped chord, in
+                # the same convention addCurvedLine uses.
+                nx, ny = self._perpUnit(a1, b1, a2, b2)
+                offset = (cx - (a1 + a2) / 2) * nx + (cy - (b1 + b2) / 2) * ny
+                self._curvedLabel(a1, b1, a2, b2, offset, label, text_color, text_size, text_style, latex, gap)
+
+    def addSelfEdge(self, node: str, theta1: Number = 60, theta2: Number = 120, curvature: Number | None = None, label: Any | None = None, color: Color | None = None, thickness: Number | None = None, dashed: bool = False, directed: Directed = False, opacity: Number = 1, text_color: Color | None = None, text_size: Number | None = None, text_style: str | None = None, arrow_size: Number | None = None, latex: bool = False, *, arrow_style: ArrowStyle | None = None) -> None:
+        """Add a self-loop leaving ``node`` at angle ``theta1`` and returning at ``theta2``.
+
+        Angles are in degrees, clockwise from +x (so 90 is straight down). The
+        loop always bulges *outward*, leaving and re-entering perpendicular-ish
+        to the outline; ``curvature`` sets its size (the apex lies about
+        ``curvature / 2`` beyond the attachment points; the sign is ignored).
+        The label is placed just outside the loop's apex.
+        """
+        self._requireNode(node)
+        color, thickness, text_color, text_size, arrow_size, arrow_style = self._edgeDefaults(color, thickness, text_color, text_size, arrow_size, arrow_style)
+        size = abs(self.style.self_loop_size if curvature is None else curvature)
+
+        p1 = np.array(self._getIntersectionWithContainer(node, theta1), dtype=float)
+        p2 = np.array(self._getIntersectionWithContainer(node, theta2), dtype=float)
+        u1 = np.array([np.cos(np.deg2rad(theta1)), np.sin(np.deg2rad(theta1))])
+        u2 = np.array([np.cos(np.deg2rad(theta2)), np.sin(np.deg2rad(theta2))])
+        bisector = u1 + u2
+        spread = float(np.hypot(*bisector))
+        if spread < 1e-6:  # attachment points on opposite sides
+            mid = np.deg2rad((theta1 + theta2) / 2)
+            out = np.array([np.cos(mid), np.sin(mid)])
+        else:
+            out = bisector / spread
+        # Cubic loop with handles along the outward rays; its apex lies
+        # 0.75 * L * spread / 2 beyond the chord midpoint.
+        L = size / (0.75 * max(spread, 0.5))
+        c1, c2 = p1 + L * u1, p2 + L * u2
+        self._strokeSegments([[tuple(p1), tuple(c1), tuple(c2), tuple(p2)]], color, thickness, False, 'none', opacity, directed, dashed, arrow_size, arrow_style)
+
+        if label is not None:
+            apex = 0.125 * p1 + 0.375 * c1 + 0.375 * c2 + 0.125 * p2
+            lx, ly = apex + out * (text_size * self.style.label_gap + thickness / 2)
+            if abs(out[1]) >= abs(out[0]):
+                anchor = 'middle'
+                baseline, latex_baseline = ('auto', 'text-top') if out[1] < 0 else ('hanging', 'hanging')
+            else:
+                anchor = 'start' if out[0] > 0 else 'end'
+                baseline = latex_baseline = 'middle'
+            if latex:
+                self.addLaTeX(label, lx, ly, scale=text_size / 16, baseline=latex_baseline, anchor=anchor, color=text_color)
+            else:
+                self.addText(label, lx, ly, text_color, baseline=baseline, anchor=anchor, size=text_size, style=text_style)
 
     # ------------------------------------------------------------------ #
     # Elbow (orthogonal) edges
@@ -1215,7 +1776,7 @@ class Flow(Canvas):
         d.append(f'L{points[-1][0]:.4f} {points[-1][1]:.4f}')
         return ' '.join(d)
 
-    def addElbowEdge(self, node1: str, node2: str, from_port: Port | None = None, to_port: Port | None = None, waypoints: Sequence[Point] | None = None, label: Any | None = None, label_segment: int | Literal['longest'] = 'longest', stub: Number = 20, corner_radius: Number = 6, color: Color = "black", thickness: Number = 2, dashed: bool = False, directed: bool = True, opacity: Number = 1, text_color: Color = "black", text_size: Number = 16, text_style: str | None = None, arrow_size: Number = 1, latex: bool = False) -> list[Point]:
+    def addElbowEdge(self, node1: str, node2: str, from_port: Port | None = None, to_port: Port | None = None, waypoints: Sequence[Point] | None = None, label: Any | None = None, label_segment: int | Literal['longest'] = 'longest', stub: Number | None = None, corner_radius: Number | None = None, color: Color | None = None, thickness: Number | None = None, dashed: bool = False, directed: Directed = True, opacity: Number = 1, text_color: Color | None = None, text_size: Number | None = None, text_style: str | None = None, arrow_size: Number | None = None, latex: bool = False, *, arrow_style: ArrowStyle | None = None) -> list[Point]:
         """Connect two nodes with an orthogonal (elbow) edge.
 
         ``from_port``/``to_port`` are the sides of ``node1``/``node2`` the edge
@@ -1233,11 +1794,12 @@ class Flow(Canvas):
 
         Returns the list of route points (useful for debugging/layout).
         """
-        for n in (node1, node2):
-            if n not in self.nodes:
-                raise KeyError(f'node {n} does not exist')
+        self._requireNode(node1, node2)
         if node1 == node2:
             raise KeyError('can not add self edge using addElbowEdge - use addSelfEdge instead')
+        color, thickness, text_color, text_size, arrow_size, arrow_style = self._edgeDefaults(color, thickness, text_color, text_size, arrow_size, arrow_style)
+        stub = self.style.stub if stub is None else stub
+        corner_radius = self.style.corner_radius if corner_radius is None else corner_radius
 
         if waypoints:
             waypoints = [(float(a), float(b)) for (a, b) in waypoints]
@@ -1255,12 +1817,20 @@ class Flow(Canvas):
         if len(points) < 2:
             return points
 
-        dash = ' stroke-dasharray="4"' if dashed else ''
-        self.contents.append(f'<path d="{self._roundedPathData(points, corner_radius)}" stroke="{color}" stroke-width="{thickness}" stroke-opacity="{opacity}" fill="none"{dash}/>')
-
-        if directed:
-            (ax, ay), (bx, by) = points[-2], points[-1]
-            self._addArrow(bx, by, self._getRot(ax, ay, bx, by), thickness, color, opacity, arrow_size)
+        start, end = self._arrowEnds(directed)
+        stroke_points = list(points)
+        heads: list[tuple[Number, Number, Number]] = []
+        arrow = None
+        if start or end:
+            style, scale, tip_back, line_back = self._arrowMetrics(thickness, arrow_size, arrow_style)
+            arrow = (style, scale, tip_back)
+            if end:
+                heads.append((*points[-1], self._tangentAngle(points[-2:], at_end=True)))
+                stroke_points[-1] = self._trimBezier(stroke_points[-2:], line_back, at_end=True)[-1]
+            if start:
+                heads.append((*points[0], self._tangentAngle(points[:2], at_end=False)))
+                stroke_points[0] = self._trimBezier(stroke_points[:2], line_back, at_end=False)[0]
+        self._emitStroke(f'<path d="{self._roundedPathData(stroke_points, corner_radius)}"', color, thickness, opacity, dashed, 'none', heads, arrow)
 
         if label is not None:
             segments = list(zip(points[:-1], points[1:]))
@@ -1270,7 +1840,7 @@ class Flow(Canvas):
                 idx = int(label_segment)
             (ax, ay), (bx, by) = segments[idx]
             mx, my = (ax + bx) / 2, (ay + by) / 2
-            gap = text_size * 0.4
+            gap = text_size * self.style.label_gap
             if abs(ay - by) < 1e-9:  # horizontal segment: label above it
                 if latex:
                     self.addLaTeX(label, mx, my - gap, scale=text_size / 16, baseline='text-top', anchor='middle', color=text_color)

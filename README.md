@@ -8,6 +8,8 @@ optional integrations add LaTeX labels and PNG/PDF export.
 
 - Basic SVG shapes, text, paths, curves, arrows, and gradients
 - `Plot` helpers for axes, ticks, lines, scatter plots, bars, and legends
+- `Figure` grids of subplots with spanning cells and aligned plot areas
+- Font-aware, automatic spacing of tick labels, axis labels, and titles
 - `Flow` helpers for connected nodes, directed edges, and self-edges
 - SVG subfigure imports
 - LaTeX labels through Inkscape, `dvisvgm`, or `pdf2svg`
@@ -108,6 +110,27 @@ Useful drawing methods include `addText`, `addMultiLineText`, `addLine`,
 `addCurvedLine`, `addRectangle`, `addCircle`, `addEllipse`, `addPolygon`, and
 the line, quadratic, cubic, and fitted-curve path helpers.
 
+#### Arrows
+
+Every stroked method (`addLine`, `addCurvedLine`, the path helpers,
+`addCircularArc`, and all `Flow` edges) takes the same arrow options:
+
+- `directed`: `True`/`"end"`, `"start"`, `"both"`, or `False`;
+- `arrow_style`: `"curved"` (default), `"open"`, `"triangle"`, or `"stealth"`;
+  set `canvas.arrow_style` once to change the default for a whole canvas;
+- `arrow_size`: a multiplier on the default head size, which already grows
+  with the line `thickness`.
+
+The arrow tip lands exactly on the end point and the line is shortened so it
+never pokes through the head. `addArrowhead(x, y, angle, ...)` draws a
+standalone head.
+
+```python
+canvas.arrow_style = "stealth"
+canvas.addLine(20, 250, 200, 250, thickness=3, directed="both")
+canvas.addCircularArc(350, 250, 40, 200, 340, directed=True, arrow_style="open")
+```
+
 ### 2. Create a line and scatter plot
 
 `Plot` maps data coordinates onto the SVG canvas. Set the visible data ranges
@@ -144,7 +167,75 @@ Use `addTicksX` and `addTicksY` when you need complete control over tick values
 and labels. `addBarPlot` adds vertical bars and can share a legend with line or
 scatter series.
 
-### 3. Create a larger flow diagram
+#### Text spacing
+
+Gaps between plot elements are measured from the actual text and scale with
+the font size, so you rarely need to set them by hand:
+
+- tick labels sit `0.35 em` beyond the end of the tick notch;
+- axis labels sit `0.5 em` beyond the outer edge of the *widest* tick label
+  on that axis (call `addAxisLabels` after drawing ticks);
+- the title sits `0.6 em` above the plot area;
+- rotated x tick labels hang off their tick (anchored at their end or start)
+  instead of overlapping the axis.
+
+All sizes and gaps live in a `PlotStyle`. By default (`origin="auto"`,
+`margins="auto"`) the plot margins are sized from those fonts; pass
+`origin=None, margins=None` for the legacy percentage layout:
+
+```python
+from svgflow import Plot, PlotStyle
+
+style = PlotStyle.scaled(12)  # ticks/labels 12px, title ~14px, tick length 7.5px
+plot = Plot(300, 420, style=style, x_range=(0, 10), y_range=(0, 5000))
+```
+
+`PlotStyle(tick_size, label_size, title_size, tick_length=..., tick_pad=...,
+label_pad=..., title_pad=..., outer_pad=...)` exposes every knob, and each
+method still accepts explicit `pad`/`xpad`/`ypad`/`text_size` overrides. If
+something (e.g. long rotated tick labels) needs more room, add it with
+`extra_margins=(left, bottom, right, top)`; SvgFlow warns when an axis label
+would fall outside the canvas.
+
+### 3. Arrange subplots in a grid
+
+`Figure` splits a canvas into `rows` x `cols` cells. `subplot(row, col,
+rowspan=1, colspan=1, ...)` returns an ordinary `Plot` that you draw on in its
+own local coordinates. Subplots use automatic margins, so subplots sharing a
+style get aligned plot areas.
+
+```python
+import numpy as np
+from svgflow import Figure, PlotStyle
+
+fig = Figure(700, 1000, rows=2, cols=3, title="Overview",
+             style=PlotStyle.scaled(13))
+x = np.linspace(0, 2 * np.pi, 60)
+
+for col, f in enumerate([np.sin, np.cos, np.tan]):
+    ax = fig.subplot(0, col, x_range=(0, 2 * np.pi), y_range=(-1.2, 1.2))
+    ax.easyAxes()
+    ax.addPlot(x, np.clip(f(x), -1.2, 1.2), color="royalblue")
+    ax.addAxisLabels("x", "y")
+    ax.addTitle(f.__name__)
+
+wide = fig.subplot(1, 0, colspan=2, x_range=(0, 5), y_range=(0, 10))
+wide.easyAxes()
+wide.addTitle("Spans two columns")
+
+# Figure-level drawing uses figure coordinates; mapToFigure converts
+# subplot data coordinates.
+x1, y1 = fig.mapToFigure(wide, 5, 5)
+fig.addText("note", x1 + 40, y1)
+fig.save("grid.svg")
+```
+
+`Figure` also accepts `wspace`, `hspace`, `padding`, `width_ratios`, and
+`height_ratios`; `fig.subplots(x_range=..., y_range=...)` fills the whole grid
+and returns `axes[row][col]`. Each subplot's SVG ids are prefixed on save so
+markers, gradients, and LaTeX glyphs never collide.
+
+### 4. Create a larger flow diagram
 
 Nodes are identified by unique strings. Edges refer to those IDs and are
 automatically clipped to the node boundaries.
@@ -186,9 +277,42 @@ flow.save("pipeline.svg")
 
 Supported node shapes are `("circle", radius)`,
 `("rectangle", height, width[, corner_radius])`,
-`("ellipse", horizontal_radius, vertical_radius)`, and parallelograms.
+`("ellipse", horizontal_radius, vertical_radius)`, and parallelograms. Edges
+are clipped exactly at each node's outline (including rounded corners).
 
-### 4. Use gradients
+Self-loops always bulge outward from the node: `addSelfEdge(node, theta1,
+theta2, curvature)` leaves at angle `theta1` and returns at `theta2` (degrees,
+clockwise from +x, so `90` is straight down); `curvature` sets the loop size.
+
+#### Styling a whole diagram
+
+`FlowStyle` holds the defaults for nodes and edges. Any argument you leave out
+(or pass as `None`) comes from the style, so a diagram can be restyled in one
+place while individual calls can still override anything:
+
+```python
+from svgflow import Flow, FlowStyle
+
+style = FlowStyle(
+    node_shape=("rectangle", 50, 120, 8),
+    node_color="aliceblue", node_border="steelblue",
+    edge_color="dimgray", arrow_style="stealth",
+    text_size=14,
+)
+flow = Flow(300, 600, style=style)
+flow.addNode("a", 100, 150, label="Load")
+flow.addNode("b", 450, 150, label="Train", color="lightyellow")  # override
+flow.addEdge("a", "b", directed=True, label="data")
+flow.save("styled.svg")
+```
+
+Fields: `node_shape`, `node_color`, `node_border`, `node_thickness`,
+`text_size`, `text_color`, `text_style`, `edge_color`, `edge_thickness`,
+`edge_text_size`, `edge_text_color`, `label_gap` (edge-label offset in em),
+`arrow_style`, `arrow_size`, `stub` and `corner_radius` (elbow edges), and
+`self_loop_size`. `style.copy(**changes)` derives variants.
+
+### 5. Use gradients
 
 Define each gradient once, retrieve its SVG paint value with `getGradient`, and
 pass that value anywhere a fill color is accepted.
@@ -217,7 +341,7 @@ canvas.save("gradient.svg")
 
 `defineRadialGradient` works in the same way for radial fills.
 
-### 5. Add LaTeX labels
+### 6. Add LaTeX labels
 
 LaTeX support requires `pdflatex` plus one conversion backend. The default
 backend is Inkscape.
@@ -237,7 +361,7 @@ canvas.addLaTeX(
 canvas.save("equation.svg")
 ```
 
-### 6. Reuse another SVG
+### 7. Reuse another SVG
 
 Import an SVG once under a unique ID, then place as many transformed copies as
 you need.
@@ -255,7 +379,7 @@ canvas.save("composite.svg")
 The imported file must have an SVG `viewBox`. SvgFlow prefixes its internal IDs
 to prevent gradient, mask, and clip-path collisions.
 
-### 7. Export PNG or PDF
+### 8. Export PNG or PDF
 
 Saving SVG is built in and requires no external program. Raster and PDF exports
 use Inkscape:
@@ -265,6 +389,12 @@ canvas.save("figure.svg")
 canvas.export("figure.png", export_type="png", dpi=300)
 canvas.export("figure.pdf", export_type="pdf")
 ```
+
+Inkscape ignores the `@font-face` rules SvgFlow embeds for registered fonts, so
+`export` runs Inkscape with a temporary fontconfig setup that exposes every
+registered font file under its registered name. Exported text therefore uses
+exactly the fonts it was measured with; the saved SVG still embeds the fonts
+for browsers.
 
 ## Configuring external programs
 

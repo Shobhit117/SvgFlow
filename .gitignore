@@ -10,6 +10,7 @@
 !/svgflow/__init__.py
 !/svgflow/canvas.py
 !/svgflow/external_figures.py
+!/svgflow/inkscape_fonts.py
 !/svgflow/text_metrics.py
 !/tests/
 !/tests/*.py
@@ -20,3 +21,4 @@ __pycache__/
 *.egg-info/
 build/
 dist/
+pypi-svgflow-token.txt

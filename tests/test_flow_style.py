@@ -74,7 +74,7 @@ class EdgeLabelSideTests(unittest.TestCase):
     def _grow_direction(self, rot, baseline):
         # Unit vector the multi-line block grows towards (text "up" for text-top, "down" for hanging).
         up = np.array([np.sin(np.deg2rad(rot)), -np.cos(np.deg2rad(rot))])
-        return up if baseline == "text-top" else -up
+        return up if baseline in ("auto", "text-top") else -up
 
     def test_straight_edges_all_directions(self):
         for (x2, y2) in ((100, 0), (-100, 0), (0, 100), (0, -100), (70, 70), (-70, 70)):

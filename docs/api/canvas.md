@@ -96,7 +96,7 @@ Add (possibly multi-line) text at `(x, y)`.
         automatic word wrapping. The block is aligned as a whole according to
         `baseline`: `"middle"` centres it on `y`, `"hanging"` grows
         downward from `y` and `"text-top"`/`"auto"` grow upward so the
-        last line sits at `y`. Pass `valign` (top/center/bottom) to place
+        last line sits at `y` (`"text-top"` emits `dominant-baseline="auto"` for cross-browser consistency). Pass `valign` (top/center/bottom) to place
         the block independently of the per-line `baseline`. `font` is a
         registered font name (see
         `registerFont`); `fit_width` forces each rendered line to the

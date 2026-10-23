@@ -139,7 +139,7 @@ class Canvas:
         automatic word wrapping. The block is aligned as a whole according to
         ``baseline``: ``"middle"`` centres it on ``y``, ``"hanging"`` grows
         downward from ``y`` and ``"text-top"``/``"auto"`` grow upward so the
-        last line sits at ``y``. Pass ``valign`` (top/center/bottom) to place
+        last line sits at ``y`` (``"text-top"`` emits ``dominant-baseline="auto"`` for cross-browser consistency). Pass ``valign`` (top/center/bottom) to place
         the block independently of the per-line ``baseline``. ``font`` is a
         registered font name (see
         :meth:`registerFont`); ``fit_width`` forces each rendered line to the
@@ -191,7 +191,8 @@ class Canvas:
             spans += [f'<tspan x="0" dy="{line_height}em"{length_options(i)}>{xml_escape(lines[i])}</tspan>' for i in range(1, n)]
             body = '<text'
             inner = ''.join(spans)
-        self.contents.append(f'{body} fill="{color}" transform="translate({x:.4f} {y:.4f}) rotate({rotation:.4f})" dominant-baseline="{baseline}" text-anchor="{anchor}" {text_options}>{inner}</text>')
+        dom_baseline = "auto" if baseline == "text-top" else baseline
+        self.contents.append(f'{body} fill="{color}" transform="translate({x:.4f} {y:.4f}) rotate({rotation:.4f})" dominant-baseline="{dom_baseline}" text-anchor="{anchor}" {text_options}>{inner}</text>')
         return (max(widths, default=0.0), n * line_height * size)
 
     def addMultiLineText(self, lines: Sequence[Any], x: Number, y: Number, color: Color = "black", rotation: Number = 0, baseline: TextBaseline = "middle", anchor: TextAnchor = "middle", size: Number = 16, style: str | None = None, weight: str | Number | None = None, **kwargs: Any) -> tuple[float, float]:
@@ -419,7 +420,7 @@ class Canvas:
             if latex:
                 self.addLaTeX(label, x3, y3, scale=(text_size)/16, rot=rot, baseline="text-top", anchor="middle", color=text_color)
             else:
-                self.addText(label, x3, y3, text_color, rot, "text-top", "middle", text_size, text_style)
+                self.addText(label, x3, y3, text_color, rot, "auto", "middle", text_size, text_style)
 
         return theta
 
@@ -460,7 +461,7 @@ class Canvas:
         if latex:
             self.addLaTeX(label, x3, y3, scale=(text_size)/16, rot=rot, baseline=baseline, anchor="middle", color=text_color)
         else:
-            self.addText(label, x3, y3, text_color, rot, baseline, "middle", text_size, text_style)
+            self.addText(label, x3, y3, text_color, rot, "auto" if baseline == "text-top" else baseline, "middle", text_size, text_style)
 
     @staticmethod
     def _perpUnit(x1: Number, y1: Number, x2: Number, y2: Number) -> Point:

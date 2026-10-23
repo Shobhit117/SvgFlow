@@ -39,6 +39,12 @@ class AddTextTests(unittest.TestCase):
         c.addText("a\nb", 0, 0, valign="top")
         self.assertIn('dy="0.0000em"', c.contents[-1])
 
+    def test_text_top_baseline_emits_auto_for_cross_browser_consistency(self):
+        c = Canvas(100, 100)
+        c.addText("a\nb", 0, 0, baseline="text-top")
+        self.assertIn('dominant-baseline="auto"', c.contents[-1])
+        self.assertIn('dy="-1.2000em"', c.contents[-1])
+
     def test_wrapping_respects_max_width(self):
         text = "the quick brown fox jumps over the lazy dog"
         lines = wrap_text(text, 16, 100)

@@ -41,11 +41,13 @@ simple bold/italic choice.
 | `"end"` | Right/end at x |
 
 The common `baseline` choices are `"middle"` (default), `"hanging"` (top),
-and `"text-top"`/`"auto"` (block grows upward for multiline positioning).
-Actual glyph baseline rendering follows the SVG viewer; these are not exact
-bounding-box alignments. For multiline text, `valign="top"`, `"center"`, or
-`"bottom"` chooses the line-block growth independently of the per-line
-baseline. It has no separate positioning effect on a single line.
+and `"text-top"`/`"auto"` (last line rests at `y`, with multiline blocks
+growing upward; `"text-top"` is normalized to `dominant-baseline="auto"` so
+Chrome, Firefox, and Inkscape agree). Actual glyph baseline rendering follows
+the SVG viewer; these are not exact bounding-box alignments. For multiline
+text, `valign="top"`, `"center"`, or `"bottom"` chooses the line-block growth
+independently of the per-line baseline. It has no separate positioning effect
+on a single line.
 
 ![Anchors, multiline text and wrapping](figures/text.svg)
 

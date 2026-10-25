@@ -205,6 +205,13 @@ unit and formats values with two decimal places. Density is clamped between
 0.005 and 0.05; counts are computed from the plotted pixel/user-unit extent,
 not the numeric data range. It uses `linspace`, not “nice number” intervals.
 
+Each axis gets `round(axis_length * ticks_per_unit)` labels, including both
+endpoints when the count is at least two. A 221-unit axis therefore gets only
+two labels at the default density. Increase the density, for example with
+`easyAxes(ticks_per_unit=0.025)`, to get six labels on that axis. The
+minimum-range endpoint is labeled but has no notch, so two labels leave just
+one visible tick mark. `PlotStyle.scaled()` does not change tick density.
+
 Manual ticks take `(data_position, displayed_label)` pairs:
 
 <!-- render: core -->

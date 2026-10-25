@@ -221,7 +221,7 @@ from svgflow import Plot, PlotStyle
 
 style = PlotStyle.scaled(12)  # ticks/labels 12px, title ~14px, tick length 7.5px
 plot = Plot(300, 420, style=style, x_range=(0, 10), y_range=(0, 5000))
-plot.easyAxes()
+plot.easyAxes(ticks_per_unit=0.025)  # denser automatic ticks for a compact plot
 plot.addAxisLabels("Time", "Value")
 plot.addPlot([0, 3, 7, 10], [500, 1800, 3200, 4500], color="royalblue", thickness=2)
 plot.addTitle("Scaled plot text")
@@ -229,6 +229,11 @@ plot.save("plot-style.svg")
 ```
 
 ![Rendered plot style example](docs/figures/readme-plot-style.svg)
+
+`ticks_per_unit` controls automatic tick density per canvas unit. Here the
+221-unit-high plot area gets six y labels, from 0 to 5000; the default `0.01`
+would produce only the two endpoint labels. `PlotStyle.scaled()` adjusts
+text and spacing, while tick density is configured separately.
 
 `PlotStyle(tick_size, label_size, title_size, tick_length=..., tick_pad=...,
 label_pad=..., title_pad=..., outer_pad=...)` exposes every knob, and each
@@ -256,13 +261,20 @@ x = np.linspace(0, 2 * np.pi, 80)
 
 for col, f in enumerate([np.sin, np.cos]):
     ax = fig.subplot(0, col, x_range=(0, 2 * np.pi), y_range=(-1.2, 1.2))
-    ax.easyAxes()
+    ax.addAxes(directed=True, thickness=2)
+    ax.addTicksX([(0, "0"), (np.pi, "pi"), (2 * np.pi, "2pi")], grid=False)
+    # Manual ticks keep compact y axes readable; pairs are (value, label).
+    ax.addTicksY([(-1, "-1"), (-0.5, "-0.5"), (0, "0"),
+                  (0.5, "0.5"), (1, "1")], grid=False)
     ax.addPlot(x, f(x), color="royalblue", thickness=2)
     ax.addAxisLabels("x", "y")
     ax.addTitle(f.__name__)
 
 wide = fig.subplot(1, 0, colspan=2, x_range=(0, 2 * np.pi), y_range=(0, 1.1))
-wide.easyAxes()
+wide.addAxes(directed=True, thickness=2)
+wide.addTicksX([(0, "0"), (np.pi, "pi"), (2 * np.pi, "2pi")], grid=False)
+wide.addTicksY([(0, "0"), (0.25, "0.25"), (0.5, "0.5"),
+                (0.75, "0.75"), (1, "1")], grid=False)
 wide.addPlot(x, np.exp(-x / 2), color="teal", thickness=2)
 wide.addAxisLabels("Time", "Magnitude")
 wide.addTitle("Exponential decay spans both columns")
@@ -275,6 +287,11 @@ fig.save("grid.svg")
 ```
 
 ![Rendered grid example](docs/figures/readme-grid.svg)
+
+Automatic tick counts depend on the axis length, so short subplot axes can
+have too few ticks. Use `addAxes()` with `addTicksX()` and `addTicksY()` to
+choose positions and labels explicitly, as above. Draw ticks before axis
+labels so their spacing accounts for the tick text.
 
 Plot continuous branches separately for functions with poles; see the
 [discontinuous-function example](docs/plotting.md#discontinuous-functions).

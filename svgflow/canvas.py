@@ -34,6 +34,70 @@ NodeShape: TypeAlias = tuple[Any, ...]
 Port: TypeAlias = Literal["N", "S", "E", "W"]
 ArrowStyle: TypeAlias = Literal["curved", "open", "triangle", "stealth"]
 Directed: TypeAlias = bool | Literal["start", "end", "both"]
+PaletteName: TypeAlias = Literal["default", "vibrant", "pastel", "colorblind", "ocean", "warm", "monochrome"]
+FlowThemeName: TypeAlias = Literal["default", "ocean", "forest", "sunset", "slate", "lavender", "minimal"]
+
+PALETTES: dict[str, tuple[Color, ...]] = {
+    "default": ("#2563eb", "#c2410c", "#0f766e", "#7c3aed", "#d97706", "#db2777", "#16a34a", "#475569"),
+    "vibrant": ("#e63946", "#1d3557", "#2a9d8f", "#f4a261", "#8338ec", "#3a86ff", "#fb5607", "#06d6a0"),
+    "pastel": ("#60a5fa", "#f87171", "#34d399", "#fbbf24", "#a78bfa", "#f472b6", "#38bdf8", "#a3e635"),
+    "colorblind": ("#0072b2", "#d55e00", "#009e73", "#cc79a7", "#f0e442", "#56b4e9", "#e69f00", "#000000"),
+    "ocean": ("#03045e", "#0077b6", "#00b4d8", "#48cae4", "#0f766e", "#2dd4bf", "#1d4ed8", "#64748b"),
+    "warm": ("#9b2226", "#ae2012", "#bb3e03", "#ca6702", "#ee9b00", "#e9d8a6", "#7f5539", "#bc6c25"),
+    "monochrome": ("#111827", "#374151", "#6b7280", "#9ca3af", "#4b5563", "#d1d5db"),
+}
+
+FLOW_THEMES: dict[str, dict[str, Any]] = {
+    "default": {},
+    "ocean": {
+        "node_color": "aliceblue",
+        "node_border": "#2563eb",
+        "text_color": "#1e3a8a",
+        "edge_color": "#0f766e",
+        "edge_text_color": "#0f172a",
+        "arrow_style": "stealth",
+    },
+    "forest": {
+        "node_color": "honeydew",
+        "node_border": "#15803d",
+        "text_color": "#14532d",
+        "edge_color": "#3f6212",
+        "edge_text_color": "#1a2e05",
+        "arrow_style": "stealth",
+    },
+    "sunset": {
+        "node_color": "lemonchiffon",
+        "node_border": "#c2410c",
+        "text_color": "#7c2d12",
+        "edge_color": "#9a3412",
+        "edge_text_color": "#431407",
+        "arrow_style": "triangle",
+    },
+    "slate": {
+        "node_color": "whitesmoke",
+        "node_border": "#334155",
+        "text_color": "#0f172a",
+        "edge_color": "#475569",
+        "edge_text_color": "#334155",
+        "arrow_style": "stealth",
+    },
+    "lavender": {
+        "node_color": "lavender",
+        "node_border": "#6d28d9",
+        "text_color": "#4c1d95",
+        "edge_color": "#7c3aed",
+        "edge_text_color": "#2e1065",
+        "arrow_style": "stealth",
+    },
+    "minimal": {
+        "node_color": "white",
+        "node_border": "black",
+        "text_color": "black",
+        "edge_color": "dimgray",
+        "edge_text_color": "black",
+        "arrow_style": "open",
+    },
+}
 
 # Unit arrowheads: tip at the origin pointing along +x, length 10.
 # Maps style -> (path data, filled?). Stroked heads take the line's thickness.
@@ -1041,7 +1105,7 @@ class PlotStyle:
       the last tick and its grid line never touch the arrowhead.
     """
 
-    def __init__(self, tick_size: Number = 16, label_size: Number = 16, title_size: Number = 18, *, tick_length: Number = 10, tick_pad: Number = 0.35, label_pad: Number = 0.5, title_pad: Number = 0.6, outer_pad: Number = 8, line_height: Number = 1.2, axis_gap: Number = 6) -> None:
+    def __init__(self, tick_size: Number = 16, label_size: Number = 16, title_size: Number = 18, *, tick_length: Number = 10, tick_pad: Number = 0.35, label_pad: Number = 0.5, title_pad: Number = 0.6, outer_pad: Number = 8, line_height: Number = 1.2, axis_gap: Number = 6, palette: PaletteName | Sequence[Color] = "default") -> None:
         """Set text sizes, notch length and outer padding in user units.
 
         ``tick_pad``, ``label_pad`` and ``title_pad`` are font-size multipliers;
@@ -1058,6 +1122,33 @@ class PlotStyle:
         self.outer_pad = outer_pad
         self.line_height = line_height
         self.axis_gap = axis_gap
+        self.palette = self._resolvePalette(palette)
+
+    @staticmethod
+    def _resolvePalette(palette: PaletteName | Sequence[Color]) -> tuple[Color, ...]:
+        """Resolve a palette preset name or non-empty color sequence into a tuple."""
+        if isinstance(palette, str):
+            if palette not in PALETTES:
+                raise ValueError(f"unknown palette {palette!r}; available palettes: {', '.join(PALETTES)}")
+            return PALETTES[palette]
+        colors = tuple(palette)
+        if not colors:
+            raise ValueError("palette must contain at least one color")
+        return colors
+
+    @classmethod
+    def theme(cls, name: PaletteName = "default", base_size: Number | None = None, **overrides: Any) -> "PlotStyle":
+        """Build a style using a named color palette preset (optionally scaled to ``base_size``).
+
+        Available presets in :data:`PALETTES`: ``"default"``, ``"vibrant"``,
+        ``"pastel"``, ``"colorblind"``, ``"ocean"``, ``"warm"``, ``"monochrome"``.
+        """
+        if name not in PALETTES:
+            raise ValueError(f"unknown theme {name!r}; available themes: {', '.join(PALETTES)}")
+        overrides = dict(palette=PALETTES[name], **overrides)
+        if base_size is not None:
+            return cls.scaled(base_size, **overrides)
+        return cls(**overrides)
 
     @classmethod
     def scaled(cls, base_size: Number = 16, **overrides: Any) -> "PlotStyle":
@@ -1114,6 +1205,23 @@ class Plot(Canvas):
         # Distance from each axis line to the outer edge of its tick labels;
         # used to place axis labels automatically. None until ticks are drawn.
         self._tick_extent: dict[str, float | None] = {'x': None, 'y': None}
+        self._color_index = 0
+
+    def nextColor(self) -> Color:
+        """Return the next color from ``self.style.palette`` and advance the cycle.
+
+        Series methods (:meth:`addPlot`, :meth:`addScatterPlot`, :meth:`addBarPlot`)
+        call this automatically when ``color`` is omitted (``None``). Call it
+        directly when you want annotations, bands or markers to share the cycle.
+        """
+        palette = self.style.palette
+        color = palette[self._color_index % len(palette)]
+        self._color_index += 1
+        return color
+
+    def resetColors(self, index: int = 0) -> None:
+        """Reset the automatic series color cycle to ``index`` (default 0)."""
+        self._color_index = int(index)
 
     def _setLayout(self, origin: Point | Literal["auto"] | None, margins: Point | Literal["auto"] | None) -> None:
         """Resolve origin/margins and warn/fall back when automatic space is insufficient."""
@@ -1385,7 +1493,7 @@ class Plot(Canvas):
         else:
             self.addText(title, x_mid, y, color=color, size=size, baseline="auto", anchor="middle")
 
-    def addPlot(self, x: Iterable[Number], y: Iterable[Number], color: Color = "blue", thickness: Number = 1, interp: bool = False, opacity: Number = 1, dashed: bool = False, label: str | None = None) -> None:
+    def addPlot(self, x: Iterable[Number], y: Iterable[Number], color: Color | None = None, thickness: Number = 1, interp: bool = False, opacity: Number = 1, dashed: bool = False, label: str | None = None) -> None:
         """Draw paired data with straight segments or an interpolating spline.
 
         ``interp=True`` fits a cubic spline and may overshoot. At least two
@@ -1393,6 +1501,7 @@ class Plot(Canvas):
         in a longer input are ignored. Data is neither clipped nor autoscaled.
         A non-None ``label`` registers an entry for :meth:`addLegend`.
         """
+        color = self.nextColor() if color is None else color
         arr = []
         for (a, b) in zip(x, y):
             arr.append(self.mapToCanvas(a, b))
@@ -1405,7 +1514,7 @@ class Plot(Canvas):
         if label is not None:
             self.legend_items.append((label, {'type': 'plot', 'color': color, 'thickness': thickness, 'opacity': opacity, 'dashed': dashed}))
     
-    def addScatterPlot(self, x: Iterable[Number], y: Iterable[Number], color: Color = "blue", marker_type: MarkerType = "circle", marker_scale: Number = 1, label: str | None = None) -> None:
+    def addScatterPlot(self, x: Iterable[Number], y: Iterable[Number], color: Color | None = None, marker_type: MarkerType = "circle", marker_scale: Number = 1, label: str | None = None) -> None:
         """Draw circle/cross/square markers at paired data coordinates.
 
         ``marker_scale`` multiplies user-unit marker size (see :meth:`putMarker`)
@@ -1413,13 +1522,14 @@ class Plot(Canvas):
         unmatched trailing values are ignored. A non-None ``label`` registers
         a legend entry.
         """
+        color = self.nextColor() if color is None else color
         for (a, b) in zip(x, y):
             self.putMarker(a, b, marker_type, marker_scale, color)
         
         if label is not None:
             self.legend_items.append((label, {'type': 'scatter', 'color': color, 'marker_type': marker_type, 'marker_scale': marker_scale}))
     
-    def addBarPlot(self, x: Iterable[Number], y: Iterable[Number], _y: Iterable[Number] | None = None, color: Color = "orange", bar_width: Number = 20, label: str | None = None) -> None:
+    def addBarPlot(self, x: Iterable[Number], y: Iterable[Number], _y: Iterable[Number] | None = None, color: Color | None = None, bar_width: Number = 20, label: str | None = None) -> None:
         """Draw data-space bars with a fixed canvas-unit ``bar_width``.
 
         ``_y`` supplies one baseline per bar; when omitted the baseline is the
@@ -1427,6 +1537,7 @@ class Plot(Canvas):
         should be >= baselines. Inputs are zipped, truncating to the shortest.
         A non-None ``label`` registers a legend entry. See :meth:`addBar`.
         """
+        color = self.nextColor() if color is None else color
         if _y is None:
             for (a, b) in zip(x, y):
                 self.addBar(a, b, bar_width, bar_color=color, _y=self._y)
@@ -1763,6 +1874,20 @@ class FlowStyle:
         self.stub = stub
         self.corner_radius = corner_radius
         self.self_loop_size = self_loop_size
+
+    @classmethod
+    def theme(cls, name: FlowThemeName = "default", **overrides: Any) -> "FlowStyle":
+        """Build a flow style from a named color preset in :data:`FLOW_THEMES`.
+
+        Available presets: ``"default"``, ``"ocean"``, ``"forest"``, ``"sunset"``,
+        ``"slate"``, ``"lavender"``, ``"minimal"``. Keyword ``overrides`` replace
+        any preset fields (e.g. ``node_shape=("rectangle", 60, 120, 10)``).
+        """
+        if name not in FLOW_THEMES:
+            raise ValueError(f"unknown flow theme {name!r}; available themes: {', '.join(FLOW_THEMES)}")
+        values = dict(FLOW_THEMES[name])
+        values.update(overrides)
+        return cls(**values)
 
     def copy(self, **overrides: Any) -> "FlowStyle":
         """Return a copy with some attributes replaced."""

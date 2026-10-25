@@ -1,5 +1,7 @@
 # SvgFlow
 
+![SvgFlow](docs/logo/svgflow-wordmark.svg)
+
 SvgFlow is a lightweight Python library for creating SVG drawings, plots, and
 flow diagrams. Drawings are assembled with Python and saved as editable SVG;
 optional integrations add LaTeX labels and PNG/PDF export.

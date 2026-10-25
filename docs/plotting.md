@@ -204,18 +204,29 @@ black. Use `addLaTeX()` directly for explicitly colored math annotations.
 | `outer_pad` | 8 | Automatic layout outer border in canvas units |
 | `line_height` | 1.2 | Text extent and margin estimate multiplier |
 | `axis_gap` | 6 | Clearance between the plot boundary and the back of an axis arrowhead (or undirected axis end) in canvas units |
+| `palette` | `"default"` | Series color cycle (preset name in `PALETTES` or sequence of color strings) |
 
 ```python
 from svgflow import Plot, PlotStyle
 
-style = PlotStyle.scaled(12, label_pad=0.65, outer_pad=12)
+style = PlotStyle.theme("vibrant", base_size=12, label_pad=0.65, outer_pad=12)
 larger = style.copy(tick_size=14, label_size=14)
 p = Plot(340, 600, style=larger, x_range=(0, 10), y_range=(0, 1000))
 p.easyAxes()
+p.addPlot([0, 5, 10], [100, 600, 900], label="series 1")  # auto-assigned from palette
+p.addPlot([0, 5, 10], [800, 400, 200], label="series 2")  # shifts to next palette color
 p.addAxisLabels("Distance", "Value", xpad=35, ypad=70)
 p.addTitle("Explicit label gaps", pad=14)
 p.save("spacing.svg")
 ```
+
+When `color` is omitted (`None`) on `addPlot()`, `addScatterPlot()`, or
+`addBarPlot()`, the plot automatically assigns the next color from
+`style.palette` via `p.nextColor()` (and `p.resetColors()` resets the cycle).
+Explicitly passing `color=...` uses that color without advancing the automatic
+cycle. Built-in palette presets in `PALETTES` (`PlotStyle.theme(name, ...)` or
+`PlotStyle(palette=name)`) are `"default"`, `"vibrant"`, `"pastel"`,
+`"colorblind"`, `"ocean"`, `"warm"`, and `"monochrome"`.
 
 `scaled(base)` sets ticks/labels to base, title to `1.15*base`, notch
 length to `0.625*base`, and `axis_gap` to `0.375*base` (rounded to two decimals). Gap fractions stay unchanged.

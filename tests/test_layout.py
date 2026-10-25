@@ -177,5 +177,38 @@ class FigureTests(unittest.TestCase):
         self.assertTrue(any("arrowheads extend past the canvas" in str(w.message) for w in caught))
 
 
+class ColorCycleAndThemeTests(unittest.TestCase):
+    def test_series_cycle_through_palette_when_color_omitted(self):
+        style = PlotStyle.theme("vibrant", base_size=14)
+        p = Plot(300, 400, style=style)
+        p.addPlot([0, 1], [0, 1], label="line")
+        p.addScatterPlot([0.5], [0.5], label="pts")
+        p.addBarPlot([0.5], [0.8], label="bar")
+        self.assertEqual([item[1]["color"] for item in p.legend_items], list(style.palette[:3]))
+
+    def test_explicit_color_does_not_advance_automatic_cycle(self):
+        p = Plot(300, 400, style=PlotStyle(palette=("red", "green", "blue")))
+        p.addPlot([0, 1], [0, 1], label="auto1")
+        p.addPlot([0, 1], [1, 0], color="black", label="manual")
+        p.addPlot([0, 1], [0.5, 0.5], label="auto2")
+        self.assertEqual([item[1]["color"] for item in p.legend_items], ["red", "black", "green"])
+
+    def test_next_color_and_reset_colors(self):
+        p = Plot(200, 200, style=PlotStyle(palette=("#111111", "#222222")))
+        self.assertEqual(p.nextColor(), "#111111")
+        self.assertEqual(p.nextColor(), "#222222")
+        self.assertEqual(p.nextColor(), "#111111")  # wraps around
+        p.resetColors()
+        self.assertEqual(p.nextColor(), "#111111")
+
+    def test_invalid_palette_raises(self):
+        with self.assertRaises(ValueError):
+            PlotStyle(palette="unknown_palette")
+        with self.assertRaises(ValueError):
+            PlotStyle(palette=())
+        with self.assertRaises(ValueError):
+            PlotStyle.theme("unknown_theme")
+
+
 if __name__ == "__main__":
     unittest.main()

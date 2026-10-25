@@ -112,6 +112,8 @@ def render_all():
                   "| `SvgBackend` / `Backend` | `'inkscape'`, `'dvisvgm'`, `'pdf2svg'` |\n"
                   "| `ExportType` | `'png'`, `'pdf'` |\n"
                   "| `GradientSpread` | `'pad'`, `'reflect'`, `'repeat'` (currently emits pad only) |\n"
+                  "| `PaletteName` | `'default'`, `'vibrant'`, `'pastel'`, `'colorblind'`, `'ocean'`, `'warm'`, `'monochrome'` |\n"
+                  "| `FlowThemeName` | `'default'`, `'ocean'`, `'forest'`, `'sunset'`, `'slate'`, `'lavender'`, `'minimal'` |\n"
                   "| `NodeShape` | Shape tuple; see [flow guide](../flow-diagrams.md) |\n"]
         for obj in objects:
             parts.append(entry(obj, obj.__name__))

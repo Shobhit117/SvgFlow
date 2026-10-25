@@ -114,6 +114,14 @@ class FlowStyleTests(unittest.TestCase):
         s = FlowStyle(edge_color="gray").copy(text_size=10)
         self.assertEqual((s.edge_color, s.text_size), ("gray", 10))
 
+    def test_theme_presets_and_overrides(self):
+        ocean = FlowStyle.theme("ocean", text_size=14)
+        self.assertEqual(ocean.node_color, "aliceblue")
+        self.assertEqual(ocean.arrow_style, "stealth")
+        self.assertEqual(ocean.text_size, 14)
+        with self.assertRaises(ValueError):
+            FlowStyle.theme("nonexistent")
+
 
 def _non_system_ttf():
     try:

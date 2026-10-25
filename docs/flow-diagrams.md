@@ -227,8 +227,7 @@ appear to its right. For a route needing arbitrary label placement, omit
 ```python
 from svgflow import Flow, FlowStyle
 
-base = FlowStyle(node_color="aliceblue", node_border="steelblue", text_size=14,
-                 edge_color="dimgray", arrow_style="stealth")
+base = FlowStyle.theme("ocean", text_size=14)
 accent = base.copy(node_color="lemonchiffon", edge_color="darkorange")
 f = Flow(240, 600, style=accent)
 f.addNode("a", 100, 120, label="A", shape=("circle", 35))
@@ -236,6 +235,10 @@ f.addNode("b", 480, 120, label="B", shape=("rectangle", 60, 100), color="honeyde
 f.addEdge("a", "b", directed=True, thickness=3)
 f.save("styled-flow.svg")
 ```
+
+`FlowStyle.theme(name, **overrides)` builds a style from a named color preset
+in `FLOW_THEMES`: `"default"`, `"ocean"`, `"forest"`, `"sunset"`, `"slate"`,
+`"lavender"`, or `"minimal"`.
 
 Omitted/`None` style-controlled arguments use the style; per-call values
 override it. Edge `text_style` is passed directly and does not inherit the

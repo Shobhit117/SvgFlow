@@ -1,0 +1,5 @@
+<svg width="600" height="300" viewBox="0 0 600 300" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<text fill="black" transform="translate(150.0000 80.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16"><tspan x="0" dy="-0.6000em">First line</tspan><tspan x="0" dy="1.2em">Second line</tspan></text>
+<text fill="black" transform="translate(450.0000 80.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16"><tspan x="0" dy="-0.6000em">First line</tspan><tspan x="0" dy="1.2em">Second line</tspan></text>
+<text fill="black" transform="translate(30.0000 160.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="18"><tspan x="0" dy="0.0000em">This paragraph wraps at word</tspan><tspan x="0" dy="1.35em">boundaries using the selected</tspan><tspan x="0" dy="1.35em">font's metrics.</tspan></text>
+</svg>

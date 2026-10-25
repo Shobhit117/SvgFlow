@@ -1,0 +1,12 @@
+<svg width="480" height="240" viewBox="0 0 480 240" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
+</defs>
+<circle cx="100.0000" cy="120.0000" r="45.0000" fill="lightblue" stroke="black" stroke-width="2" opacity="1"/>
+<text fill="black" transform="translate(100.0000 120.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Source</text>
+<rect width="120" height="80" fill="lightgreen" stroke="black" stroke-width="2" transform="translate(320.0000 80.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<text fill="black" transform="translate(380.0000 120.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Result</text>
+<line x1="145.0000" y1="120.0000" x2="318.0000" y2="120.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(319.0000 120.0000) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(232.5000 113.6000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">transform</text>
+</svg>

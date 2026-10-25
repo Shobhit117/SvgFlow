@@ -1,0 +1,18 @@
+<svg width="720" height="360" viewBox="0 0 720 360" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
+</defs>
+<ellipse transform="translate(100.0000 180.0000) rotate(0.0000)" rx="70.0000" ry="40.0000" fill="lightyellow" stroke="black" stroke-width="2" opacity="1"/>
+<text fill="black" transform="translate(100.0000 180.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Input</text>
+<rect width="150" height="90" fill="lightblue" stroke="black" stroke-width="2" transform="translate(255.0000 135.0000) rotate(0.0000)" opacity="1" rx="12"/>
+<text fill="black" transform="translate(330.0000 180.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Validate</text>
+<circle cx="610.0000" cy="180.0000" r="55.0000" fill="lightgreen" stroke="black" stroke-width="2" opacity="1"/>
+<text fill="black" transform="translate(610.0000 180.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Output</text>
+<line x1="170.0000" y1="180.0000" x2="253.0000" y2="180.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(254.0000 180.0000) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<line x1="405.0000" y1="180.0000" x2="553.0000" y2="180.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(554.0000 180.0000) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(480.0000 173.6000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">valid</text>
+<path d="M355.9808 225.0000 C390.6218 285.0000 269.3782 285.0000 304.0192 225.0000" stroke="gray" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(330.0000 277.4000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">retry</text>
+</svg>

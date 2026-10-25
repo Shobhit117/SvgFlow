@@ -1,0 +1,26 @@
+<svg width="600" height="340" viewBox="0 0 600 340" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
+</defs>
+<line x1="94.3460" y1="286.0000" x2="94.3460" y2="22.3400" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(94.3460 21.3400) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<line x1="90.5960" y1="282.2500" x2="584.9860" y2="282.2500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(585.9860 282.2500) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(94.3460 290.9000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">0.00</text>
+<text fill="black" transform="translate(213.3810 290.9000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">2.50</text>
+<line x1="213.3810" y1="278.5000" x2="213.3810" y2="286.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(332.4160 290.9000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">5.00</text>
+<line x1="332.4160" y1="278.5000" x2="332.4160" y2="286.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(451.4510 290.9000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">7.50</text>
+<line x1="451.4510" y1="278.5000" x2="451.4510" y2="286.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(570.4860 290.9000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">10.00</text>
+<line x1="570.4860" y1="278.5000" x2="570.4860" y2="286.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(85.6960 282.2500) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">0.00</text>
+<text fill="black" transform="translate(85.6960 36.8400) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">1000.00</text>
+<line x1="90.5960" y1="36.8400" x2="98.0960" y2="36.8400" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<path d="M94.3460 257.7090 L332.4160 135.0040 L570.4860 61.3810" stroke="#e63946" stroke-width="1" fill="none" opacity="1"/>
+<path d="M94.3460 85.9220 L332.4160 184.0860 L570.4860 233.1680" stroke="#1d3557" stroke-width="1" fill="none" opacity="1"/>
+<text fill="black" transform="translate(332.4160 317.2500) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Distance</text>
+<text fill="black" transform="translate(24.3460 159.5450) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Value</text>
+<text fill="black" transform="translate(332.4160 22.8400) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.8">Explicit label gaps</text>
+</svg>

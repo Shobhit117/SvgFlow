@@ -7,6 +7,7 @@
 `Canvas` accumulates vector elements in drawing order. The examples below use
 one canvas; save it after adding the elements you want:
 
+<!-- render: core -->
 ```python
 from svgflow import Canvas
 
@@ -22,7 +23,7 @@ c.addPolygon([(585, 75), (675, 65), (720, 125), (625, 155)],
 c.save("shapes.svg")
 ```
 
-![The four basic shape methods](figures/shapes.svg)
+![Rendered shapes example](figures/drawing-shapes.svg)
 
 | Method | Geometry | Position/rotation reference |
 | --- | --- | --- |
@@ -42,6 +43,7 @@ move/rotate a group of elements together.
 
 ## Straight and curved labeled connections
 
+<!-- render: core -->
 ```python
 from svgflow import Canvas
 
@@ -55,6 +57,8 @@ print(angle)    # 0 degrees for a line from left to right
 print(control)  # (300, 100): control point, not curve midpoint
 c.save("connections.svg")
 ```
+
+![Rendered connections example](figures/drawing-connections.svg)
 
 `addLine()` returns the line angle. `addCurvedLine()` returns its quadratic
 control point. Its `curvature` is a **control-point offset** from the chord
@@ -83,6 +87,7 @@ Choose `arrow_style="curved"`, `"open"`, `"triangle"`, or `"stealth"`.
 The default is curved. Set `canvas.arrow_style` to change future strokes
 on that canvas, or override it on an individual method call.
 
+<!-- render: core -->
 ```python
 from svgflow import Canvas
 
@@ -96,7 +101,7 @@ c.addArrowhead(570, 210, angle=-90, arrow_style="triangle", arrow_size=1.3)
 c.save("arrows.svg")
 ```
 
-![Available arrowhead styles](figures/arrows.svg)
+![Rendered arrows example](figures/drawing-arrows.svg)
 
 `arrow_size` is a multiplier, not a size in pixels. Head scale is
 `arrow_size * max(1, thickness / 2)`; the base shape has length 10 units.
@@ -109,6 +114,7 @@ exposed. A standalone head has its tip at `(x, y)` and points at `angle`.
 
 Paths distinguish stroke `color` from interior `fill`:
 
+<!-- render: core -->
 ```python
 from svgflow import Canvas
 
@@ -128,7 +134,7 @@ c.addCubicPath(
 c.save("beziers.svg")
 ```
 
-![Polyline, Bezier and interpolating paths](figures/paths.svg)
+![Rendered beziers example](figures/drawing-beziers.svg)
 
 For `n` endpoints, supply `n-1` quadratic controls, or `n-1` controls in
 **each** cubic list. Segment i runs from `points[i]` to `points[i+1]`.
@@ -147,6 +153,7 @@ painting, without adding a stroked closing edge.
 
 `addCurve()` computes cubic controls for you:
 
+<!-- render: core -->
 ```python
 from svgflow import Canvas
 
@@ -157,6 +164,8 @@ c.addCurve([(100, 220), (180, 165), (290, 215), (200, 270)],
             closed=True, color="teal", fill="honeydew", thickness=2)
 c.save("splines.svg")
 ```
+
+![Rendered splines example](figures/drawing-splines.svg)
 
 Open curves need two or more points and use natural end conditions. Closed
 curves need three or more points and use a periodic smooth seam; **do not
@@ -170,6 +179,7 @@ polylines, downsample smooth input, or supply your own Bezier controls.
 
 ## Circular arcs
 
+<!-- render: core -->
 ```python
 from svgflow import Canvas
 
@@ -181,6 +191,8 @@ c.addCircularArc(430, 140, 80, theta1=20, theta2=-200,
 c.save("arcs.svg")
 ```
 
+![Rendered arcs example](figures/drawing-arcs.svg)
+
 Angle zero points right; 90 points down. Increasing angles sweep clockwise.
 An arc uses one SVG `A` command; keep the requested sweep below a complete
 revolution. Use `addCircle()` or two half-arcs for a full circle. Arc fills
@@ -190,6 +202,7 @@ close with a chord; they are not pie sectors from the center.
 
 Define a paint once, then retrieve its reference:
 
+<!-- render: core -->
 ```python
 from svgflow import Canvas
 
@@ -208,7 +221,7 @@ c.addEllipse(520, 130, 130, 65, color=c.getGradient("glow"), border="none")
 c.save("gradients.svg")
 ```
 
-![Linear and radial gradient paints](figures/gradients.svg)
+![Rendered gradients example](figures/drawing-gradients.svg)
 
 Coordinates and stop offsets are fractions in `[0, 1]` of the painted
 object's bounding box, not absolute canvas positions. Thus one gradient

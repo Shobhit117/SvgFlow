@@ -1,0 +1,9 @@
+<svg width="700" height="350" viewBox="0 0 700 350" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
+</defs>
+<path d="M40.0000 60.0000 L180.0000 30.0000 L310.0000 85.0000" stroke="royalblue" stroke-width="3" fill="none" opacity="1"/>
+<path d="M40.0000 160.0000 Q175.0000 50.0000 310.0000 160.0000 Q458.7084 249.2251 607.4169 161.5365" stroke="teal" stroke-width="3" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(608.7138 160.7717) rotate(-30.9638) scale(1.5000 1.5000)" stroke="teal" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<path d="M40.0000 290.0000 C220.0000 150.0000 430.0000 340.0000 610.0000 290.0000" stroke="darkorange" stroke-width="3" fill="none" opacity="1"/>
+</svg>

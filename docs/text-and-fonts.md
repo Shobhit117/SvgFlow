@@ -4,6 +4,7 @@
 
 ## Single-line text
 
+<!-- render: core -->
 ```python
 from svgflow import Canvas
 
@@ -16,6 +17,8 @@ c.addText("Rotated label", 300, 160, rotation=-20, style="italic", size=22)
 c.save("labels.svg")
 print(width, height)
 ```
+
+![Rendered labels example](figures/text-and-fonts-labels.svg)
 
 `addText` converts values to strings and escapes XML text characters such as
 `&` and `<`. Do not pre-escape labels. The return value is an unrotated
@@ -49,8 +52,7 @@ text, `valign="top"`, `"center"`, or `"bottom"` chooses the line-block growth
 independently of the per-line baseline. It has no separate positioning effect
 on a single line.
 
-![Anchors, multiline text and wrapping](figures/text.svg)
-
+<!-- render: core -->
 ```python
 from svgflow import Canvas
 
@@ -61,6 +63,8 @@ c.addText("Right aligned", 570, 220, anchor="end", baseline="auto")
 c.save("alignment.svg")
 ```
 
+![Rendered alignment example](figures/text-and-fonts-alignment.svg)
+
 Each multiline line shares the same anchor x; short lines do not inherit the
 longest line's left edge. Use `anchor="start"` for a left-aligned paragraph.
 
@@ -68,6 +72,7 @@ longest line's left edge. Use `anchor="start"` for a left-aligned paragraph.
 
 These two calls produce the same line content:
 
+<!-- render: core -->
 ```python
 from svgflow import Canvas
 
@@ -82,6 +87,8 @@ c.addText(
 c.save("multiline.svg")
 ```
 
+![Rendered multiline example](figures/text-and-fonts-multiline.svg)
+
 `max_width` is in canvas units. Wrapping is greedy: it adds words until the
 next word no longer fits. An individual long word remains intact and may
 exceed the width. Explicit newlines survive, including empty paragraphs;
@@ -94,6 +101,7 @@ a runtime deprecation warning. An empty list returns `(0, 0)` from the wrapper.
 
 ## Measure before positioning
 
+<!-- render: core -->
 ```python
 from svgflow import Canvas, text_width, wrap_text
 
@@ -108,6 +116,8 @@ c.addText(label, 45, 60, anchor="start", size=size, weight="bold", font="sans")
 c.addText(lines, 280, 120, anchor="start", baseline="hanging", size=size)
 c.save("measured.svg")
 ```
+
+![Rendered measured example](figures/text-and-fonts-measured.svg)
 
 `text_width()` measures one string's advance width. It does not split newline
 blocks; measure each line and take the maximum yourself. Negative font sizes

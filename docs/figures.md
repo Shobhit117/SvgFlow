@@ -8,6 +8,7 @@ to right. Each plot has its own data ranges and local canvas coordinates.
 
 ## A regular grid
 
+<!-- render: core -->
 ```python
 import numpy as np
 from svgflow import Figure, PlotStyle
@@ -27,6 +28,8 @@ for row in range(2):
 fig.save("four-signals.svg")
 ```
 
+![Rendered four signals example](figures/figures-four-signals.svg)
+
 Use `subplots()` on an empty grid. It fills every cell and returns a nested
 list even for a single row/column. It is not an array with special squeezing
 rules. Repeating it attempts to create overlapping plots and raises an error.
@@ -35,6 +38,7 @@ rules. Repeating it attempts to create overlapping plots and raises an error.
 
 Call `subplot()` yourself when panels have different ranges or spans:
 
+<!-- render: core -->
 ```python
 import numpy as np
 from svgflow import Figure, PlotStyle
@@ -54,7 +58,7 @@ for ax, y, title in [(left, np.sin(x), "sin"), (right, np.cos(x), "cos"),
 fig.save("spanning.svg")
 ```
 
-![A subplot grid and a cross-coordinate annotation](figures/grid.svg)
+![Rendered spanning example](figures/figures-spanning.svg)
 
 The wide plot owns both lower cells. A later `fig.subplot(1, 1)` would raise
 `ValueError`, rather than overlaying a second plot. Invalid spans raise
@@ -63,6 +67,7 @@ subplot removal/replacement API. Keep the plot you receive and draw on it.
 
 ## Ratios, gaps, padding, and titles
 
+<!-- render: core -->
 ```python
 from svgflow import Figure, PlotStyle
 
@@ -77,6 +82,8 @@ for ax in [main, top, bottom]:
     ax.easyAxes()
 fig.save("weighted-grid.svg")
 ```
+
+![Rendered weighted grid example](figures/figures-weighted-grid.svg)
 
 Ratios divide the space **after** subtracting padding, gaps and the optional
 title band. They must be positive with exactly one entry per column/row.
@@ -99,6 +106,7 @@ anything. Use it to place panel letters, backgrounds, or non-plot annotations.
 converts subplot data directly to figure coordinates. With `data=False`, it
 instead converts local canvas coordinates:
 
+<!-- render: core -->
 ```python
 from svgflow import Figure
 
@@ -118,6 +126,8 @@ fig.addText("A", label_x, label_y, weight="bold", anchor="start")
 fig.save("linked-panels.svg")
 ```
 
+![Rendered linked panels example](figures/figures-linked-panels.svg)
+
 A plot that does not belong to the figure raises `KeyError` when mapped.
 Cross-panel arrows are ordinary canvas strokes; they are not clipped against
 either plot. `fig.plots` returns all plots in creation order.
@@ -130,6 +140,7 @@ does not guarantee aligned data rectangles: automatic left margin estimates
 also depend on y-range label widths. For exact alignment across very different
 ranges, use the same explicit origin/right/top margins in equally sized cells:
 
+<!-- render: core -->
 ```python
 from svgflow import Figure
 
@@ -140,6 +151,8 @@ for ax in [a, b]:
     ax.easyAxes()
 fig.save("aligned.svg")
 ```
+
+![Rendered aligned example](figures/figures-aligned.svg)
 
 At each `subplot()` call, a placeholder is appended to the figure's drawing
 order. Background elements added **before** subplot creation appear behind
@@ -153,4 +166,5 @@ This renaming does not rewrite Python-side IDs or objects. `fig.save()` and
 `fig.export()` use the complete composition; `ax.save()` writes that individual
 plot in its own local dimensions.
 
-The guide's full layout script is in [gallery.py](examples/gallery.py).
+Rebuild these exact examples with [render_examples.py](tools/render_examples.py);
+[gallery.py](examples/gallery.py) contains additional annotated layouts.

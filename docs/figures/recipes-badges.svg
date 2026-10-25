@@ -1,0 +1,11 @@
+<svg width="550" height="180" viewBox="0 0 550 180" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
+</defs>
+<rect width="150" height="44" fill="aliceblue" stroke="steelblue" stroke-width="1" transform="translate(45.0000 68.0000) rotate(0.0000)" opacity="1" rx="10"/>
+<text fill="black" transform="translate(120.0000 90.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Input</text>
+<rect width="150" height="44" fill="honeydew" stroke="steelblue" stroke-width="1" transform="translate(355.0000 68.0000) rotate(0.0000)" opacity="1" rx="10"/>
+<text fill="black" transform="translate(430.0000 90.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Output</text>
+<line x1="195.0000" y1="90.0000" x2="354.0000" y2="90.0000" stroke="black" stroke-width="1" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(354.5000 90.0000) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="1.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+</svg>

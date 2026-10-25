@@ -1,0 +1,29 @@
+<svg width="600" height="330" viewBox="0 0 600 330" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<line x1="82.6320" y1="276.4000" x2="82.6320" y2="34.4000" stroke="black" stroke-width="1" fill="none" opacity="1"/>
+<line x1="77.6320" y1="271.4000" x2="582.4320" y2="271.4000" stroke="black" stroke-width="1" fill="none" opacity="1"/>
+<text fill="black" transform="translate(144.3570 282.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">A</text>
+<line x1="144.3570" y1="266.4000" x2="144.3570" y2="276.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(267.8070 282.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">B</text>
+<line x1="267.8070" y1="266.4000" x2="267.8070" y2="276.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(391.2570 282.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">C</text>
+<line x1="391.2570" y1="266.4000" x2="391.2570" y2="276.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(514.7070 282.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">D</text>
+<line x1="514.7070" y1="266.4000" x2="514.7070" y2="276.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(72.0320 271.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">0</text>
+<text fill="black" transform="translate(72.0320 194.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">4</text>
+<line x1="77.6320" y1="194.4000" x2="87.6320" y2="194.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="82.6320" y1="194.4000" x2="576.4320" y2="194.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<text fill="black" transform="translate(72.0320 117.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">8</text>
+<line x1="77.6320" y1="117.4000" x2="87.6320" y2="117.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="82.6320" y1="117.4000" x2="576.4320" y2="117.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<text fill="black" transform="translate(72.0320 40.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">12</text>
+<line x1="77.6320" y1="40.4000" x2="87.6320" y2="40.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="82.6320" y1="40.4000" x2="576.4320" y2="40.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<rect width="50" height="76.99999999999997" fill="teal" stroke="none" stroke-width="1" transform="translate(119.3570 194.4000) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="50" height="134.75" fill="teal" stroke="none" stroke-width="1" transform="translate(242.8070 136.6500) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="50" height="115.5" fill="teal" stroke="none" stroke-width="1" transform="translate(366.2570 155.9000) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="50" height="192.5" fill="teal" stroke="none" stroke-width="1" transform="translate(489.7070 78.9000) rotate(0.0000)" opacity="1" rx="0"/>
+<text fill="black" transform="translate(329.5320 306.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Category</text>
+<text fill="black" transform="translate(38.2400 155.9000) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Count</text>
+<text fill="black" transform="translate(329.5320 29.6000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18">Vertical bars</text>
+</svg>

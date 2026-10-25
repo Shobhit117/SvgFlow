@@ -1,0 +1,5 @@
+<svg width="500" height="220" viewBox="0 0 500 220" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<rect width="179.057999253273" height="60" fill="aliceblue" stroke="steelblue" stroke-width="1" transform="translate(30.0000 30.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<text fill="black" transform="translate(45.0000 60.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="bold">A measured label</text>
+<text fill="black" transform="translate(280.0000 120.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="18"><tspan x="0" dy="0.0000em">A longer paragraph to</tspan><tspan x="0" dy="1.2em">wrap into lines.</tspan></text>
+</svg>

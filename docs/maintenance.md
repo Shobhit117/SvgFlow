@@ -13,6 +13,7 @@ From the repository root with dependencies installed:
 ```bash
 python -m docs.examples.gallery
 python -m docs.examples.recipes
+python -m docs.tools.render_examples
 python -m docs.tools.build_reference
 python -m docs.tools.check_docs
 python -m unittest discover -s tests -v
@@ -21,6 +22,15 @@ python -m unittest discover -s tests -v
 The `-m` form works from the checkout without requiring an editable install;
 Python still needs the NumPy/PyMuPDF dependencies. After `pip install -e .`,
 you may also use the direct script commands shown in the guide.
+
+Paired example illustrations are generated directly from marked Markdown code
+blocks by [render_examples.py](tools/render_examples.py). Run
+`python -m docs.tools.render_examples --latex` to also rebuild the checked-in
+math figures (pdflatex and Inkscape required). Each snippet runs in a temporary
+directory, and its saved SVGs receive a page prefix under `docs/figures/`.
+Edit the snippet and rebuild its figure together; do not maintain a separate
+approximation of the example in the gallery script. Only explicitly marked,
+repository-authored code is executed.
 
 The gallery writes 14 core SVGs (including the reusable icon) and recipes
 write 3 more. API generation writes five Markdown pages under `docs/api/`.

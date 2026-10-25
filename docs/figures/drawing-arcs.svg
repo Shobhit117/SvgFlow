@@ -1,0 +1,10 @@
+<svg width="600" height="280" viewBox="0 0 600 280" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
+</defs>
+<path d="M 74.8246 112.6384 A 80.0000 80.0000 0 0 1 224.0967 109.8392" stroke="royalblue" stroke-width="3" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(224.6624 111.2288) rotate(430.0000) scale(1.5000 1.5000)" stroke="royalblue" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<path d="M 506.1484 164.5240 A 80.0000 80.0000 0 1 0 353.8516 164.5240" stroke="teal" stroke-width="3" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(354.3116 165.9521) rotate(-290.0000) scale(1.5000 1.5000)" stroke="teal" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(505.6884 165.9521) rotate(110.0000) scale(1.5000 1.5000)" stroke="teal" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+</svg>

@@ -1,0 +1,28 @@
+<svg width="850" height="380" viewBox="0 0 850 380" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="arrow_stealth" d="M0 0 L-10 -4.5 L-7 0 L-10 4.5 Z"/>
+</defs>
+<ellipse transform="translate(110.0000 145.0000) rotate(0.0000)" rx="65.0000" ry="32.0000" fill="aliceblue" stroke="royalblue" stroke-width="2" opacity="1"/>
+<text fill="black" transform="translate(110.0000 145.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Load</text>
+<rect width="125" height="60" fill="aliceblue" stroke="royalblue" stroke-width="2" transform="translate(302.5000 115.0000) rotate(0.0000)" opacity="1" rx="10"/>
+<text fill="black" transform="translate(365.0000 145.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Validate</text>
+<rect width="125" height="60" fill="honeydew" stroke="royalblue" stroke-width="2" transform="translate(637.5000 115.0000) rotate(0.0000)" opacity="1" rx="10"/>
+<text fill="black" transform="translate(700.0000 145.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Publish</text>
+<rect width="125" height="60" fill="lemonchiffon" stroke="royalblue" stroke-width="2" transform="translate(302.5000 260.0000) rotate(0.0000)" opacity="1" rx="10"/>
+<text fill="black" transform="translate(365.0000 290.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Repair</text>
+<line x1="175.0000" y1="145.0000" x2="297.5000" y2="145.0000" stroke="teal" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(302.5000 145.0000) rotate(0.0000) scale(1.0000 1.0000)" fill="teal" stroke="none" opacity="1"/>
+<text fill="black" transform="translate(238.7500 139.4000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">input</text>
+<line x1="427.5000" y1="145.0000" x2="632.5000" y2="145.0000" stroke="teal" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(637.5000 145.0000) rotate(0.0000) scale(1.0000 1.0000)" fill="teal" stroke="none" opacity="1"/>
+<text fill="black" transform="translate(532.5000 139.4000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">valid</text>
+<path d="M365.0000 175.0000 L365.0000 255.0000" stroke="teal" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(365.0000 260.0000) rotate(90.0000) scale(1.0000 1.0000)" fill="teal" stroke="none" opacity="1"/>
+<text fill="black" transform="translate(370.6000 217.5000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="14">invalid</text>
+<path d="M302.5000 290.0000 L116.0000 290.0000 Q110.0000 290.0000 110.0000 284.0000 L110.0000 182.0000" stroke="teal" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(110.0000 177.0000) rotate(-90.0000) scale(1.0000 1.0000)" fill="teal" stroke="none" opacity="1"/>
+<text fill="black" transform="translate(206.2500 284.4000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">retry</text>
+<path d="M682.6795 115.0000 C656.6218 69.8668 738.5701 68.3837 719.6107 110.5507" stroke="teal" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(717.3205 115.0000) rotate(120.0000) scale(1.0000 1.0000)" fill="teal" stroke="none" opacity="1"/>
+<text fill="black" transform="translate(700.0000 73.4000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">refresh</text>
+</svg>

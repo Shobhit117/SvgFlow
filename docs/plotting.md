@@ -4,6 +4,7 @@
 
 ## A complete line and scatter plot
 
+<!-- render: core -->
 ```python
 import numpy as np
 from svgflow import Plot, PlotStyle
@@ -21,7 +22,7 @@ p.addLegend(anchor="NE", box_color="white", box_border_color="silver", box_opaci
 p.save("sine.svg")
 ```
 
-![A complete plot with legend](figures/sine.svg)
+![Rendered sine example](figures/plotting-sine.svg)
 
 Choose ranges explicitly; data does not autoscale them. Draw axes/grid first,
 then series, then labels and annotations, and finally the legend. Each call
@@ -44,6 +45,7 @@ are right/top margins. Mapping is linear in each direction.
 | Inherited `addText`, `addCircle`, `addLine`, paths, polygons | Raw canvas coordinates |
 | Bar widths, marker sizes, strokes, fonts, padding overrides | Canvas units (marker sizes are multipliers) |
 
+<!-- render: core -->
 ```python
 from svgflow import Plot
 
@@ -56,6 +58,8 @@ p.addText("local peak", cx + 15, cy - 20, anchor="start", size=14)
 p.save("annotated.svg")
 ```
 
+![Rendered annotated example](figures/plotting-annotated.svg)
+
 Values outside the declared ranges extrapolate beyond the plot area. There
 is no plot-area clip path, NaN segmentation, or automatic filtering. Filter
 data or split lines yourself before plotting. Equal range endpoints cause
@@ -66,6 +70,7 @@ viewport, but that does not protect tick/label margins from out-of-range data.
 
 `addPlot(x, y)` joins paired values in input order. It does not sort x:
 
+<!-- render: core -->
 ```python
 from svgflow import Plot
 
@@ -80,6 +85,8 @@ p.addLegend(box_color="white", box_border_color="gray")
 p.save("interpolation.svg")
 ```
 
+![Rendered interpolation example](figures/plotting-interpolation.svg)
+
 `interp=True` uses the cubic spline described in [drawing](drawing.md).
 It interpolates points, rather than fitting a statistical model, and can
 overshoot between samples. At least two paired values are required.
@@ -92,6 +99,7 @@ each series or convert them to arrays/lists first.
 
 ## Scatter markers
 
+<!-- render: core -->
 ```python
 from svgflow import Plot
 
@@ -105,6 +113,8 @@ p.addLegend(anchor="E", box_color="white", box_border_color="gray")
 p.save("markers.svg")
 ```
 
+![Rendered markers example](figures/plotting-markers.svg)
+
 Circle radius is `5 * marker_scale`; square side is `9 * marker_scale`;
 cross span is `10 * marker_scale` user units. Sizes remain fixed as data ranges
 change. These are the only supported marker shapes. Unknown shapes raise
@@ -113,6 +123,7 @@ use separate calls or primitives when you need those variations.
 
 ## Bars and baselines
 
+<!-- render: core -->
 ```python
 from svgflow import Plot
 
@@ -125,6 +136,8 @@ p.addAxisLabels("Category", "Count")
 p.addTitle("Vertical bars")
 p.save("bars.svg")
 ```
+
+![Rendered bars example](figures/plotting-bars.svg)
 
 `bar_width` is in **canvas units**, not x data units. To convert a desired
 data width, subtract mapped x positions:
@@ -157,6 +170,7 @@ not the numeric data range. It uses `linspace`, not “nice number” intervals.
 
 Manual ticks take `(data_position, displayed_label)` pairs:
 
+<!-- render: core -->
 ```python
 from svgflow import Plot, PlotStyle
 
@@ -172,7 +186,7 @@ p.addTitle("Custom tick labels")
 p.save("custom-ticks.svg")
 ```
 
-![Custom labels and extra bottom margin](figures/custom-ticks.svg)
+![Rendered custom ticks example](figures/plotting-custom-ticks.svg)
 
 Manual tick methods default to `grid=True`, unlike `easyAxes`/`easyTicks`.
 The minimum-range endpoint gets a label but no notch/grid line. Labels can
@@ -206,6 +220,7 @@ black. Use `addLaTeX()` directly for explicitly colored math annotations.
 | `axis_gap` | 6 | Clearance between the plot boundary and the back of an axis arrowhead (or undirected axis end) in canvas units |
 | `palette` | `"default"` | Series color cycle (preset name in `PALETTES` or sequence of color strings) |
 
+<!-- render: core -->
 ```python
 from svgflow import Plot, PlotStyle
 
@@ -219,6 +234,8 @@ p.addAxisLabels("Distance", "Value", xpad=35, ypad=70)
 p.addTitle("Explicit label gaps", pad=14)
 p.save("spacing.svg")
 ```
+
+![Rendered spacing example](figures/plotting-spacing.svg)
 
 When `color` is omitted (`None`) on `addPlot()`, `addScatterPlot()`, or
 `addBarPlot()`, the plot automatically assigns the next color from
@@ -279,6 +296,7 @@ insertion order is preserved within each type. Repeated labels are not deduplica
 Anchors are `NE`, `N`, `NW`, `W`, `E`, `SW`, `S`, `SE`, located inside the plot
 with approximately 5% inset. For a custom position:
 
+<!-- render: core -->
 ```python
 from svgflow import Plot
 
@@ -289,6 +307,8 @@ p.addLegend(position=(110, 60), text_size=13, marker_scale=1.1,
              box_color="white", box_border_color="gray", box_opacity=0.9)
 p.save("legend-position.svg")
 ```
+
+![Rendered legend position example](figures/plotting-legend-position.svg)
 
 Position is a canvas-space reference near the top-left; the box starts
 `5*marker_scale` units left of its x value. It overrides an anchor. If using

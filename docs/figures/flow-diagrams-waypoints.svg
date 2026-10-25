@@ -1,0 +1,12 @@
+<svg width="700" height="360" viewBox="0 0 700 360" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
+</defs>
+<rect width="130" height="70" fill="none" stroke="black" stroke-width="2" transform="translate(65.0000 65.0000) rotate(0.0000)" opacity="1" rx="10"/>
+<text fill="black" transform="translate(130.0000 100.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Source</text>
+<rect width="130" height="70" fill="none" stroke="black" stroke-width="2" transform="translate(475.0000 235.0000) rotate(0.0000)" opacity="1" rx="10"/>
+<text fill="black" transform="translate(540.0000 270.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Target</text>
+<path d="M195.0000 100.0000 L232.0000 100.0000 Q240.0000 100.0000 240.0000 108.0000 L240.0000 187.0000 Q240.0000 195.0000 248.0000 195.0000 L532.0000 195.0000 Q540.0000 195.0000 540.0000 203.0000 L540.0000 233.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(540.0000 234.0000) rotate(90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(390.0000 188.6000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">manual route</text>
+</svg>

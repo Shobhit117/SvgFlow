@@ -1,0 +1,5 @@
+<svg width="600" height="260" viewBox="0 0 600 260" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<text fill="black" transform="translate(30.0000 30.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16">Top aligned</text>
+<text fill="black" transform="translate(300.0000 130.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16"><tspan x="0" dy="-0.6000em">Centered block</tspan><tspan x="0" dy="1.2em">second line</tspan></text>
+<text fill="black" transform="translate(570.0000 220.0000) rotate(0.0000)" dominant-baseline="auto" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">Right aligned</text>
+</svg>

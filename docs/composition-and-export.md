@@ -6,6 +6,7 @@
 
 Import once under a unique ID, then place transformed copies:
 
+<!-- render: core -->
 ```python
 from svgflow import Canvas
 
@@ -23,7 +24,9 @@ c.addSubFig("icon", 590, 120, scale=0.9, flip=True)
 c.save("composite.svg")
 ```
 
-![Three transformed placements of one definition](figures/composition.svg)
+![Rendered icon example](figures/composition-and-export-icon.svg)
+
+![Rendered composite example](figures/composition-and-export-composite.svg)
 
 The default placement centers the imported viewBox rectangle on `(x, y)`.
 `anchor="start"/"middle"/"end"` selects left/center/right, and
@@ -110,20 +113,34 @@ print(shutil.which("pdflatex"))
 
 ## Add math labels
 
+<!-- render: latex -->
 ```python
 from svgflow import Canvas
 
-c = Canvas(220, 600)
-c.addLaTeX(r"e^{i\pi}+1=0", 300, 70, scale=2, color="navy")
-c.addLaTeX(r"\frac{1}{\sqrt{2\pi}}e^{-x^2/2}", 300, 150,
-            scale=1.6, backend="inkscape")
+c = Canvas(430, 900)
+c.addText("Gaussian integral", 450, 30, size=20)
+c.addLaTeX(
+    r"\int_{-\infty}^{\infty} e^{-a x^2}\,dx=\sqrt{\frac{\pi}{a}},\quad a>0",
+    450, 90, scale=1.7, color="navy",
+)
+c.addText("A matrix and its eigenvalue equation", 450, 160, size=20)
+c.addLaTeX(
+    r"A=\begin{pmatrix}2&1\\1&2\end{pmatrix},\qquad"
+    r"\det(A-\lambda I)=(2-\lambda)^2-1=0",
+    450, 220, scale=1.6,
+)
+c.addText("A piecewise distribution function", 450, 300, size=20)
+c.addLaTeX(
+    r"F_X(x)=\begin{cases}0,&x<0,\\1-e^{-\lambda x},&x\geq0,\end{cases}"
+    r"\qquad \mathbb{E}[X]=\frac{1}{\lambda}",
+    450, 365, scale=1.5, color="teal",
+)
 c.save("equations.svg")
 ```
 
-![LaTeX rendered with the Inkscape backend](figures/latex.svg)
+![Rendered equations example](figures/composition-and-export-equations.svg)
 
-This pre-rendered illustration can be regenerated with the optional `latex`
-example; viewing it does not require TeX or Inkscape.
+This pre-rendered illustration can be regenerated from this snippet; viewing it does not require TeX or Inkscape.
 
 Use raw Python strings for backslashes and omit `$...$`; the library wraps
 the expression in display-style math. `scale` multiplies converter dimensions,
@@ -134,21 +151,48 @@ including the template border, rather than an optical equation baseline.
 
 For plots and diagrams:
 
+<!-- render: latex -->
 ```python
-from svgflow import Plot, Flow
+from svgflow import Plot
 
 p = Plot(340, 600, x_range=(0, 5), y_range=(0, 1))
 p.easyAxes()
 p.addAxisLabels(r"t", r"P(X\leq t)", xlatex=True, ylatex=True)
 p.addTitle(r"F_X(t)", latex=True)
 p.save("math-plot.svg")
-
-f = Flow(240, 600)
-f.addNode("a", 100, 120, shape=("circle", 40), label=r"x_0", latex=True)
-f.addNode("b", 480, 120, shape=("circle", 40), label=r"x_1", latex=True)
-f.addEdge("a", "b", label=r"f(x)", latex=True, directed=True)
-f.save("math-flow.svg")
 ```
+
+![Rendered math plot example](figures/composition-and-export-math-plot.svg)
+
+### An optimization flow with equation labels
+
+Node labels can contain aligned equations, and edges can carry math labels.
+Leave room for fractions and subscripts: node shapes do not grow with the math.
+
+<!-- render: latex -->
+```python
+from svgflow import Flow, FlowStyle
+
+style = FlowStyle(node_shape=("rectangle", 110, 270, 12),
+                  node_color="aliceblue", node_border="steelblue", text_size=18)
+f = Flow(360, 1000, style=style)
+f.addNode("loss", 180, 180, label=(
+    r"\begin{aligned}\mathcal{L}(\theta)&=\frac{1}{n}\sum_{i=1}^{n}"
+    r"(y_i-\theta^\top x_i)^2\\&\quad+\lambda\lVert\theta\rVert_2^2\end{aligned}"
+), latex=True)
+f.addNode("gradient", 510, 180, label=r"g_k=\nabla_\theta\mathcal{L}(\theta_k)",
+          latex=True)
+f.addNode("update", 840, 180, label=r"\theta_{k+1}=\theta_k-\eta_k g_k",
+          latex=True, color="honeydew")
+f.addEdge("loss", "gradient", directed=True)
+f.addEdge("gradient", "update", directed=True)
+f.addElbowEdge("update", "loss", from_port="S", to_port="S",
+               waypoints=[(840, 300), (180, 300)],
+               label=r"k\leftarrow k+1", latex=True)
+f.save("optimization-flow.svg")
+```
+
+![Rendered optimization flow example](figures/composition-and-export-optimization-flow.svg)
 
 These convenience methods use the default Inkscape math backend. For a
 different backend or explicitly colored plot math labels, call `addLaTeX`

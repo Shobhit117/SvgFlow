@@ -8,6 +8,7 @@ not choose node positions or avoid unrelated nodes automatically.
 
 ## Build a workflow
 
+<!-- render: core -->
 ```python
 from svgflow import Flow, FlowStyle
 
@@ -30,7 +31,7 @@ f.addSelfEdge("done", theta1=240, theta2=300, curvature=70,
 f.save("pipeline.svg")
 ```
 
-![A complete workflow](figures/pipeline.svg)
+![Rendered pipeline example](figures/flow-diagrams-pipeline.svg)
 
 Create nodes before edges reference them. IDs identify nodes; labels are
 display text and can repeat. Nodes stay where you put them. Later calls
@@ -50,8 +51,7 @@ Dimensions are canvas units:
 | `("ellipse", a, b)` | Horizontal radius a, vertical radius b |
 | `("parallelogram", d1, d2, angle)` | Diagonal lengths and angle between diagonals in degrees |
 
-![Node shapes and cardinal ports](figures/nodes.svg)
-
+<!-- render: core -->
 ```python
 from svgflow import Flow
 
@@ -62,6 +62,8 @@ f.addNode("c", 485, 120, shape=("ellipse", 75, 40), label="C")
 f.addNode("d", 690, 120, shape=("parallelogram", 130, 100, 65), label="D")
 f.save("node-shapes.svg")
 ```
+
+![Rendered node shapes example](figures/flow-diagrams-node-shapes.svg)
 
 The old spelling `"paralellogram"` is accepted for compatibility; use
 `"parallelogram"` in new code. Its arguments are diagonal lengths, **not**
@@ -77,6 +79,7 @@ already emitted node or its existing edges; regenerate the drawing instead.
 Node labels accept strings, newlines, or lists. Nodes do not resize or wrap
 labels automatically. Use `wrap_text` when you want a paragraph-sized label:
 
+<!-- render: core -->
 ```python
 from svgflow import Flow, FlowStyle, wrap_text
 
@@ -87,6 +90,8 @@ f.addNode("validate", 250, 110, label=lines, color="aliceblue")
 f.save("wrapped-node.svg")
 ```
 
+![Rendered wrapped node example](figures/flow-diagrams-wrapped-node.svg)
+
 Keep the measuring font/size consistent with the canvas default and node text
 size. Labels use `text_color`, `text_size`, and optional `text_style` (e.g.
 italic). `latex=True` treats the label as a math expression, without dollar
@@ -95,6 +100,7 @@ Node `opacity` affects the shape; the separately drawn label remains opaque.
 
 ## Straight and curved edges
 
+<!-- render: core -->
 ```python
 from svgflow import Flow
 
@@ -108,6 +114,8 @@ f.addEdge("b", "a", curvature=-160, directed=True,
            label="lower route", color="teal", dashed=True)
 f.save("curved-edges.svg")
 ```
+
+![Rendered curved edges example](figures/flow-diagrams-curved-edges.svg)
 
 Positive curvature moves the quadratic control upward for a horizontal chord
 and rightward for a vertical one. The control offset is measured from the
@@ -130,6 +138,7 @@ unrelated nodes. Use different curvature, positions, or a custom annotation.
 
 ## Self-loops
 
+<!-- render: core -->
 ```python
 from svgflow import Flow
 
@@ -139,6 +148,8 @@ f.addSelfEdge("state", theta1=240, theta2=300, curvature=110,
                directed=True, label="retry", color="teal")
 f.save("loop.svg")
 ```
+
+![Rendered loop example](figures/flow-diagrams-loop.svg)
 
 `theta1` is the outgoing attachment angle, `theta2` the returning one.
 Angles are clockwise from +x: E=0, S=90, W=180, N=270. Defaults 60 and 120
@@ -154,6 +165,7 @@ for both the loop and its label. Self-loops default to no arrow.
 Port names are case-insensitive. Ports are intersections of cardinal rays
 from the center; for a parallelogram they need not be side midpoints.
 
+<!-- render: core -->
 ```python
 from svgflow import Flow, FlowStyle
 
@@ -169,6 +181,8 @@ print(f.getPort("source", "E"))
 f.save("elbow.svg")
 ```
 
+![Rendered elbow example](figures/flow-diagrams-elbow.svg)
+
 Without explicit ports, the dominant center displacement chooses facing
 sides: predominantly horizontal pairs use E/W; predominantly vertical pairs
 use S/N. `stub` controls the nominal straight departure/arrival space before
@@ -182,6 +196,7 @@ limited by available adjacent segment lengths. `addElbowEdge()` defaults to
 
 ## Manual waypoints and label segments
 
+<!-- render: core -->
 ```python
 from svgflow import Flow, FlowStyle
 
@@ -195,6 +210,8 @@ route = f.addElbowEdge(
 )
 f.save("waypoints.svg")
 ```
+
+![Rendered waypoints example](figures/flow-diagrams-waypoints.svg)
 
 A nonempty waypoint list overrides automatic routing. It is followed
 **literally**: the library connects port -> waypoint -> ... -> port, without
@@ -224,6 +241,7 @@ appear to its right. For a route needing arbitrary label placement, omit
 | `stub`, `corner_radius` | 20, 6 canvas units |
 | `self_loop_size` | 100 canvas units |
 
+<!-- render: core -->
 ```python
 from svgflow import Flow, FlowStyle
 
@@ -235,6 +253,8 @@ f.addNode("b", 480, 120, label="B", shape=("rectangle", 60, 100), color="honeyde
 f.addEdge("a", "b", directed=True, thickness=3)
 f.save("styled-flow.svg")
 ```
+
+![Rendered styled flow example](figures/flow-diagrams-styled-flow.svg)
 
 `FlowStyle.theme(name, **overrides)` builds a style from a named color preset
 in `FLOW_THEMES`: `"default"`, `"ocean"`, `"forest"`, `"sunset"`, `"slate"`,

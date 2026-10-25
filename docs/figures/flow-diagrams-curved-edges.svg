@@ -1,0 +1,19 @@
+<svg width="700" height="320" viewBox="0 0 700 320" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
+<path id="arrow_triangle" d="M0 0 L-10 -4 L-10 4 Z"/>
+</defs>
+<circle cx="120.0000" cy="160.0000" r="45.0000" fill="aliceblue" stroke="black" stroke-width="2" opacity="1"/>
+<text fill="black" transform="translate(120.0000 160.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">A</text>
+<rect width="120" height="80" fill="honeydew" stroke="black" stroke-width="2" transform="translate(510.0000 120.0000) rotate(0.0000)" opacity="1" rx="18"/>
+<text fill="black" transform="translate(570.0000 160.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">B</text>
+<line x1="165.0000" y1="160.0000" x2="508.0000" y2="160.0000" stroke="gray" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(509.0000 160.0000) rotate(0.0000) scale(1.0000 1.0000)" stroke="gray" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(337.5000 153.6000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">straight</text>
+<path d="M156.6730 133.9214 Q342.7711 1.5850 513.9107 120.1518" stroke="royalblue" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_triangle" transform="translate(518.0081 123.0280) rotate(35.4171) scale(1.0000 1.0000)" fill="royalblue" stroke="none" opacity="1"/>
+<text fill="black" transform="translate(335.2163 58.0139) rotate(-1.7268)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">upper route</text>
+<path d="M518.0081 196.9720 Q345.7528 319.4647 158.3115 187.2391" stroke="teal" stroke-width="2" fill="none" opacity="1" stroke-dasharray="4"/>
+<use xlink:href="#arrow" transform="translate(157.4879 186.6581) rotate(215.4171) scale(1.0000 1.0000)" stroke="teal" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(335.2163 261.9861) rotate(1.7268)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">lower route</text>
+</svg>

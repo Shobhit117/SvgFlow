@@ -1,0 +1,14 @@
+<svg width="700" height="240" viewBox="0 0 700 240" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="grad_sunset" x1="0.0000%" y1="0.0000%" x2="100.0000%" y2="100.0000%">
+<stop offset="0.00%" stop-color="gold"/>
+<stop offset="50.00%" stop-color="tomato"/>
+<stop offset="100.00%" stop-color="purple"/>
+</linearGradient>
+<radialGradient id="grad_glow" cx="50.0000%" cy="50.0000%" r="50.0000%" fx="35.0000%" fy="35.0000%"><stop offset="0.00%" stop-color="white" stop-opacity="1.0000"/>
+<stop offset="100.00%" stop-color="royalblue" stop-opacity="0.8500"/>
+</radialGradient>
+</defs>
+<rect width="300" height="130" fill="url(#grad_sunset)" stroke="none" stroke-width="1" transform="translate(35.0000 65.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<ellipse transform="translate(520.0000 130.0000) rotate(0.0000)" rx="130.0000" ry="65.0000" fill="url(#grad_glow)" stroke="none" stroke-width="1" opacity="1"/>
+</svg>

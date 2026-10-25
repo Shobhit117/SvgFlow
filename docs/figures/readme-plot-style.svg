@@ -1,0 +1,20 @@
+<svg width="420" height="300" viewBox="0 0 420 300" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
+</defs>
+<line x1="77.3180" y1="257.8000" x2="77.3180" y2="18.3400" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(77.3180 17.3400) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<line x1="73.5680" y1="254.0500" x2="411.4880" y2="254.0500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(412.4880 254.0500) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(77.3180 262.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">0.00</text>
+<text fill="black" transform="translate(237.1530 262.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">5.00</text>
+<line x1="237.1530" y1="250.3000" x2="237.1530" y2="257.8000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(396.9880 262.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">10.00</text>
+<line x1="396.9880" y1="250.3000" x2="396.9880" y2="257.8000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(69.3680 254.0500) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">0.00</text>
+<text fill="black" transform="translate(69.3680 32.8400) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">5000.00</text>
+<line x1="73.5680" y1="32.8400" x2="81.0680" y2="32.8400" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(237.1530 280.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">Time</text>
+<text fill="black" transform="translate(14.0000 143.4450) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">Value</text>
+<text fill="black" transform="translate(237.1530 24.5600) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.8">Scaled plot text</text>
+</svg>

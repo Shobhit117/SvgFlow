@@ -10,6 +10,7 @@ features. Each larger example can be adapted to your own arrays and styles.
 Construct one polygon by traversing the upper edge left-to-right and the lower
 edge right-to-left. Map the boundary to canvas space before drawing it:
 
+<!-- render: core -->
 ```python
 import numpy as np
 from svgflow import Plot, PlotStyle
@@ -30,7 +31,7 @@ p.addLegend(anchor="SW", box_color="white", box_border_color="silver")
 p.save("uncertainty.svg")
 ```
 
-![A shaded band and threshold](figures/uncertainty-band.svg)
+![Rendered uncertainty example](figures/recipes-uncertainty.svg)
 
 Draw the fill before the mean line to keep the stroke sharp. Polygon edges
 are straight between samples, so sample densely enough for your purpose.
@@ -43,6 +44,7 @@ entry automatically. This example labels only the mean and threshold.
 Offset each group's x positions and convert a desired data width to canvas
 units. One `addBarPlot` call gives one legend entry:
 
+<!-- render: core -->
 ```python
 import numpy as np
 from svgflow import Plot, PlotStyle
@@ -61,7 +63,7 @@ p.addLegend(anchor="NW", box_color="white", box_border_color="silver")
 p.save("grouped.svg")
 ```
 
-![Grouped bars](figures/grouped-bars.svg)
+![Rendered grouped example](figures/recipes-grouped.svg)
 
 The 0.36 spacing between bar centers leaves a 0.04 data-unit gap between
 bars of width 0.32. Recompute the canvas width if the plot dimensions or
@@ -71,6 +73,7 @@ mapping change.
 
 The upper series needs absolute tops (`lower + upper`), with `_y=lower`:
 
+<!-- render: core -->
 ```python
 import numpy as np
 from svgflow import Plot, PlotStyle
@@ -90,7 +93,7 @@ p.addLegend(anchor="NW", box_color="white", box_border_color="silver")
 p.save("stacked.svg")
 ```
 
-![Stacked bars](figures/stacked-bars.svg)
+![Rendered stacked example](figures/recipes-stacked.svg)
 
 Do not pass component heights directly as the upper series's `y`, or it may
 end below its baseline. For more stacks, maintain a cumulative total and
@@ -101,6 +104,7 @@ use the previous total as each new baseline.
 The built-in bars do not normalize negative SVG heights. For signed values,
 map the endpoints and draw positive-height rectangles yourself:
 
+<!-- render: core -->
 ```python
 from svgflow import Plot
 
@@ -117,6 +121,8 @@ p.addAxisLabels("Item", "Change")
 p.save("signed-bars.svg")
 ```
 
+![Rendered signed bars example](figures/recipes-signed-bars.svg)
+
 These manual rectangles do not register legend entries. Axes still sit on the
 plot boundaries; the separate zero line is an annotation.
 
@@ -125,6 +131,7 @@ plot boundaries; the separate zero line is an annotation.
 Pass finite segments separately. This keeps gaps visible instead of connecting
 across missing observations or emitting `nan` coordinates:
 
+<!-- render: core -->
 ```python
 import numpy as np
 from svgflow import Plot
@@ -151,11 +158,14 @@ if labeled:
 p.save("gaps.svg")
 ```
 
+![Rendered gaps example](figures/recipes-gaps.svg)
+
 The label is registered only once. Isolated finite observations are shown as
 points because a line series needs at least two pairs.
 
 ## Annotate a threshold and point
 
+<!-- render: core -->
 ```python
 from svgflow import Plot
 
@@ -169,11 +179,14 @@ p.addText("Peak", px + 100, py + 78, color="darkorange")
 p.save("point-annotation.svg")
 ```
 
+![Rendered point annotation example](figures/recipes-point-annotation.svg)
+
 An annotation's offset is in canvas units, so the label remains a sensible
 distance from the point as you change data ranges.
 
 ## Make a reusable drawing function
 
+<!-- render: core -->
 ```python
 from svgflow import Canvas
 
@@ -189,6 +202,8 @@ badge(c, "Output", 430, 90, color="honeydew")
 c.addLine(195, 90, 355, 90, directed=True)
 c.save("badges.svg")
 ```
+
+![Rendered badges example](figures/recipes-badges.svg)
 
 This works for `Canvas`, `Flow`, `Plot` and `Figure`, because the function uses
 only inherited canvas-space methods. For data-positioned badges on a plot,

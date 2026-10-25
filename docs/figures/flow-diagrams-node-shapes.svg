@@ -1,0 +1,10 @@
+<svg width="800" height="260" viewBox="0 0 800 260" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<circle cx="90.0000" cy="120.0000" r="40.0000" fill="aliceblue" stroke="black" stroke-width="2" opacity="1"/>
+<text fill="black" transform="translate(90.0000 120.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">A</text>
+<rect width="135" height="75" fill="none" stroke="black" stroke-width="2" transform="translate(212.5000 82.5000) rotate(0.0000)" opacity="1" rx="12"/>
+<text fill="black" transform="translate(280.0000 120.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">B</text>
+<ellipse transform="translate(485.0000 120.0000) rotate(0.0000)" rx="75.0000" ry="40.0000" fill="none" stroke="black" stroke-width="2" opacity="1"/>
+<text fill="black" transform="translate(485.0000 120.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">C</text>
+<polygon points="746.1424,87.2428 727.7752,152.7572 633.8576,152.7572 652.2248,87.2428" fill="none" stroke="black" stroke-width="2" opacity="1"/>
+<text fill="black" transform="translate(690.0000 120.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">D</text>
+</svg>

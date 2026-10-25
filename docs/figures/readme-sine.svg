@@ -1,0 +1,47 @@
+<svg width="640" height="420" viewBox="0 0 640 420" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
+</defs>
+<line x1="79.0640" y1="366.4000" x2="79.0640" y2="24.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(79.0640 23.4000) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<line x1="74.0640" y1="361.4000" x2="632.4320" y2="361.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(633.4320 361.4000) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(79.0640 372.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">0.00</text>
+<text fill="black" transform="translate(213.4060 372.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">1.57</text>
+<line x1="213.4060" y1="356.4000" x2="213.4060" y2="366.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="213.4060" y1="361.4000" x2="213.4060" y2="40.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<text fill="black" transform="translate(347.7480 372.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">3.14</text>
+<line x1="347.7480" y1="356.4000" x2="347.7480" y2="366.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="347.7480" y1="361.4000" x2="347.7480" y2="40.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<text fill="black" transform="translate(482.0900 372.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">4.71</text>
+<line x1="482.0900" y1="356.4000" x2="482.0900" y2="366.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="482.0900" y1="361.4000" x2="482.0900" y2="40.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<text fill="black" transform="translate(616.4320 372.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">6.28</text>
+<line x1="616.4320" y1="356.4000" x2="616.4320" y2="366.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="616.4320" y1="361.4000" x2="616.4320" y2="40.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<text fill="black" transform="translate(68.4640 361.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">-1.20</text>
+<text fill="black" transform="translate(68.4640 200.9000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">0.00</text>
+<line x1="74.0640" y1="200.9000" x2="84.0640" y2="200.9000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="79.0640" y1="200.9000" x2="616.4320" y2="200.9000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<text fill="black" transform="translate(68.4640 40.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">1.20</text>
+<line x1="74.0640" y1="40.4000" x2="84.0640" y2="40.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="79.0640" y1="40.4000" x2="616.4320" y2="40.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<path d="M79.0640 200.9000 L92.8427 179.4450 L106.6213 158.5457 L120.4000 138.7433 L134.1787 120.5507 L147.9573 104.4392 L161.7360 90.8259 L175.5147 80.0635 L189.2933 72.4307 L203.0720 68.1252 L216.8507 67.2585 L230.6293 69.8530 L244.4080 75.8416 L258.1867 85.0691 L271.9653 97.2966 L285.7440 112.2073 L299.5227 129.4152 L313.3013 148.4745 L327.0800 168.8915 L340.8587 190.1376 L354.6373 211.6624 L368.4160 232.9085 L382.1947 253.3255 L395.9733 272.3848 L409.7520 289.5927 L423.5307 304.5034 L437.3093 316.7309 L451.0880 325.9584 L464.8667 331.9470 L478.6453 334.5415 L492.4240 333.6748 L506.2027 329.3693 L519.9813 321.7365 L533.7600 310.9741 L547.5387 297.3608 L561.3173 281.2493 L575.0960 263.0567 L588.8747 243.2543 L602.6533 222.3550 L616.4320 200.9000" stroke="royalblue" stroke-width="3" fill="none" opacity="1"/>
+<circle cx="79.0640" cy="200.9000" r="5.0000" fill="crimson" stroke="none" stroke-width="1" opacity="1"/>
+<circle cx="134.1787" cy="120.5507" r="5.0000" fill="crimson" stroke="none" stroke-width="1" opacity="1"/>
+<circle cx="189.2933" cy="72.4307" r="5.0000" fill="crimson" stroke="none" stroke-width="1" opacity="1"/>
+<circle cx="244.4080" cy="75.8416" r="5.0000" fill="crimson" stroke="none" stroke-width="1" opacity="1"/>
+<circle cx="299.5227" cy="129.4152" r="5.0000" fill="crimson" stroke="none" stroke-width="1" opacity="1"/>
+<circle cx="354.6373" cy="211.6624" r="5.0000" fill="crimson" stroke="none" stroke-width="1" opacity="1"/>
+<circle cx="409.7520" cy="289.5927" r="5.0000" fill="crimson" stroke="none" stroke-width="1" opacity="1"/>
+<circle cx="464.8667" cy="331.9470" r="5.0000" fill="crimson" stroke="none" stroke-width="1" opacity="1"/>
+<circle cx="519.9813" cy="321.7365" r="5.0000" fill="crimson" stroke="none" stroke-width="1" opacity="1"/>
+<circle cx="575.0960" cy="263.0567" r="5.0000" fill="crimson" stroke="none" stroke-width="1" opacity="1"/>
+<text fill="black" transform="translate(347.7480 396.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">x</text>
+<text fill="black" transform="translate(16.0000 200.9000) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">y</text>
+<text fill="black" transform="translate(347.7480 29.6000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18">Sine wave</text>
+<rect width="79.56799983978271" height="38.4" fill="white" stroke="gray" stroke-width="2" transform="translate(504.9956 56.4500) rotate(0.0000)" opacity="0.5" rx="10"/>
+<text fill="black" transform="translate(524.9956 66.0500) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16"><tspan x="0" dy="0.0000em" textLength="39.1040" lengthAdjust="spacingAndGlyphs">sin(x)</tspan><tspan x="0" dy="1.2em" textLength="59.5680" lengthAdjust="spacingAndGlyphs">samples</tspan></text>
+<line x1="509.9956" y1="66.0500" x2="519.9956" y2="66.0500" stroke="royalblue" stroke-width="3" fill="none" opacity="1"/>
+<circle cx="514.9956" cy="85.2500" r="5.0000" fill="crimson" stroke="none" stroke-width="1" opacity="1"/>
+</svg>

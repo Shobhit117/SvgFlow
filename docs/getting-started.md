@@ -53,11 +53,11 @@ canvas.addText("Hello, SvgFlow!", x=240, y=120, size=22, color="navy")
 canvas.save(out / "hello.svg")
 ```
 
+![First drawing](figures/hello.svg)
+
 Open `output/hello.svg` in a browser or SVG editor. The rectangle is a vector
 shape and the label remains text. A white background is drawn explicitly;
 omitting the first rectangle makes the canvas transparent.
-
-![First drawing](figures/hello.svg)
 
 `save()` overwrites a file and does not create its parent directory. It leaves
 the drawing in memory, so you can add elements and save another version.
@@ -106,6 +106,7 @@ f.addNode("box", 200, 100, shape=("rectangle", 60, 100))
 
 On a `Plot`, data and drawing coordinates are separate:
 
+<!-- render: core -->
 ```python
 from svgflow import Plot
 
@@ -117,6 +118,8 @@ p.addText("peak", cx, cy - 18)      # canvas coordinates
 p.save("peak.svg")
 ```
 
+![Rendered peak example](figures/getting-started-peak.svg)
+
 The y direction reverses during data mapping, so larger data y values appear
 higher in an ordinary plot. Inherited `addLine`/`addCircle`/`addText` methods
 do not automatically map data coordinates.
@@ -127,6 +130,7 @@ Later elements paint above earlier ones. Draw backgrounds first, then grids,
 data, annotations, and legends. A path's `color` is its stroke, whereas a
 rectangle's `color` is its fill:
 
+<!-- render: core -->
 ```python
 from svgflow import Canvas
 
@@ -138,6 +142,8 @@ c.addText("front", 200, 90, color="white")
 c.save("layers.svg")
 ```
 
+![Rendered layers example](figures/getting-started-layers.svg)
+
 Use valid SVG colors such as `"steelblue"`, `"#2563eb"`, or `"rgb(40,90,160)"`.
 `"none"` disables fill/stroke. Drawing methods generally emit paint strings
 directly; they do not consistently validate every input. Keep IDs simple
@@ -145,6 +151,7 @@ directly; they do not consistently validate every input. Keep IDs simple
 
 ## Strings, files, and interactive use
 
+<!-- render: core -->
 ```python
 from svgflow import Canvas
 
@@ -154,6 +161,8 @@ svg_markup = c.toSvg()
 assert svg_markup.startswith("<svg")
 c.save("reusable.svg")
 ```
+
+![Rendered reusable example](figures/getting-started-reusable.svg)
 
 In a Jupyter notebook with IPython installed:
 

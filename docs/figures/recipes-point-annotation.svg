@@ -1,0 +1,31 @@
+<svg width="650" height="340" viewBox="0 0 650 340" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
+</defs>
+<line x1="91.5280" y1="286.4000" x2="91.5280" y2="24.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(91.5280 23.4000) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<line x1="86.5280" y1="281.4000" x2="637.9840" y2="281.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(638.9840 281.4000) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(91.5280 292.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">0.00</text>
+<text fill="black" transform="translate(224.1420 292.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">2.50</text>
+<line x1="224.1420" y1="276.4000" x2="224.1420" y2="286.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="224.1420" y1="281.4000" x2="224.1420" y2="40.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<text fill="black" transform="translate(356.7560 292.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">5.00</text>
+<line x1="356.7560" y1="276.4000" x2="356.7560" y2="286.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="356.7560" y1="281.4000" x2="356.7560" y2="40.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<text fill="black" transform="translate(489.3700 292.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">7.50</text>
+<line x1="489.3700" y1="276.4000" x2="489.3700" y2="286.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="489.3700" y1="281.4000" x2="489.3700" y2="40.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<text fill="black" transform="translate(621.9840 292.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">10.00</text>
+<line x1="621.9840" y1="276.4000" x2="621.9840" y2="286.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="621.9840" y1="281.4000" x2="621.9840" y2="40.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<text fill="black" transform="translate(80.9280 281.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">0.00</text>
+<text fill="black" transform="translate(80.9280 40.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">100.00</text>
+<line x1="86.5280" y1="40.4000" x2="96.5280" y2="40.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="91.5280" y1="40.4000" x2="621.9840" y2="40.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<path d="M91.5280 257.3000 L197.6192 197.0500 L356.7560 76.5500 L515.8928 112.7000 L621.9840 136.8000" stroke="royalblue" stroke-width="3" fill="none" opacity="1"/>
+<path d="M91.5280 100.6500 L621.9840 100.6500" stroke="firebrick" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="456.7560" y1="136.5500" x2="362.6214" y2="82.0510" stroke="darkorange" stroke-width="1" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(362.1887 81.8005) rotate(210.0686) scale(1.0000 1.0000)" stroke="darkorange" stroke-width="1.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="darkorange" transform="translate(456.7560 154.5500) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Peak</text>
+</svg>

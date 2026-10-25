@@ -16,11 +16,11 @@ icon.addRectangle(60, 80, 10, 10, color="royalblue", border="none", corner_radiu
 icon.addLine(30, 40, 70, 40, color="white", thickness=3, directed=True)
 icon.save("icon.svg")
 
-c = Canvas(240, 720)
+c = Canvas(150, 500)
 c.importSvgFromFile("icon.svg", fig_id="icon")
-c.addSubFig("icon", 120, 120)
-c.addSubFig("icon", 340, 120, scale=1.3, rot=-20)
-c.addSubFig("icon", 590, 120, scale=0.9, flip=True)
+c.addSubFig("icon", 80, 75)
+c.addSubFig("icon", 245, 75, scale=1.3, rot=-20)
+c.addSubFig("icon", 420, 75, scale=0.9, flip=True)
 c.save("composite.svg")
 ```
 
@@ -117,23 +117,23 @@ print(shutil.which("pdflatex"))
 ```python
 from svgflow import Canvas
 
-c = Canvas(430, 900)
-c.addText("Gaussian integral", 450, 30, size=20)
+c = Canvas(400, 650)
+c.addText("Gaussian integral", 325, 25, size=20)
 c.addLaTeX(
     r"\int_{-\infty}^{\infty} e^{-a x^2}\,dx=\sqrt{\frac{\pi}{a}},\quad a>0",
-    450, 90, scale=1.7, color="navy",
+    325, 80, scale=2.2, color="navy",
 )
-c.addText("A matrix and its eigenvalue equation", 450, 160, size=20)
+c.addText("A matrix and its eigenvalue equation", 325, 145, size=20)
 c.addLaTeX(
     r"A=\begin{pmatrix}2&1\\1&2\end{pmatrix},\qquad"
     r"\det(A-\lambda I)=(2-\lambda)^2-1=0",
-    450, 220, scale=1.6,
+    325, 205, scale=2.1,
 )
-c.addText("A piecewise distribution function", 450, 300, size=20)
+c.addText("A piecewise distribution function", 325, 275, size=20)
 c.addLaTeX(
     r"F_X(x)=\begin{cases}0,&x<0,\\1-e^{-\lambda x},&x\geq0,\end{cases}"
     r"\qquad \mathbb{E}[X]=\frac{1}{\lambda}",
-    450, 365, scale=1.5, color="teal",
+    325, 340, scale=2.1, color="teal",
 )
 c.save("equations.svg")
 ```
@@ -153,12 +153,17 @@ For plots and diagrams:
 
 <!-- render: latex -->
 ```python
-from svgflow import Plot
+import numpy as np
+from svgflow import Plot, PlotStyle
 
-p = Plot(340, 600, x_range=(0, 5), y_range=(0, 1))
+p = Plot(300, 520, x_range=(0, 5), y_range=(0, 1),
+         style=PlotStyle.scaled(14).copy(label_size=24, title_size=24),
+         extra_margins=(0, 0, 0, 8))
+t = np.linspace(0, 5, 80)
 p.easyAxes()
+p.addPlot(t, 1 - np.exp(-t), color="teal", thickness=2)
 p.addAxisLabels(r"t", r"P(X\leq t)", xlatex=True, ylatex=True)
-p.addTitle(r"F_X(t)", latex=True)
+p.addTitle(r"F_X(t)=1-e^{-t}", latex=True)
 p.save("math-plot.svg")
 ```
 
@@ -167,27 +172,31 @@ p.save("math-plot.svg")
 ### An optimization flow with equation labels
 
 Node labels can contain aligned equations, and edges can carry math labels.
-Leave room for fractions and subscripts: node shapes do not grow with the math.
+Use a larger `text_size` for readable math, then size each node to fit its
+expression. The multiline loss needs a taller box than the two single-line
+updates. Node shapes do not grow with the math.
 
 <!-- render: latex -->
 ```python
 from svgflow import Flow, FlowStyle
 
-style = FlowStyle(node_shape=("rectangle", 110, 270, 12),
-                  node_color="aliceblue", node_border="steelblue", text_size=18)
-f = Flow(360, 1000, style=style)
-f.addNode("loss", 180, 180, label=(
+# LaTeX scales with text_size / 16. Size each box for its own equation.
+style = FlowStyle(node_shape=("rectangle", 64, 180, 10),
+                  node_color="aliceblue", node_border="steelblue",
+                  text_size=32, edge_text_size=26)
+f = Flow(230, 840, style=style)
+f.addNode("loss", 150, 90, shape=("rectangle", 120, 260, 12), label=(
     r"\begin{aligned}\mathcal{L}(\theta)&=\frac{1}{n}\sum_{i=1}^{n}"
     r"(y_i-\theta^\top x_i)^2\\&\quad+\lambda\lVert\theta\rVert_2^2\end{aligned}"
 ), latex=True)
-f.addNode("gradient", 510, 180, label=r"g_k=\nabla_\theta\mathcal{L}(\theta_k)",
+f.addNode("gradient", 450, 90, label=r"g_k=\nabla_\theta\mathcal{L}(\theta_k)",
           latex=True)
-f.addNode("update", 840, 180, label=r"\theta_{k+1}=\theta_k-\eta_k g_k",
-          latex=True, color="honeydew")
+f.addNode("update", 720, 90, shape=("rectangle", 64, 200, 10),
+          label=r"\theta_{k+1}=\theta_k-\eta_k g_k", latex=True, color="honeydew")
 f.addEdge("loss", "gradient", directed=True)
 f.addEdge("gradient", "update", directed=True)
 f.addElbowEdge("update", "loss", from_port="S", to_port="S",
-               waypoints=[(840, 300), (180, 300)],
+               waypoints=[(720, 205), (150, 205)],
                label=r"k\leftarrow k+1", latex=True)
 f.save("optimization-flow.svg")
 ```

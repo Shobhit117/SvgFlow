@@ -97,6 +97,43 @@ values are ignored. Check lengths in your data pipeline if that would hide
 a mistake. Generators work but are consumed once; create fresh iterators for
 each series or convert them to arrays/lists first.
 
+## Discontinuous functions
+
+`addPlot()` connects every adjacent pair in a call; it does not detect poles
+or split at NaN/infinity. Clamping `tan(x)` to the y range produces false flat
+segments and lines across its asymptotes. Split the continuous branches and
+sample only the portion of each branch inside the visible range:
+
+<!-- render: core -->
+```python
+import numpy as np
+from svgflow import Plot, PlotStyle
+
+p = Plot(300, 600, x_range=(0, 2 * np.pi), y_range=(-2, 2),
+         style=PlotStyle.scaled(13))
+p.addAxes()
+p.addTicksX([(0, "0"), (np.pi / 2, "pi/2"), (np.pi, "pi"),
+             (3 * np.pi / 2, "3pi/2"), (2 * np.pi, "2pi")])
+p.addTicksY([(-2, "-2"), (-1, "-1"), (0, "0"), (1, "1"), (2, "2")])
+# tan(x) is in [-2, 2] on these three intervals within [0, 2*pi].
+# The poles at pi/2 and 3*pi/2 lie in the gaps between them.
+limit = np.arctan(2)
+intervals = [(0, limit), (np.pi - limit, np.pi + limit),
+             (2 * np.pi - limit, 2 * np.pi)]
+for left, right in intervals:
+    x = np.linspace(left, right, 80)
+    p.addPlot(x, np.tan(x), color="royalblue", thickness=2)
+p.addAxisLabels("Angle (radians)", "tan(x)")
+p.addTitle("Tangent: separate visible branches")
+p.save("discontinuous.svg")
+```
+
+![Tangent drawn as three separate branches](figures/plotting-discontinuous.svg)
+
+The gaps contain values outside the displayed y range and the poles. No stroke
+connects one branch to another. For missing observations in general datasets,
+see the [finite-segment recipe](recipes.md#split-a-series-around-missing-values).
+
 ## Scatter markers
 
 <!-- render: core -->

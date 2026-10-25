@@ -43,13 +43,13 @@ from svgflow import Canvas
 out = Path("output")
 out.mkdir(exist_ok=True)
 
-canvas = Canvas(height=240, width=480)
-canvas.addRectangle(240, 480, 0, 0, color="white", border="none")
+canvas = Canvas(height=150, width=300)
+canvas.addRectangle(150, 300, 0, 0, color="white", border="none")
 canvas.addRectangle(
-    height=90, width=220, x=130, y=75,
+    height=90, width=220, x=40, y=30,
     color="aliceblue", border="steelblue", thickness=2, corner_radius=12,
 )
-canvas.addText("Hello, SvgFlow!", x=240, y=120, size=22, color="navy")
+canvas.addText("Hello, SvgFlow!", x=150, y=75, size=22, color="navy")
 canvas.save(out / "hello.svg")
 ```
 
@@ -155,8 +155,8 @@ directly; they do not consistently validate every input. Keep IDs simple
 ```python
 from svgflow import Canvas
 
-c = Canvas(100, 300)
-c.addText("Reusable SVG", 150, 50)
+c = Canvas(70, 200)
+c.addText("Reusable SVG", 100, 35)
 svg_markup = c.toSvg()
 assert svg_markup.startswith("<svg")
 c.save("reusable.svg")

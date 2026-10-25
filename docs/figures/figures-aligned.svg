@@ -16,6 +16,7 @@
 <text fill="black" transform="translate(74.4000 280.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">0.00</text>
 <text fill="black" transform="translate(74.4000 45.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">1.00</text>
 <line x1="80.0000" y1="45.0000" x2="90.0000" y2="45.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<path d="M85.0000 233.0000 L247.5000 115.5000 L410.0000 186.0000" stroke="royalblue" stroke-width="2" fill="none" opacity="1"/>
 </g>
 <g transform="translate(455.0000 10.0000)">
 <line x1="85.0000" y1="285.0000" x2="85.0000" y2="29.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
@@ -30,5 +31,6 @@
 <text fill="black" transform="translate(74.4000 280.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">0.00</text>
 <text fill="black" transform="translate(74.4000 45.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">100000.00</text>
 <line x1="80.0000" y1="45.0000" x2="90.0000" y2="45.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<path d="M85.0000 233.0000 L247.5000 115.5000 L410.0000 186.0000" stroke="royalblue" stroke-width="2" fill="none" opacity="1"/>
 </g>
 </svg>

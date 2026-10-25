@@ -1,6 +1,6 @@
-<svg width="900" height="430" viewBox="0 0 900 430" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-<text fill="black" transform="translate(450.0000 30.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20">Gaussian integral</text>
-<g transform="translate(332.65665 60.032399999999996) rotate(0) scale(1.7)" fill="navy">
+<svg width="650" height="400" viewBox="0 0 650 400" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<text fill="black" transform="translate(325.0000 25.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20">Gaussian integral</text>
+<g transform="translate(173.1439 41.218399999999995) rotate(0) scale(2.2)" fill="navy">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="138.051" height="35.256" viewBox="0 0 138.051 35.256">
 <defs
      id="eq0_defs16">
@@ -303,8 +303,8 @@
   </g>
 </svg>
 </g>
-<text fill="black" transform="translate(450.0000 160.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20">A matrix and its eigenvalue equation</text>
-<g transform="translate(268.05999999999995 192.9016) rotate(0) scale(1.6)" >
+<text fill="black" transform="translate(325.0000 145.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20">A matrix and its eigenvalue equation</text>
+<g transform="translate(86.20374999999999 169.43335000000002) rotate(0) scale(2.1)" >
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="227.425" height="33.873" viewBox="0 0 227.425 33.873">
 <defs
      id="eq1_defs17">
@@ -681,8 +681,8 @@
   </g>
 </svg>
 </g>
-<text fill="black" transform="translate(450.0000 300.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20">A piecewise distribution function</text>
-<g transform="translate(298.95375 335.11175000000003) rotate(0) scale(1.5)" fill="teal">
+<text fill="black" transform="translate(325.0000 275.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20">A piecewise distribution function</text>
+<g transform="translate(113.53524999999999 298.15645) rotate(0) scale(2.1)" fill="teal">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="201.395" height="39.851" viewBox="0 0 201.395 39.851">
 <defs
      id="eq2_defs22">

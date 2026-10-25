@@ -16,5 +16,6 @@
 <line x1="73.5680" y1="32.8400" x2="81.0680" y2="32.8400" stroke="black" stroke-width="2" fill="none" opacity="1"/>
 <text fill="black" transform="translate(237.1530 280.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">Time</text>
 <text fill="black" transform="translate(14.0000 143.4450) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">Value</text>
+<path d="M77.3180 231.9290 L173.2190 174.4144 L301.0870 112.4756 L396.9880 54.9610" stroke="royalblue" stroke-width="2" fill="none" opacity="1"/>
 <text fill="black" transform="translate(237.1530 24.5600) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.8">Scaled plot text</text>
 </svg>

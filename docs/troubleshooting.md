@@ -35,6 +35,11 @@ input lengths.
 **Axes do not cross zero**: axes sit on the lower and left plot boundaries.
 Draw additional mapped zero lines if desired.
 
+**Lines across a discontinuity**: `addPlot()` joins adjacent values without
+detecting poles or breaking on NaN/infinity. Draw each continuous visible
+branch in a separate call. Clamping values creates false plateaus; see the
+[tangent example](plotting.md#discontinuous-functions).
+
 **Missing/downward bars**: bar width uses canvas units; y is an absolute top,
 not a height. Tops below baselines create negative-height SVG rectangles.
 See [signed bars](recipes.md) for a workaround.

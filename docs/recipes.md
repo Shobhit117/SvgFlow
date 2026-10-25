@@ -196,10 +196,10 @@ def badge(canvas, label, x, y, color="aliceblue"):
                          border="steelblue", corner_radius=10)
     canvas.addText(label, x, y, size=16)
 
-c = Canvas(180, 550)
-badge(c, "Input", 120, 90)
-badge(c, "Output", 430, 90, color="honeydew")
-c.addLine(195, 90, 355, 90, directed=True)
+c = Canvas(100, 460)
+badge(c, "Input", 100, 50)
+badge(c, "Output", 360, 50, color="honeydew")
+c.addLine(175, 50, 285, 50, directed=True)
 c.save("badges.svg")
 ```
 

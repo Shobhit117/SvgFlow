@@ -1,9 +1,9 @@
-<svg width="1000" height="360" viewBox="0 0 1000 360" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<svg width="840" height="230" viewBox="0 0 840 230" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
 <defs>
 <path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
 </defs>
-<rect width="270" height="110" fill="aliceblue" stroke="steelblue" stroke-width="2" transform="translate(45.0000 125.0000) rotate(0.0000)" opacity="1" rx="12"/>
-<g transform="translate(112.2035625 148.8684375) rotate(0) scale(1.125)" >
+<rect width="260" height="120" fill="aliceblue" stroke="steelblue" stroke-width="2" transform="translate(20.0000 30.0000) rotate(0.0000)" opacity="1" rx="12"/>
+<g transform="translate(29.473 34.655) rotate(0) scale(2.0)" >
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="120.527" height="55.345" viewBox="0 0 120.527 55.345">
 <defs
      id="eq0_defs20">
@@ -429,8 +429,8 @@
   </g>
 </svg>
 </g>
-<rect width="270" height="110" fill="aliceblue" stroke="steelblue" stroke-width="2" transform="translate(375.0000 125.0000) rotate(0.0000)" opacity="1" rx="12"/>
-<g transform="translate(470.67674999999997 168.7921875) rotate(0) scale(1.125)" >
+<rect width="180" height="64" fill="aliceblue" stroke="steelblue" stroke-width="2" transform="translate(360.0000 58.0000) rotate(0.0000)" opacity="1" rx="10"/>
+<g transform="translate(380.092 70.075) rotate(0) scale(2.0)" >
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="69.908" height="19.925" viewBox="0 0 69.908 19.925">
 <defs
      id="eq1_defs9">
@@ -594,8 +594,8 @@
   </g>
 </svg>
 </g>
-<rect width="270" height="110" fill="honeydew" stroke="steelblue" stroke-width="2" transform="translate(705.0000 125.0000) rotate(0.0000)" opacity="1" rx="12"/>
-<g transform="translate(792.6549375 169.196625) rotate(0) scale(1.125)" >
+<rect width="200" height="64" fill="honeydew" stroke="steelblue" stroke-width="2" transform="translate(620.0000 58.0000) rotate(0.0000)" opacity="1" rx="10"/>
+<g transform="translate(635.831 70.794) rotate(0) scale(2.0)" >
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="84.169" height="19.206" viewBox="0 0 84.169 19.206">
 <defs
      id="eq2_defs8">
@@ -768,13 +768,13 @@
   </g>
 </svg>
 </g>
-<line x1="315.0000" y1="180.0000" x2="373.0000" y2="180.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<use xlink:href="#arrow" transform="translate(374.0000 180.0000) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
-<line x1="645.0000" y1="180.0000" x2="703.0000" y2="180.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<use xlink:href="#arrow" transform="translate(704.0000 180.0000) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
-<path d="M840.0000 235.0000 L840.0000 294.0000 Q840.0000 300.0000 834.0000 300.0000 L186.0000 300.0000 Q180.0000 300.0000 180.0000 294.0000 L180.0000 237.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<use xlink:href="#arrow" transform="translate(180.0000 236.0000) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
-<g transform="translate(479.839875 272.875125) rotate(0) scale(1.125)" >
+<line x1="280.0000" y1="90.0000" x2="358.0000" y2="90.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(359.0000 90.0000) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<line x1="540.0000" y1="90.0000" x2="618.0000" y2="90.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(619.0000 90.0000) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<path d="M720.0000 122.0000 L720.0000 199.0000 Q720.0000 205.0000 714.0000 205.0000 L156.0000 205.0000 Q150.0000 205.0000 150.0000 199.0000 L150.0000 152.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(150.0000 151.0000) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<g transform="translate(391.435375 165.819625) rotate(0) scale(1.625)" >
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="53.618" height="17.711" viewBox="0 0 53.618 17.711">
 <defs
      id="eq3_defs4">

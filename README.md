@@ -68,17 +68,17 @@ Replace `YOUR_USERNAME` with the GitHub account that hosts the repository.
 ```python
 from svgflow import Flow
 
-diagram = Flow(height=240, width=480)
+diagram = Flow(height=140, width=440)
 
 diagram.addNode(
-    "source", 100, 120,
-    shape=("circle", 45),
+    "source", 65, 70,
+    shape=("circle", 35),
     label="Source",
     color="lightblue",
 )
 diagram.addNode(
-    "result", 380, 120,
-    shape=("rectangle", 80, 120),
+    "result", 355, 70,
+    shape=("rectangle", 70, 110),
     label="Result",
     color="lightgreen",
 )
@@ -102,27 +102,27 @@ elements appear on top of earlier ones.
 ```python
 from svgflow import Canvas
 
-canvas = Canvas(height=300, width=500)
+canvas = Canvas(height=200, width=360)
 
 canvas.addRectangle(
-    height=120,
-    width=220,
-    x=140,
-    y=90,
+    height=100,
+    width=240,
+    x=70,
+    y=75,
     color="aliceblue",
     border="steelblue",
     thickness=3,
     corner_radius=16,
 )
-canvas.addCircle(140, 150, radius=30, color="gold", border="orange")
+canvas.addCircle(70, 125, radius=26, color="gold", border="orange")
 canvas.addLine(
-    170, 150, 330, 150,
+    96, 125, 280, 125,
     color="steelblue",
     thickness=3,
     directed=True,
     label="process",
 )
-canvas.addText("SvgFlow", 250, 60, size=24, weight="bold")
+canvas.addText("SvgFlow", 180, 35, size=24, weight="bold")
 canvas.save("drawing.svg")
 ```
 
@@ -151,10 +151,10 @@ standalone head.
 ```python
 from svgflow import Canvas
 
-canvas = Canvas(300, 500)
+canvas = Canvas(90, 420)
 canvas.arrow_style = "stealth"
-canvas.addLine(20, 250, 200, 250, thickness=3, directed="both")
-canvas.addCircularArc(350, 250, 40, 200, 340, directed=True, arrow_style="open")
+canvas.addLine(20, 60, 210, 60, thickness=3, directed="both")
+canvas.addCircularArc(340, 60, 35, 200, 340, directed=True, arrow_style="open")
 canvas.save("arrows.svg")
 ```
 
@@ -223,6 +223,7 @@ style = PlotStyle.scaled(12)  # ticks/labels 12px, title ~14px, tick length 7.5p
 plot = Plot(300, 420, style=style, x_range=(0, 10), y_range=(0, 5000))
 plot.easyAxes()
 plot.addAxisLabels("Time", "Value")
+plot.addPlot([0, 3, 7, 10], [500, 1800, 3200, 4500], color="royalblue", thickness=2)
 plot.addTitle("Scaled plot text")
 plot.save("plot-style.svg")
 ```
@@ -249,29 +250,34 @@ margins when exact alignment across very different ranges is needed.
 import numpy as np
 from svgflow import Figure, PlotStyle
 
-fig = Figure(700, 1000, rows=2, cols=3, title="Overview",
-             style=PlotStyle.scaled(13))
-x = np.linspace(0, 2 * np.pi, 60)
+fig = Figure(520, 760, rows=2, cols=2, title="Signals and decay",
+             style=PlotStyle.scaled(12), wspace=20, hspace=28, padding=14)
+x = np.linspace(0, 2 * np.pi, 80)
 
-for col, f in enumerate([np.sin, np.cos, np.tan]):
+for col, f in enumerate([np.sin, np.cos]):
     ax = fig.subplot(0, col, x_range=(0, 2 * np.pi), y_range=(-1.2, 1.2))
     ax.easyAxes()
-    ax.addPlot(x, np.clip(f(x), -1.2, 1.2), color="royalblue")
+    ax.addPlot(x, f(x), color="royalblue", thickness=2)
     ax.addAxisLabels("x", "y")
     ax.addTitle(f.__name__)
 
-wide = fig.subplot(1, 0, colspan=2, x_range=(0, 5), y_range=(0, 10))
+wide = fig.subplot(1, 0, colspan=2, x_range=(0, 2 * np.pi), y_range=(0, 1.1))
 wide.easyAxes()
-wide.addTitle("Spans two columns")
+wide.addPlot(x, np.exp(-x / 2), color="teal", thickness=2)
+wide.addAxisLabels("Time", "Magnitude")
+wide.addTitle("Exponential decay spans both columns")
 
-# Figure-level drawing uses figure coordinates; mapToFigure converts
-# subplot data coordinates.
-x1, y1 = fig.mapToFigure(wide, 5, 5)
-fig.addText("note", x1 + 40, y1)
+# Map subplot data into figure coordinates for a figure-level annotation.
+x1, y1 = fig.mapToFigure(wide, 3, np.exp(-1.5))
+fig.addLine(x1 + 90, y1 - 35, x1 + 6, y1 - 4, directed=True, color="teal")
+fig.addText("decay", x1 + 90, y1 - 48, size=13)
 fig.save("grid.svg")
 ```
 
 ![Rendered grid example](docs/figures/readme-grid.svg)
+
+Plot continuous branches separately for functions with poles; see the
+[discontinuous-function example](docs/plotting.md#discontinuous-functions).
 
 `Figure` also accepts `wspace`, `hspace`, `padding`, `width_ratios`, and
 `height_ratios`; `fig.subplots(x_range=..., y_range=...)` fills the whole grid
@@ -287,23 +293,23 @@ automatically clipped to the node boundaries.
 ```python
 from svgflow import Flow
 
-flow = Flow(height=360, width=720)
+flow = Flow(height=210, width=660)
 
 flow.addNode(
-    "input", 100, 180,
+    "input", 85, 75,
     shape=("ellipse", 70, 40),
     label="Input",
     color="lightyellow",
 )
 flow.addNode(
-    "validate", 330, 180,
+    "validate", 315, 75,
     shape=("rectangle", 90, 150, 12),
     label="Validate",
     color="lightblue",
 )
 flow.addNode(
-    "output", 610, 180,
-    shape=("circle", 55),
+    "output", 565, 75,
+    shape=("circle", 45),
     label="Output",
     color="lightgreen",
 )
@@ -346,9 +352,9 @@ style = FlowStyle(
     edge_color="dimgray", arrow_style="stealth",
     text_size=14,
 )
-flow = Flow(300, 600, style=style)
-flow.addNode("a", 100, 150, label="Load")
-flow.addNode("b", 450, 150, label="Train", color="lightyellow")  # override
+flow = Flow(100, 460, style=style)
+flow.addNode("a", 85, 50, label="Load")
+flow.addNode("b", 375, 50, label="Train", color="lightyellow")  # override
 flow.addEdge("a", "b", directed=True, label="data")
 flow.save("styled.svg")
 ```
@@ -370,7 +376,7 @@ pass that value anywhere a fill color is accepted.
 ```python
 from svgflow import Canvas
 
-canvas = Canvas(260, 520)
+canvas = Canvas(200, 460)
 canvas.defineLinearGradient(
     "sunset",
     x1=0,
@@ -381,7 +387,7 @@ canvas.defineLinearGradient(
     stop_colors=("gold", "tomato", "purple"),
 )
 canvas.addRectangle(
-    160, 420, 50, 50,
+    160, 420, 20, 20,
     color=canvas.getGradient("sunset"),
     border="none",
     corner_radius=24,
@@ -402,12 +408,12 @@ backend is Inkscape.
 ```python
 from svgflow import Canvas
 
-canvas = Canvas(200, 500)
+canvas = Canvas(90, 220)
 canvas.addLaTeX(
     r"e^{i\pi} + 1 = 0",
-    x=250,
-    y=100,
-    scale=2,
+    x=110,
+    y=45,
+    scale=2.6,
     color="navy",
     backend="inkscape",  # or "dvisvgm" / "pdf2svg"
 )
@@ -425,10 +431,10 @@ LaTeX node and edge labels, see the [math tutorial](docs/composition-and-export.
 ```python
 from svgflow import Canvas
 
-canvas = Canvas(180, 800)
+canvas = Canvas(110, 400)
 canvas.addLaTeX(
     r"\int_{-\infty}^{\infty}e^{-a x^2}\,dx=\sqrt{\frac{\pi}{a}},\quad a>0",
-    400, 90, scale=2, color="navy",
+    200, 55, scale=2.4, color="navy",
 )
 canvas.save("gaussian-integral.svg")
 ```
@@ -441,21 +447,23 @@ canvas.save("gaussian-integral.svg")
 ```python
 from svgflow import Flow, FlowStyle
 
-style = FlowStyle(node_shape=("rectangle", 110, 270, 12),
-                  node_color="aliceblue", node_border="steelblue", text_size=18)
-f = Flow(360, 1000, style=style)
-f.addNode("loss", 180, 180, label=(
+# LaTeX scales with text_size / 16. Size each box for its own equation.
+style = FlowStyle(node_shape=("rectangle", 64, 180, 10),
+                  node_color="aliceblue", node_border="steelblue",
+                  text_size=32, edge_text_size=26)
+f = Flow(230, 840, style=style)
+f.addNode("loss", 150, 90, shape=("rectangle", 120, 260, 12), label=(
     r"\begin{aligned}\mathcal{L}(\theta)&=\frac{1}{n}\sum_{i=1}^{n}"
     r"(y_i-\theta^\top x_i)^2\\&\quad+\lambda\lVert\theta\rVert_2^2\end{aligned}"
 ), latex=True)
-f.addNode("gradient", 510, 180, label=r"g_k=\nabla_\theta\mathcal{L}(\theta_k)",
+f.addNode("gradient", 450, 90, label=r"g_k=\nabla_\theta\mathcal{L}(\theta_k)",
           latex=True)
-f.addNode("update", 840, 180, label=r"\theta_{k+1}=\theta_k-\eta_k g_k",
-          latex=True, color="honeydew")
+f.addNode("update", 720, 90, shape=("rectangle", 64, 200, 10),
+          label=r"\theta_{k+1}=\theta_k-\eta_k g_k", latex=True, color="honeydew")
 f.addEdge("loss", "gradient", directed=True)
 f.addEdge("gradient", "update", directed=True)
 f.addElbowEdge("update", "loss", from_port="S", to_port="S",
-               waypoints=[(840, 300), (180, 300)],
+               waypoints=[(720, 205), (150, 205)],
                label=r"k\leftarrow k+1", latex=True)
 f.save("optimization-flow.svg")
 ```
@@ -471,10 +479,10 @@ you need.
 ```python
 from svgflow import Canvas
 
-canvas = Canvas(400, 700)
+canvas = Canvas(130, 340)
 canvas.importSvgFromFile("docs/figures/icon.svg", fig_id="icon")
-canvas.addSubFig("icon", 180, 200, scale=0.8)
-canvas.addSubFig("icon", 500, 200, scale=0.5, rot=30, flip=True)
+canvas.addSubFig("icon", 85, 65, scale=1.2)
+canvas.addSubFig("icon", 250, 65, scale=1.0, rot=30, flip=True)
 canvas.save("composite.svg")
 ```
 
@@ -519,8 +527,8 @@ tools = ExecutablePaths(
     pdf2svg=r"C:\tools\pdf2svg.exe",
 )
 
-canvas = Canvas(400, 600, executables=tools)
-canvas.addText("Hello, SvgFlow!", 300, 200)
+canvas = Canvas(90, 260, executables=tools)
+canvas.addText("Hello, SvgFlow!", 130, 45, size=22)
 canvas.save("configured.svg")
 ```
 

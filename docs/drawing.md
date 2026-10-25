@@ -5,20 +5,20 @@
 ## Basic shapes
 
 `Canvas` accumulates vector elements in drawing order. The examples below use
-one canvas; save it after adding the elements you want:
+separate canvases; each snippet saves its own illustration:
 
 <!-- render: core -->
 ```python
 from svgflow import Canvas
 
-c = Canvas(height=300, width=760)
-c.addRectangle(300, 760, 0, 0, color="white", border="none")
-c.addRectangle(80, 120, 30, 70, color="aliceblue", border="royalblue",
+c = Canvas(height=170, width=760)
+c.addRectangle(170, 760, 0, 0, color="white", border="none")
+c.addRectangle(80, 120, 30, 50, color="aliceblue", border="royalblue",
                thickness=2, corner_radius=12)
-c.addCircle(255, 110, radius=42, color="honeydew", border="teal", thickness=2)
-c.addEllipse(430, 110, a=68, b=32, color="lemonchiffon",
+c.addCircle(255, 90, radius=42, color="honeydew", border="teal", thickness=2)
+c.addEllipse(430, 90, a=68, b=32, color="lemonchiffon",
              border="darkorange", rotation=-15)
-c.addPolygon([(585, 75), (675, 65), (720, 125), (625, 155)],
+c.addPolygon([(585, 55), (675, 45), (720, 105), (625, 135)],
              color="lavender", border="purple", thickness=2)
 c.save("shapes.svg")
 ```
@@ -183,10 +183,10 @@ polylines, downsample smooth input, or supply your own Bezier controls.
 ```python
 from svgflow import Canvas
 
-c = Canvas(280, 600)
-c.addCircularArc(150, 140, 80, theta1=200, theta2=340,
+c = Canvas(180, 520)
+c.addCircularArc(130, 110, 80, theta1=200, theta2=340,
                  color="royalblue", thickness=3, directed=True)
-c.addCircularArc(430, 140, 80, theta1=20, theta2=-200,
+c.addCircularArc(390, 110, 80, theta1=20, theta2=-200,
                  color="teal", thickness=3, directed="both")
 c.save("arcs.svg")
 ```

@@ -8,12 +8,12 @@
 ```python
 from svgflow import Canvas
 
-c = Canvas(240, 600)
+c = Canvas(160, 460)
 width, height = c.addText(
-    "Revenue < target & costs > plan", 300, 70,
+    "Revenue < target & costs > plan", 230, 40,
     color="navy", size=20, weight="bold", font="sans",
 )
-c.addText("Rotated label", 300, 160, rotation=-20, style="italic", size=22)
+c.addText("Rotated label", 230, 110, rotation=-20, style="italic", size=22)
 c.save("labels.svg")
 print(width, height)
 ```

@@ -1,7 +1,7 @@
-<svg width="760" height="300" viewBox="0 0 760 300" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-<rect width="760" height="300" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
-<rect width="120" height="80" fill="aliceblue" stroke="royalblue" stroke-width="2" transform="translate(30.0000 70.0000) rotate(0.0000)" opacity="1" rx="12"/>
-<circle cx="255.0000" cy="110.0000" r="42.0000" fill="honeydew" stroke="teal" stroke-width="2" opacity="1"/>
-<ellipse transform="translate(430.0000 110.0000) rotate(-15.0000)" rx="68.0000" ry="32.0000" fill="lemonchiffon" stroke="darkorange" stroke-width="1" opacity="1"/>
-<polygon points="585.0000,75.0000 675.0000,65.0000 720.0000,125.0000 625.0000,155.0000" fill="lavender" stroke="purple" stroke-width="2" opacity="1"/>
+<svg width="760" height="170" viewBox="0 0 760 170" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<rect width="760" height="170" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="120" height="80" fill="aliceblue" stroke="royalblue" stroke-width="2" transform="translate(30.0000 50.0000) rotate(0.0000)" opacity="1" rx="12"/>
+<circle cx="255.0000" cy="90.0000" r="42.0000" fill="honeydew" stroke="teal" stroke-width="2" opacity="1"/>
+<ellipse transform="translate(430.0000 90.0000) rotate(-15.0000)" rx="68.0000" ry="32.0000" fill="lemonchiffon" stroke="darkorange" stroke-width="1" opacity="1"/>
+<polygon points="585.0000,55.0000 675.0000,45.0000 720.0000,105.0000 625.0000,135.0000" fill="lavender" stroke="purple" stroke-width="2" opacity="1"/>
 </svg>

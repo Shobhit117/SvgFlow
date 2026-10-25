@@ -78,8 +78,11 @@ fig = Figure(700, 1000, rows=2, cols=3,
 main = fig.subplot(0, 0, rowspan=2, x_range=(0, 10), y_range=(0, 100))
 top = fig.subplot(0, 1, colspan=2)
 bottom = fig.subplot(1, 1, colspan=2)
-for ax in [main, top, bottom]:
+for ax, values in [(main, [15, 65, 90]), (top, [0.2, 0.8, 0.4]),
+                   (bottom, [0.8, 0.5, 0.2])]:
     ax.easyAxes()
+    ax.addPlot([0, 5, 10] if ax is main else [0, 0.5, 1], values,
+               color="royalblue", thickness=2)
 fig.save("weighted-grid.svg")
 ```
 
@@ -147,8 +150,9 @@ from svgflow import Figure
 fig = Figure(360, 900, rows=1, cols=2)
 a = fig.subplot(0, 0, origin=(85, 280), margins=(25, 45), y_range=(0, 1))
 b = fig.subplot(0, 1, origin=(85, 280), margins=(25, 45), y_range=(0, 100000))
-for ax in [a, b]:
+for ax, values in [(a, [0.2, 0.7, 0.4]), (b, [20000, 70000, 40000])]:
     ax.easyAxes()
+    ax.addPlot([0, 0.5, 1], values, color="royalblue", thickness=2)
 fig.save("aligned.svg")
 ```
 

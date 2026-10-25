@@ -28,10 +28,10 @@ def save(canvas, name):
 
 def hello():
     """Make the getting-started drawing."""
-    c = background(Canvas(height=240, width=480))
-    c.addRectangle(90, 220, 130, 75, color="aliceblue", border="steelblue",
+    c = background(Canvas(height=150, width=300))
+    c.addRectangle(90, 220, 40, 30, color="aliceblue", border="steelblue",
                    thickness=2, corner_radius=12)
-    c.addText("Hello, SvgFlow!", 240, 120, size=22, color="navy")
+    c.addText("Hello, SvgFlow!", 150, 75, size=22, color="navy")
     save(c, "hello")
 
 

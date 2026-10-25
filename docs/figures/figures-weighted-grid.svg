@@ -26,6 +26,7 @@
 <line x1="66.8960" y1="167.3425" x2="74.3960" y2="167.3425" stroke="black" stroke-width="2" fill="none" opacity="1"/>
 <text fill="black" transform="translate(62.6960 32.8400) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">100.00</text>
 <line x1="66.8960" y1="32.8400" x2="74.3960" y2="32.8400" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<path d="M70.6460 490.1485 L251.8170 221.1435 L432.9880 86.6410" stroke="royalblue" stroke-width="2" fill="none" opacity="1"/>
 </g>
 <g transform="translate(500.0000 63.2000)">
 <line x1="57.3020" y1="153.4000" x2="57.3020" y2="18.3400" stroke="black" stroke-width="2" fill="none" opacity="1"/>
@@ -40,6 +41,7 @@
 <text fill="black" transform="translate(459.5000 157.6000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">1.00</text>
 <line x1="459.5000" y1="145.9000" x2="459.5000" y2="153.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
 <text fill="black" transform="translate(49.3520 149.6500) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">0.00</text>
+<path d="M57.3020 126.2880 L258.4010 56.2020 L459.5000 102.9260" stroke="royalblue" stroke-width="2" fill="none" opacity="1"/>
 </g>
 <g transform="translate(500.0000 288.8000)">
 <line x1="57.3020" y1="349.0000" x2="57.3020" y2="18.3400" stroke="black" stroke-width="2" fill="none" opacity="1"/>
@@ -58,5 +60,6 @@
 <line x1="53.5520" y1="189.0450" x2="61.0520" y2="189.0450" stroke="black" stroke-width="2" fill="none" opacity="1"/>
 <text fill="black" transform="translate(49.3520 32.8400) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">1.00</text>
 <line x1="53.5520" y1="32.8400" x2="61.0520" y2="32.8400" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<path d="M57.3020 95.3220 L258.4010 189.0450 L459.5000 282.7680" stroke="royalblue" stroke-width="2" fill="none" opacity="1"/>
 </g>
 </svg>

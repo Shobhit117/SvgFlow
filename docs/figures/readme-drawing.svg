@@ -1,11 +1,11 @@
-<svg width="500" height="300" viewBox="0 0 500 300" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<svg width="360" height="200" viewBox="0 0 360 200" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
 <defs>
 <path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
 </defs>
-<rect width="220" height="120" fill="aliceblue" stroke="steelblue" stroke-width="3" transform="translate(140.0000 90.0000) rotate(0.0000)" opacity="1" rx="16"/>
-<circle cx="140.0000" cy="150.0000" r="30.0000" fill="gold" stroke="orange" stroke-width="1" opacity="1"/>
-<line x1="170.0000" y1="150.0000" x2="327.0000" y2="150.0000" stroke="steelblue" stroke-width="3" fill="none" opacity="1"/>
-<use xlink:href="#arrow" transform="translate(328.5000 150.0000) rotate(0.0000) scale(1.5000 1.5000)" stroke="steelblue" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
-<text fill="black" transform="translate(250.0000 143.6000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">process</text>
-<text fill="black" transform="translate(250.0000 60.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="24" font-weight="bold">SvgFlow</text>
+<rect width="240" height="100" fill="aliceblue" stroke="steelblue" stroke-width="3" transform="translate(70.0000 75.0000) rotate(0.0000)" opacity="1" rx="16"/>
+<circle cx="70.0000" cy="125.0000" r="26.0000" fill="gold" stroke="orange" stroke-width="1" opacity="1"/>
+<line x1="96.0000" y1="125.0000" x2="277.0000" y2="125.0000" stroke="steelblue" stroke-width="3" fill="none" opacity="1"/>
+<use xlink:href="#arrow" transform="translate(278.5000 125.0000) rotate(0.0000) scale(1.5000 1.5000)" stroke="steelblue" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(188.0000 118.6000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">process</text>
+<text fill="black" transform="translate(180.0000 35.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="24" font-weight="bold">SvgFlow</text>
 </svg>

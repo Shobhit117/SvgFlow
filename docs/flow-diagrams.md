@@ -17,11 +17,11 @@ style = FlowStyle(
     node_border="royalblue", edge_color="teal", arrow_style="stealth",
     text_size=16, edge_text_size=14,
 )
-f = Flow(height=380, width=850, style=style)
-f.addNode("load", 110, 145, shape=("ellipse", 65, 32), label="Load")
-f.addNode("check", 365, 145, label="Validate")
-f.addNode("done", 700, 145, label="Publish", color="honeydew")
-f.addNode("repair", 365, 290, label="Repair", color="lemonchiffon")
+f = Flow(height=300, width=760, style=style)
+f.addNode("load", 85, 100, shape=("ellipse", 65, 32), label="Load")
+f.addNode("check", 310, 100, label="Validate")
+f.addNode("done", 660, 100, label="Publish", color="honeydew")
+f.addNode("repair", 310, 235, label="Repair", color="lemonchiffon")
 f.addEdge("load", "check", directed=True, label="input")
 f.addEdge("check", "done", directed=True, label="valid")
 f.addElbowEdge("check", "repair", from_port="S", to_port="N", label="invalid")
@@ -55,11 +55,11 @@ Dimensions are canvas units:
 ```python
 from svgflow import Flow
 
-f = Flow(260, 800)
-f.addNode("a", 90, 120, shape=("circle", 40), label="A", color="aliceblue")
-f.addNode("b", 280, 120, shape=("rectangle", 75, 135, 12), label="B")
-f.addNode("c", 485, 120, shape=("ellipse", 75, 40), label="C")
-f.addNode("d", 690, 120, shape=("parallelogram", 130, 100, 65), label="D")
+f = Flow(140, 760)
+f.addNode("a", 65, 70, shape=("circle", 40), label="A", color="aliceblue")
+f.addNode("b", 240, 70, shape=("rectangle", 75, 135, 12), label="B")
+f.addNode("c", 440, 70, shape=("ellipse", 75, 40), label="C")
+f.addNode("d", 660, 70, shape=("parallelogram", 130, 100, 65), label="D")
 f.save("node-shapes.svg")
 ```
 
@@ -84,9 +84,9 @@ labels automatically. Use `wrap_text` when you want a paragraph-sized label:
 from svgflow import Flow, FlowStyle, wrap_text
 
 style = FlowStyle(node_shape=("rectangle", 90, 190, 12), text_size=15)
-f = Flow(220, 500, style=style)
+f = Flow(130, 240, style=style)
 lines = wrap_text("Validate the incoming customer record", 15, max_width=160)
-f.addNode("validate", 250, 110, label=lines, color="aliceblue")
+f.addNode("validate", 120, 65, label=lines, color="aliceblue")
 f.save("wrapped-node.svg")
 ```
 
@@ -142,8 +142,8 @@ unrelated nodes. Use different curvature, positions, or a custom annotation.
 ```python
 from svgflow import Flow
 
-f = Flow(320, 500)
-f.addNode("state", 250, 170, shape=("circle", 50), label="Wait", color="aliceblue")
+f = Flow(195, 180)
+f.addNode("state", 90, 125, shape=("circle", 50), label="Wait", color="aliceblue")
 f.addSelfEdge("state", theta1=240, theta2=300, curvature=110,
                directed=True, label="retry", color="teal")
 f.save("loop.svg")
@@ -247,9 +247,9 @@ from svgflow import Flow, FlowStyle
 
 base = FlowStyle.theme("ocean", text_size=14)
 accent = base.copy(node_color="lemonchiffon", edge_color="darkorange")
-f = Flow(240, 600, style=accent)
-f.addNode("a", 100, 120, label="A", shape=("circle", 35))
-f.addNode("b", 480, 120, label="B", shape=("rectangle", 60, 100), color="honeydew")
+f = Flow(110, 435, style=accent)
+f.addNode("a", 65, 55, label="A", shape=("circle", 35))
+f.addNode("b", 355, 55, label="B", shape=("rectangle", 60, 100), color="honeydew")
 f.addEdge("a", "b", directed=True, thickness=3)
 f.save("styled-flow.svg")
 ```

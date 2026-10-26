@@ -20,8 +20,8 @@
 <line x1="77.6320" y1="165.9000" x2="87.6320" y2="165.9000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
 <text fill="black" transform="translate(72.0320 40.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">10.00</text>
 <line x1="77.6320" y1="40.4000" x2="87.6320" y2="40.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<path d="M82.6320 266.3000 L621.9840 90.6000" stroke="royalblue" stroke-width="1" fill="none" opacity="1"/>
+<path d="M82.6320 266.3000 L621.9840 90.6000" stroke="royalblue" stroke-width="2" fill="none" opacity="1"/>
 <rect width="51.62699979543686" height="15.6" fill="white" stroke="gray" stroke-width="2" transform="translate(104.5000 60.0000) rotate(0.0000)" opacity="0.9" rx="10"/>
 <text textLength="29.6270" lengthAdjust="spacingAndGlyphs" fill="black" transform="translate(126.5000 67.8000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13">trend</text>
-<line x1="110.0000" y1="67.8000" x2="121.0000" y2="67.8000" stroke="royalblue" stroke-width="1" fill="none" opacity="1"/>
+<line x1="110.0000" y1="67.8000" x2="121.0000" y2="67.8000" stroke="royalblue" stroke-width="2" fill="none" opacity="1"/>
 </svg>

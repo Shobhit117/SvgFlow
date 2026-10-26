@@ -144,7 +144,7 @@ p = Plot(300, 600, x_range=(0, 5), y_range=(0, 5))
 p.easyAxes()
 for marker, y, color in [("circle", 1, "royalblue"), ("cross", 2.5, "teal"),
                          ("square", 4, "darkorange")]:
-    p.addScatterPlot([1, 2, 3, 4], [y] * 4, marker_type=marker,
+    p.addScatterPlot([1, 2, 3], [y] * 3, marker_type=marker,
                      marker_scale=0.9, color=color, label=marker)
 p.addLegend(anchor="E", box_color="white", box_border_color="gray")
 p.save("markers.svg")
@@ -346,7 +346,7 @@ from svgflow import Plot
 
 p = Plot(350, 650, x_range=(0, 10), y_range=(0, 10))
 p.easyAxes()
-p.addPlot([0, 10], [1, 8], label="trend", color="royalblue")
+p.addPlot([0, 10], [1, 8], label="trend", color="royalblue", thickness=2)
 p.addLegend(position=(110, 60), text_size=13, marker_scale=1.1,
              box_color="white", box_border_color="gray", box_opacity=0.9)
 p.save("legend-position.svg")

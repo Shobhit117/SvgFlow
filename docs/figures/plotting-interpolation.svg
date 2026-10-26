@@ -25,8 +25,8 @@
 <line x1="73.7360" y1="40.4000" x2="576.4320" y2="40.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
 <path d="M73.7360 232.9000 L199.4100 117.4000 L325.0840 194.4000 L450.7580 78.9000 L576.4320 155.9000" stroke="royalblue" stroke-width="2" fill="none" opacity="0.8" stroke-dasharray="4"/>
 <path d="M73.7360 252.1500 C115.6273 190.7333 157.5187 129.3167 199.4100 136.6500 C241.3013 143.9833 283.1927 220.0667 325.0840 213.6500 C366.9753 207.2333 408.8667 118.3167 450.7580 98.1500 C492.6493 77.9833 534.5407 126.5667 576.4320 175.1500" stroke="teal" stroke-width="2" fill="none" opacity="1"/>
-<rect width="132.92799949645996" height="38.4" fill="white" stroke="gray" stroke-width="2" transform="translate(413.3692 51.9500) rotate(0.0000)" opacity="0.5" rx="10"/>
-<text fill="black" transform="translate(433.3692 61.5500) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16"><tspan x="0" dy="0.0000em" textLength="112.9280" lengthAdjust="spacingAndGlyphs">linear segments</tspan><tspan x="0" dy="1.2em" textLength="98.7040" lengthAdjust="spacingAndGlyphs">smooth spline</tspan></text>
-<line x1="418.3692" y1="61.5500" x2="428.3692" y2="61.5500" stroke="royalblue" stroke-width="2" fill="none" opacity="0.8" stroke-dasharray="4"/>
-<line x1="418.3692" y1="80.7500" x2="428.3692" y2="80.7500" stroke="teal" stroke-width="2" fill="none" opacity="1"/>
+<rect width="141.88799949645997" height="38.4" fill="white" stroke="gray" stroke-width="2" transform="translate(404.4092 51.9500) rotate(0.0000)" opacity="0.5" rx="10"/>
+<text fill="black" transform="translate(424.4092 61.5500) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16"><tspan x="0" dy="0.0000em" textLength="112.9280" lengthAdjust="spacingAndGlyphs">linear segments</tspan><tspan x="0" dy="1.2em" textLength="98.7040" lengthAdjust="spacingAndGlyphs">smooth spline</tspan></text>
+<line x1="409.4092" y1="61.5500" x2="419.4092" y2="61.5500" stroke="royalblue" stroke-width="2" fill="none" opacity="0.8" stroke-dasharray="4"/>
+<line x1="409.4092" y1="80.7500" x2="419.4092" y2="80.7500" stroke="teal" stroke-width="2" fill="none" opacity="1"/>
 </svg>

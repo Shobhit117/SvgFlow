@@ -39,7 +39,7 @@
 <text fill="black" transform="translate(375.8405 368.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Category</text>
 <text fill="black" transform="translate(34.4600 187.3525) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Score</text>
 <text fill="black" transform="translate(375.8405 27.3200) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16.1">Grouped bars</text>
-<rect width="77.56799983978271" height="33.6" fill="white" stroke="silver" stroke-width="2" transform="translate(98.5567 52.0173) rotate(0.0000)" opacity="0.5" rx="10"/>
+<rect width="85.40799983978272" height="33.6" fill="white" stroke="silver" stroke-width="2" transform="translate(98.5567 52.0173) rotate(0.0000)" opacity="0.5" rx="10"/>
 <text fill="black" transform="translate(118.5567 60.4173) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="14"><tspan x="0" dy="0.0000em" textLength="52.1360" lengthAdjust="spacingAndGlyphs">baseline</tspan><tspan x="0" dy="1.2em" textLength="57.5680" lengthAdjust="spacingAndGlyphs">improved</tspan></text>
 <use xlink:href="#square" transform="translate(108.5567 60.4173) scale(1.0000 1.0000)" stroke="none" fill="royalblue"/>
 <use xlink:href="#square" transform="translate(108.5567 77.2173) scale(1.0000 1.0000)" stroke="none" fill="teal"/>

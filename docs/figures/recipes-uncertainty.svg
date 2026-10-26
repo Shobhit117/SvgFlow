@@ -35,7 +35,7 @@
 <text fill="black" transform="translate(370.0025 368.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Time</text>
 <text fill="black" transform="translate(15.0000 187.3525) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Response</text>
 <text fill="black" transform="translate(370.0025 27.3200) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16.1">An uncertainty band and a threshold</text>
-<rect width="77.58199965953827" height="33.6" fill="white" stroke="silver" stroke-width="2" transform="translate(90.9673 289.0877) rotate(0.0000)" opacity="0.5" rx="10"/>
+<rect width="85.42199965953827" height="33.6" fill="white" stroke="silver" stroke-width="2" transform="translate(90.9673 289.0877) rotate(0.0000)" opacity="0.5" rx="10"/>
 <text fill="black" transform="translate(110.9673 297.4877) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="14"><tspan x="0" dy="0.0000em" textLength="35.0140" lengthAdjust="spacingAndGlyphs">mean</tspan><tspan x="0" dy="1.2em" textLength="57.5820" lengthAdjust="spacingAndGlyphs">threshold</tspan></text>
 <line x1="95.9673" y1="297.4877" x2="105.9673" y2="297.4877" stroke="royalblue" stroke-width="3" fill="none" opacity="1"/>
 <line x1="95.9673" y1="314.2877" x2="105.9673" y2="314.2877" stroke="firebrick" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>

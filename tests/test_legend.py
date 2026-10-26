@@ -21,7 +21,7 @@ class LegendTests(unittest.TestCase):
     def test_legend_uses_measured_width_and_matching_font(self):
         label = "A wide legend"
         width = self._legend_width(label)
-        self.assertAlmostEqual(width, text_width(label, 16) + 20, places=4)
+        self.assertAlmostEqual(width, text_width(label, 16) + 0.56 * 16 + 20, places=4)
 
         plot = Plot(100, 100)
         plot.addPlot([0, 1], [0, 1], label=label)

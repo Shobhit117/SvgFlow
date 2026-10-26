@@ -21,7 +21,7 @@
 <path d="M73.7360 224.5667 L145.5497 150.9000 L217.3634 187.7333" stroke="royalblue" stroke-width="1" fill="none" opacity="1"/>
 <path d="M360.9909 114.0667 L432.8046 77.2333" stroke="royalblue" stroke-width="1" fill="none" opacity="1"/>
 <circle cx="576.4320" cy="150.9000" r="5.0000" fill="royalblue" stroke="none" stroke-width="1" opacity="1"/>
-<rect width="85.80799961090088" height="19.2" fill="white" stroke="gray" stroke-width="2" transform="translate(460.4892 51.4500) rotate(0.0000)" opacity="0.5" rx="10"/>
-<text textLength="65.8080" lengthAdjust="spacingAndGlyphs" fill="black" transform="translate(480.4892 61.0500) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16">observed</text>
-<line x1="465.4892" y1="61.0500" x2="475.4892" y2="61.0500" stroke="royalblue" stroke-width="1" fill="none" opacity="1"/>
+<rect width="94.76799961090089" height="19.2" fill="white" stroke="gray" stroke-width="2" transform="translate(451.5292 51.4500) rotate(0.0000)" opacity="0.5" rx="10"/>
+<text textLength="65.8080" lengthAdjust="spacingAndGlyphs" fill="black" transform="translate(471.5292 61.0500) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16">observed</text>
+<line x1="456.5292" y1="61.0500" x2="466.5292" y2="61.0500" stroke="royalblue" stroke-width="1" fill="none" opacity="1"/>
 </svg>

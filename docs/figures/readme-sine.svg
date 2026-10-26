@@ -40,8 +40,8 @@
 <text fill="black" transform="translate(347.7480 396.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">x</text>
 <text fill="black" transform="translate(16.0000 200.9000) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">y</text>
 <text fill="black" transform="translate(347.7480 29.6000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18">Sine wave</text>
-<rect width="79.56799983978271" height="38.4" fill="white" stroke="gray" stroke-width="2" transform="translate(504.9956 56.4500) rotate(0.0000)" opacity="0.5" rx="10"/>
-<text fill="black" transform="translate(524.9956 66.0500) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16"><tspan x="0" dy="0.0000em" textLength="39.1040" lengthAdjust="spacingAndGlyphs">sin(x)</tspan><tspan x="0" dy="1.2em" textLength="59.5680" lengthAdjust="spacingAndGlyphs">samples</tspan></text>
-<line x1="509.9956" y1="66.0500" x2="519.9956" y2="66.0500" stroke="royalblue" stroke-width="3" fill="none" opacity="1"/>
-<circle cx="514.9956" cy="85.2500" r="5.0000" fill="crimson" stroke="none" stroke-width="1" opacity="1"/>
+<rect width="88.52799983978272" height="38.4" fill="white" stroke="gray" stroke-width="2" transform="translate(496.0356 56.4500) rotate(0.0000)" opacity="0.5" rx="10"/>
+<text fill="black" transform="translate(516.0356 66.0500) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16"><tspan x="0" dy="0.0000em" textLength="39.1040" lengthAdjust="spacingAndGlyphs">sin(x)</tspan><tspan x="0" dy="1.2em" textLength="59.5680" lengthAdjust="spacingAndGlyphs">samples</tspan></text>
+<line x1="501.0356" y1="66.0500" x2="511.0356" y2="66.0500" stroke="royalblue" stroke-width="3" fill="none" opacity="1"/>
+<circle cx="506.0356" cy="85.2500" r="5.0000" fill="crimson" stroke="none" stroke-width="1" opacity="1"/>
 </svg>

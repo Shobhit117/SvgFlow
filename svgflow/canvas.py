@@ -1612,7 +1612,7 @@ class Plot(Canvas):
         lines = [x[0] for x in self.legend_items]
 
         line_widths = [text_width(line, text_size, self.default_font) for line in lines]
-        legend_width = max(line_widths) + 20 * marker_scale
+        legend_width = max(line_widths) + 0.56 * text_size + 20 * marker_scale
         legend_height = len(lines) * 1.2 * text_size
         
         if (anchor == None) or (position is not None):

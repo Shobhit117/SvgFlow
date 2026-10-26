@@ -29,9 +29,9 @@
 <use xlink:href="#square" transform="translate(174.2752 80.6000) scale(0.9000 0.9000)" stroke="none" fill="darkorange"/>
 <use xlink:href="#square" transform="translate(274.8144 80.6000) scale(0.9000 0.9000)" stroke="none" fill="darkorange"/>
 <use xlink:href="#square" transform="translate(375.3536 80.6000) scale(0.9000 0.9000)" stroke="none" fill="darkorange"/>
-<rect width="68.91199970245361" height="57.599999999999994" fill="white" stroke="gray" stroke-width="2" transform="translate(477.3852 112.1000) rotate(0.0000)" opacity="0.5" rx="10"/>
-<text fill="black" transform="translate(497.3852 121.7000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16"><tspan x="0" dy="0.0000em" textLength="37.3280" lengthAdjust="spacingAndGlyphs">circle</tspan><tspan x="0" dy="1.2em" textLength="38.2240" lengthAdjust="spacingAndGlyphs">cross</tspan><tspan x="0" dy="1.2em" textLength="48.9120" lengthAdjust="spacingAndGlyphs">square</tspan></text>
-<circle cx="487.3852" cy="121.7000" r="5.0000" fill="royalblue" stroke="none" stroke-width="1" opacity="1"/>
-<use xlink:href="#cross" transform="translate(487.3852 140.9000) scale(1.0000 1.0000)" stroke="teal" stroke-width="2" fill="none"/>
-<use xlink:href="#square" transform="translate(487.3852 160.1000) scale(1.0000 1.0000)" stroke="none" fill="darkorange"/>
+<rect width="77.87199970245362" height="57.599999999999994" fill="white" stroke="gray" stroke-width="2" transform="translate(468.4252 112.1000) rotate(0.0000)" opacity="0.5" rx="10"/>
+<text fill="black" transform="translate(488.4252 121.7000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16"><tspan x="0" dy="0.0000em" textLength="37.3280" lengthAdjust="spacingAndGlyphs">circle</tspan><tspan x="0" dy="1.2em" textLength="38.2240" lengthAdjust="spacingAndGlyphs">cross</tspan><tspan x="0" dy="1.2em" textLength="48.9120" lengthAdjust="spacingAndGlyphs">square</tspan></text>
+<circle cx="478.4252" cy="121.7000" r="5.0000" fill="royalblue" stroke="none" stroke-width="1" opacity="1"/>
+<use xlink:href="#cross" transform="translate(478.4252 140.9000) scale(1.0000 1.0000)" stroke="teal" stroke-width="2" fill="none"/>
+<use xlink:href="#square" transform="translate(478.4252 160.1000) scale(1.0000 1.0000)" stroke="none" fill="darkorange"/>
 </svg>

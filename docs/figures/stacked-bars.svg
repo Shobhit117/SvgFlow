@@ -40,7 +40,7 @@
 <text fill="black" transform="translate(375.8405 368.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Quarter</text>
 <text fill="black" transform="translate(34.4600 187.3525) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Units</text>
 <text fill="black" transform="translate(375.8405 27.3200) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16.1">Stacked bars: top = baseline + component</text>
-<rect width="79.91999959945679" height="33.6" fill="white" stroke="silver" stroke-width="2" transform="translate(98.5567 52.0173) rotate(0.0000)" opacity="0.9" rx="10"/>
+<rect width="87.75999959945679" height="33.6" fill="white" stroke="silver" stroke-width="2" transform="translate(98.5567 52.0173) rotate(0.0000)" opacity="0.9" rx="10"/>
 <text fill="black" transform="translate(118.5567 60.4173) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="14"><tspan x="0" dy="0.0000em" textLength="59.9200" lengthAdjust="spacingAndGlyphs">product A</tspan><tspan x="0" dy="1.2em" textLength="59.9200" lengthAdjust="spacingAndGlyphs">product B</tspan></text>
 <use xlink:href="#square" transform="translate(108.5567 60.4173) scale(1.0000 1.0000)" stroke="none" fill="royalblue"/>
 <use xlink:href="#square" transform="translate(108.5567 77.2173) scale(1.0000 1.0000)" stroke="none" fill="teal"/>

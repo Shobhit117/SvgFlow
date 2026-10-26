@@ -44,8 +44,8 @@
 <text fill="black" transform="translate(374.2795 388.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Angle (radians)</text>
 <text fill="black" transform="translate(15.0000 197.3525) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Amplitude</text>
 <text fill="black" transform="translate(374.2795 27.3200) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16.1">A line plot with sample markers</text>
-<rect width="72.12199985980988" height="33.6" fill="white" stroke="silver" stroke-width="2" transform="translate(570.8462 53.0173) rotate(0.0000)" opacity="0.95" rx="10"/>
-<text fill="black" transform="translate(590.8462 61.4173) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="14"><tspan x="0" dy="0.0000em" textLength="34.2160" lengthAdjust="spacingAndGlyphs">sin(x)</tspan><tspan x="0" dy="1.2em" textLength="52.1220" lengthAdjust="spacingAndGlyphs">samples</tspan></text>
-<line x1="575.8462" y1="61.4173" x2="585.8462" y2="61.4173" stroke="royalblue" stroke-width="3" fill="none" opacity="1"/>
-<circle cx="580.8462" cy="78.2173" r="5.0000" fill="darkorange" stroke="none" stroke-width="1" opacity="1"/>
+<rect width="79.96199985980988" height="33.6" fill="white" stroke="silver" stroke-width="2" transform="translate(563.0062 53.0173) rotate(0.0000)" opacity="0.95" rx="10"/>
+<text fill="black" transform="translate(583.0062 61.4173) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="14"><tspan x="0" dy="0.0000em" textLength="34.2160" lengthAdjust="spacingAndGlyphs">sin(x)</tspan><tspan x="0" dy="1.2em" textLength="52.1220" lengthAdjust="spacingAndGlyphs">samples</tspan></text>
+<line x1="568.0062" y1="61.4173" x2="578.0062" y2="61.4173" stroke="royalblue" stroke-width="3" fill="none" opacity="1"/>
+<circle cx="573.0062" cy="78.2173" r="5.0000" fill="darkorange" stroke="none" stroke-width="1" opacity="1"/>
 </svg>

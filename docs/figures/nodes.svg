@@ -1,5 +1,5 @@
 <svg width="800" height="270" viewBox="0 0 800 270" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-<rect width="800" height="270" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="800" height="270" fill="white" stroke="none"/>
 <text fill="black" transform="translate(400.0000 25.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22">Node shapes: every position is a center</text>
 <circle cx="90.0000" cy="115.0000" r="42.0000" fill="aliceblue" stroke="#2563eb" stroke-width="2" opacity="1"/>
 <circle cx="90.0000" cy="115.0000" r="3.0000" fill="#c2410c" stroke="none" stroke-width="1" opacity="1"/>

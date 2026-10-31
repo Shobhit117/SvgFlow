@@ -11,6 +11,18 @@ and a reference extracted from the source signatures and docstrings.
 
 ![A flow diagram made with SvgFlow](figures/pipeline.svg)
 
+## Showcase
+
+![Same mean, different tails](figures/showcase-demand-tails.svg)
+
+![A multi-panel dashboard built with Figure](figures/showcase-dashboard.svg)
+
+![A themed flow diagram](figures/showcase-pipeline.svg)
+
+These are rebuilt by [showcase.py](examples/showcase.py), which combines themes,
+uncertainty bands, grouped bars, reference lines, callouts, gradients and routed
+flow edges. Read the guides below for each ingredient.
+
 ## Learn the library
 
 | Guide | What you will learn |
@@ -47,6 +59,7 @@ From a source checkout with SvgFlow installed:
 ```bash
 python docs/examples/gallery.py
 python docs/examples/recipes.py
+python docs/examples/showcase.py
 python -m docs.tools.render_examples
 ```
 

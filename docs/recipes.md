@@ -7,8 +7,8 @@ features. Each larger example can be adapted to your own arrays and styles.
 
 ## Shade an interval around a curve
 
-Construct one polygon by traversing the upper edge left-to-right and the lower
-edge right-to-left. Map the boundary to canvas space before drawing it:
+Use `addFillBetween(x, low, high)` to shade a region between two paired data
+curves, and `addHLine()` for a horizontal threshold line:
 
 <!-- render: core -->
 ```python
@@ -20,11 +20,9 @@ mean = 3 + np.sin(x)
 low, high = mean - 0.5, mean + 0.5
 p = Plot(390, 700, x_range=(0, 10), y_range=(0, 5), style=PlotStyle.scaled(14))
 p.easyAxes(grid=True)
-boundary = list(zip(x, high)) + list(zip(x[::-1], low[::-1]))
-p.addPolygon([p.mapToCanvas(a, b) for a, b in boundary],
-              color="royalblue", border="none", opacity=0.18)
+p.addFillBetween(x, low, high, color="royalblue", opacity=0.18, label="±0.5 band")
 p.addPlot(x, mean, color="royalblue", thickness=3, label="mean")
-p.addPlot([0, 10], [4.5, 4.5], color="firebrick", dashed=True, label="threshold")
+p.addHLine(4.5, color="firebrick", dashed=True, label="threshold")
 p.addAxisLabels("Time", "Response")
 p.addTitle("An uncertainty band and a threshold")
 p.addLegend(anchor="SW", box_color="white", box_border_color="silver")
@@ -36,8 +34,8 @@ p.save("uncertainty.svg")
 Draw the fill before the mean line to keep the stroke sharp. Polygon edges
 are straight between samples, so sample densely enough for your purpose.
 The interval is supplied by your analysis; SvgFlow does not compute confidence
-intervals or uncertainty estimates. Custom polygons do not register a legend
-entry automatically. This example labels only the mean and threshold.
+intervals or uncertainty estimates. Passing `label=` on `addFillBetween` and
+`addHLine` registers square and line swatches in `addLegend()`.
 
 ## Grouped bars with widths in data units
 
@@ -101,8 +99,9 @@ use the previous total as each new baseline.
 
 ## Bars that extend below a baseline
 
-The built-in bars do not normalize negative SVG heights. For signed values,
-map the endpoints and draw positive-height rectangles yourself:
+`addBar` and `addBarPlot` normalize negative heights automatically when
+`y < _y`. Pass `_y=0` to draw diverging bars around zero, or call `addBar` per
+item when you want sign-dependent fill colors:
 
 <!-- render: core -->
 ```python
@@ -110,21 +109,18 @@ from svgflow import Plot
 
 p = Plot(340, 600, x_range=(-0.5, 3.5), y_range=(-6, 8))
 p.easyAxes(grid=True)
-p.addPlot([-0.5, 3.5], [0, 0], color="black")
+p.addHLine(0, color="black", dashed=False, thickness=1.5)
 for x, value in enumerate([6, -3, 4, -5]):
-    cx, baseline_y = p.mapToCanvas(x, 0)
-    _, top_y = p.mapToCanvas(x, value)
-    p.addRectangle(abs(top_y - baseline_y), 45, cx - 22.5,
-                    min(top_y, baseline_y), color="teal" if value >= 0 else "tomato",
-                    border="none")
+    p.addBar(x, value, bar_width=45, _y=0,
+             bar_color="teal" if value >= 0 else "tomato", corner_radius=3)
 p.addAxisLabels("Item", "Change")
 p.save("signed-bars.svg")
 ```
 
 ![Rendered signed bars example](figures/recipes-signed-bars.svg)
 
-These manual rectangles do not register legend entries. Axes still sit on the
-plot boundaries; the separate zero line is an annotation.
+Axes still sit on the outer plot boundaries; `addHLine(0)` draws the zero
+baseline across the plot.
 
 ## Split a series around missing values
 

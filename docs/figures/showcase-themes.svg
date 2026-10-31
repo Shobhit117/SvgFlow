@@ -1,0 +1,188 @@
+<svg width="820" height="700" viewBox="0 0 820 700" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<g id="fig_theme0">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="190" height="120" viewBox="0 0 190 120">
+<svg width="190" height="120" viewBox="0 0 190 120" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="theme0_arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
+</defs>
+<rect width="76" height="44" fill="none" stroke="black" stroke-width="2" transform="translate(12.0000 30.0000) rotate(0.0000)" opacity="1" rx="8"/>
+<text fill="black" transform="translate(50.0000 52.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">A</text>
+<circle cx="142.0000" cy="52.0000" r="22.0000" fill="none" stroke="black" stroke-width="2" opacity="1"/>
+<text fill="black" transform="translate(142.0000 52.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">B</text>
+<line x1="88.0000" y1="52.0000" x2="118.0000" y2="52.0000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#theme0_arrow" transform="translate(119.0000 52.0000) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(95.0000 108.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="14">default</text>
+</svg>
+</svg>
+</g>
+<g id="fig_theme1">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="190" height="120" viewBox="0 0 190 120">
+<svg width="190" height="120" viewBox="0 0 190 120" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="theme1_arrow_stealth" d="M0 0 L-10 -4.5 L-7 0 L-10 4.5 Z"/>
+</defs>
+<rect width="76" height="44" fill="aliceblue" stroke="#2563eb" stroke-width="2" transform="translate(12.0000 30.0000) rotate(0.0000)" opacity="1" rx="8"/>
+<text fill="#1e3a8a" transform="translate(50.0000 52.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">A</text>
+<circle cx="142.0000" cy="52.0000" r="22.0000" fill="aliceblue" stroke="#2563eb" stroke-width="2" opacity="1"/>
+<text fill="#1e3a8a" transform="translate(142.0000 52.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">B</text>
+<line x1="88.0000" y1="52.0000" x2="115.0000" y2="52.0000" stroke="#0f766e" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#theme1_arrow_stealth" transform="translate(120.0000 52.0000) rotate(0.0000) scale(1.0000 1.0000)" fill="#0f766e" stroke="none" opacity="1"/>
+<text fill="black" transform="translate(95.0000 108.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="14">ocean</text>
+</svg>
+</svg>
+</g>
+<g id="fig_theme2">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="190" height="120" viewBox="0 0 190 120">
+<svg width="190" height="120" viewBox="0 0 190 120" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="theme2_arrow_stealth" d="M0 0 L-10 -4.5 L-7 0 L-10 4.5 Z"/>
+</defs>
+<rect width="76" height="44" fill="honeydew" stroke="#15803d" stroke-width="2" transform="translate(12.0000 30.0000) rotate(0.0000)" opacity="1" rx="8"/>
+<text fill="#14532d" transform="translate(50.0000 52.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">A</text>
+<circle cx="142.0000" cy="52.0000" r="22.0000" fill="honeydew" stroke="#15803d" stroke-width="2" opacity="1"/>
+<text fill="#14532d" transform="translate(142.0000 52.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">B</text>
+<line x1="88.0000" y1="52.0000" x2="115.0000" y2="52.0000" stroke="#3f6212" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#theme2_arrow_stealth" transform="translate(120.0000 52.0000) rotate(0.0000) scale(1.0000 1.0000)" fill="#3f6212" stroke="none" opacity="1"/>
+<text fill="black" transform="translate(95.0000 108.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="14">forest</text>
+</svg>
+</svg>
+</g>
+<g id="fig_theme3">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="190" height="120" viewBox="0 0 190 120">
+<svg width="190" height="120" viewBox="0 0 190 120" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="theme3_arrow_triangle" d="M0 0 L-10 -4 L-10 4 Z"/>
+</defs>
+<rect width="76" height="44" fill="lemonchiffon" stroke="#c2410c" stroke-width="2" transform="translate(12.0000 30.0000) rotate(0.0000)" opacity="1" rx="8"/>
+<text fill="#7c2d12" transform="translate(50.0000 52.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">A</text>
+<circle cx="142.0000" cy="52.0000" r="22.0000" fill="lemonchiffon" stroke="#c2410c" stroke-width="2" opacity="1"/>
+<text fill="#7c2d12" transform="translate(142.0000 52.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">B</text>
+<line x1="88.0000" y1="52.0000" x2="115.0000" y2="52.0000" stroke="#9a3412" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#theme3_arrow_triangle" transform="translate(120.0000 52.0000) rotate(0.0000) scale(1.0000 1.0000)" fill="#9a3412" stroke="none" opacity="1"/>
+<text fill="black" transform="translate(95.0000 108.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="14">sunset</text>
+</svg>
+</svg>
+</g>
+<g id="fig_theme4">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="190" height="120" viewBox="0 0 190 120">
+<svg width="190" height="120" viewBox="0 0 190 120" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="theme4_arrow_stealth" d="M0 0 L-10 -4.5 L-7 0 L-10 4.5 Z"/>
+</defs>
+<rect width="76" height="44" fill="whitesmoke" stroke="#334155" stroke-width="2" transform="translate(12.0000 30.0000) rotate(0.0000)" opacity="1" rx="8"/>
+<text fill="#0f172a" transform="translate(50.0000 52.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">A</text>
+<circle cx="142.0000" cy="52.0000" r="22.0000" fill="whitesmoke" stroke="#334155" stroke-width="2" opacity="1"/>
+<text fill="#0f172a" transform="translate(142.0000 52.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">B</text>
+<line x1="88.0000" y1="52.0000" x2="115.0000" y2="52.0000" stroke="#475569" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#theme4_arrow_stealth" transform="translate(120.0000 52.0000) rotate(0.0000) scale(1.0000 1.0000)" fill="#475569" stroke="none" opacity="1"/>
+<text fill="black" transform="translate(95.0000 108.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="14">slate</text>
+</svg>
+</svg>
+</g>
+<g id="fig_theme5">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="190" height="120" viewBox="0 0 190 120">
+<svg width="190" height="120" viewBox="0 0 190 120" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="theme5_arrow_stealth" d="M0 0 L-10 -4.5 L-7 0 L-10 4.5 Z"/>
+</defs>
+<rect width="76" height="44" fill="lavender" stroke="#6d28d9" stroke-width="2" transform="translate(12.0000 30.0000) rotate(0.0000)" opacity="1" rx="8"/>
+<text fill="#4c1d95" transform="translate(50.0000 52.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">A</text>
+<circle cx="142.0000" cy="52.0000" r="22.0000" fill="lavender" stroke="#6d28d9" stroke-width="2" opacity="1"/>
+<text fill="#4c1d95" transform="translate(142.0000 52.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">B</text>
+<line x1="88.0000" y1="52.0000" x2="115.0000" y2="52.0000" stroke="#7c3aed" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#theme5_arrow_stealth" transform="translate(120.0000 52.0000) rotate(0.0000) scale(1.0000 1.0000)" fill="#7c3aed" stroke="none" opacity="1"/>
+<text fill="black" transform="translate(95.0000 108.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="14">lavender</text>
+</svg>
+</svg>
+</g>
+<g id="fig_theme6">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="190" height="120" viewBox="0 0 190 120">
+<svg width="190" height="120" viewBox="0 0 190 120" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path id="theme6_arrow_open" d="M-10 -5 L0 0 L-10 5"/>
+</defs>
+<rect width="76" height="44" fill="white" stroke="black" stroke-width="2" transform="translate(12.0000 30.0000) rotate(0.0000)" opacity="1" rx="8"/>
+<text fill="black" transform="translate(50.0000 52.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">A</text>
+<circle cx="142.0000" cy="52.0000" r="22.0000" fill="white" stroke="black" stroke-width="2" opacity="1"/>
+<text fill="black" transform="translate(142.0000 52.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">B</text>
+<line x1="88.0000" y1="52.0000" x2="118.0000" y2="52.0000" stroke="dimgray" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#theme6_arrow_open" transform="translate(119.0000 52.0000) rotate(0.0000) scale(1.0000 1.0000)" stroke="dimgray" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(95.0000 108.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="14">minimal</text>
+</svg>
+</svg>
+</g>
+</defs>
+<rect width="820" height="700" fill="white" stroke="none"/>
+<text fill="black" transform="translate(410.0000 28.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22" font-weight="bold">Built-in palettes and flow themes</text>
+<text fill="#64748b" transform="translate(410.0000 56.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">PlotStyle.theme(name)  —  series colors cycle in order</text>
+<text fill="black" transform="translate(20.0000 94.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="'Courier New', Courier, monospace" font-size="15">default</text>
+<rect width="50" height="24" fill="#2563eb" stroke="none" stroke-width="1" transform="translate(150.0000 82.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#c2410c" stroke="none" stroke-width="1" transform="translate(206.0000 82.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#0f766e" stroke="none" stroke-width="1" transform="translate(262.0000 82.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#7c3aed" stroke="none" stroke-width="1" transform="translate(318.0000 82.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#d97706" stroke="none" stroke-width="1" transform="translate(374.0000 82.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#db2777" stroke="none" stroke-width="1" transform="translate(430.0000 82.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#16a34a" stroke="none" stroke-width="1" transform="translate(486.0000 82.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#475569" stroke="none" stroke-width="1" transform="translate(542.0000 82.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<text fill="black" transform="translate(20.0000 128.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="'Courier New', Courier, monospace" font-size="15">vibrant</text>
+<rect width="50" height="24" fill="#e63946" stroke="none" stroke-width="1" transform="translate(150.0000 116.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#1d3557" stroke="none" stroke-width="1" transform="translate(206.0000 116.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#2a9d8f" stroke="none" stroke-width="1" transform="translate(262.0000 116.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#f4a261" stroke="none" stroke-width="1" transform="translate(318.0000 116.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#8338ec" stroke="none" stroke-width="1" transform="translate(374.0000 116.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#3a86ff" stroke="none" stroke-width="1" transform="translate(430.0000 116.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#fb5607" stroke="none" stroke-width="1" transform="translate(486.0000 116.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#06d6a0" stroke="none" stroke-width="1" transform="translate(542.0000 116.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<text fill="black" transform="translate(20.0000 162.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="'Courier New', Courier, monospace" font-size="15">pastel</text>
+<rect width="50" height="24" fill="#60a5fa" stroke="none" stroke-width="1" transform="translate(150.0000 150.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#f87171" stroke="none" stroke-width="1" transform="translate(206.0000 150.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#34d399" stroke="none" stroke-width="1" transform="translate(262.0000 150.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#fbbf24" stroke="none" stroke-width="1" transform="translate(318.0000 150.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#a78bfa" stroke="none" stroke-width="1" transform="translate(374.0000 150.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#f472b6" stroke="none" stroke-width="1" transform="translate(430.0000 150.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#38bdf8" stroke="none" stroke-width="1" transform="translate(486.0000 150.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#a3e635" stroke="none" stroke-width="1" transform="translate(542.0000 150.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<text fill="black" transform="translate(20.0000 196.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="'Courier New', Courier, monospace" font-size="15">colorblind</text>
+<rect width="50" height="24" fill="#0072b2" stroke="none" stroke-width="1" transform="translate(150.0000 184.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#d55e00" stroke="none" stroke-width="1" transform="translate(206.0000 184.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#009e73" stroke="none" stroke-width="1" transform="translate(262.0000 184.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#cc79a7" stroke="none" stroke-width="1" transform="translate(318.0000 184.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#f0e442" stroke="none" stroke-width="1" transform="translate(374.0000 184.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#56b4e9" stroke="none" stroke-width="1" transform="translate(430.0000 184.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#e69f00" stroke="none" stroke-width="1" transform="translate(486.0000 184.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#000000" stroke="none" stroke-width="1" transform="translate(542.0000 184.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<text fill="black" transform="translate(20.0000 230.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="'Courier New', Courier, monospace" font-size="15">ocean</text>
+<rect width="50" height="24" fill="#03045e" stroke="none" stroke-width="1" transform="translate(150.0000 218.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#0077b6" stroke="none" stroke-width="1" transform="translate(206.0000 218.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#00b4d8" stroke="none" stroke-width="1" transform="translate(262.0000 218.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#48cae4" stroke="none" stroke-width="1" transform="translate(318.0000 218.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#0f766e" stroke="none" stroke-width="1" transform="translate(374.0000 218.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#2dd4bf" stroke="none" stroke-width="1" transform="translate(430.0000 218.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#1d4ed8" stroke="none" stroke-width="1" transform="translate(486.0000 218.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#64748b" stroke="none" stroke-width="1" transform="translate(542.0000 218.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<text fill="black" transform="translate(20.0000 264.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="'Courier New', Courier, monospace" font-size="15">warm</text>
+<rect width="50" height="24" fill="#9b2226" stroke="none" stroke-width="1" transform="translate(150.0000 252.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#ae2012" stroke="none" stroke-width="1" transform="translate(206.0000 252.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#bb3e03" stroke="none" stroke-width="1" transform="translate(262.0000 252.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#ca6702" stroke="none" stroke-width="1" transform="translate(318.0000 252.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#ee9b00" stroke="none" stroke-width="1" transform="translate(374.0000 252.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#e9d8a6" stroke="none" stroke-width="1" transform="translate(430.0000 252.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#7f5539" stroke="none" stroke-width="1" transform="translate(486.0000 252.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#bc6c25" stroke="none" stroke-width="1" transform="translate(542.0000 252.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<text fill="black" transform="translate(20.0000 298.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="'Courier New', Courier, monospace" font-size="15">monochrome</text>
+<rect width="50" height="24" fill="#111827" stroke="none" stroke-width="1" transform="translate(150.0000 286.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#374151" stroke="none" stroke-width="1" transform="translate(206.0000 286.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#6b7280" stroke="none" stroke-width="1" transform="translate(262.0000 286.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#9ca3af" stroke="none" stroke-width="1" transform="translate(318.0000 286.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#4b5563" stroke="none" stroke-width="1" transform="translate(374.0000 286.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<rect width="50" height="24" fill="#d1d5db" stroke="none" stroke-width="1" transform="translate(430.0000 286.0000) rotate(0.0000)" opacity="1" rx="6"/>
+<text fill="#64748b" transform="translate(410.0000 346.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">FlowStyle.theme(name)</text>
+<use xlink:href="#fig_theme0" transform="translate(20.0000 380.0000) rotate(0.0000) scale(1.0000 1.0000)"/>
+<use xlink:href="#fig_theme1" transform="translate(220.0000 380.0000) rotate(0.0000) scale(1.0000 1.0000)"/>
+<use xlink:href="#fig_theme2" transform="translate(420.0000 380.0000) rotate(0.0000) scale(1.0000 1.0000)"/>
+<use xlink:href="#fig_theme3" transform="translate(620.0000 380.0000) rotate(0.0000) scale(1.0000 1.0000)"/>
+<use xlink:href="#fig_theme4" transform="translate(20.0000 530.0000) rotate(0.0000) scale(1.0000 1.0000)"/>
+<use xlink:href="#fig_theme5" transform="translate(220.0000 530.0000) rotate(0.0000) scale(1.0000 1.0000)"/>
+<use xlink:href="#fig_theme6" transform="translate(420.0000 530.0000) rotate(0.0000) scale(1.0000 1.0000)"/>
+</svg>

@@ -13,10 +13,8 @@ BLUE, TEAL, ORANGE = "#2563eb", "#0f766e", "#c2410c"
 
 
 def background(canvas):
-    """Prepend white behind any constructor-drawn Figure title."""
-    canvas.addRectangle(canvas.height, canvas.width, 0, 0, color="white", border="none")
-    # Figure(title=...) has already appended text. Keep that text above white.
-    canvas.contents.insert(0, canvas.contents.pop())
+    """Give a canvas an opaque white background (``background=`` option)."""
+    canvas.background = "white"
     return canvas
 
 

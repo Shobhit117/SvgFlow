@@ -2,7 +2,7 @@
 <defs>
 <rect id="square" height="9" width="9" x="-4.5" y="-4.5"/>
 </defs>
-<rect width="700" height="390" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="700" height="390" fill="white" stroke="none"/>
 <line x1="73.3030" y1="342.1000" x2="73.3030" y2="31.7300" stroke="black" stroke-width="1" fill="none" opacity="1"/>
 <line x1="68.9280" y1="337.7250" x2="683.6280" y2="337.7250" stroke="black" stroke-width="1" fill="none" opacity="1"/>
 <text fill="black" transform="translate(159.7423 347.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Q1</text>
@@ -16,19 +16,19 @@
 <text fill="black" transform="translate(64.0280 337.7250) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">0</text>
 <text fill="black" transform="translate(64.0280 277.5760) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">3</text>
 <line x1="68.9280" y1="277.5760" x2="77.6780" y2="277.5760" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="73.3030" y1="277.5760" x2="678.3780" y2="277.5760" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="73.3030" y1="277.5760" x2="678.3780" y2="277.5760" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <text fill="black" transform="translate(64.0280 217.4270) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">6</text>
 <line x1="68.9280" y1="217.4270" x2="77.6780" y2="217.4270" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="73.3030" y1="217.4270" x2="678.3780" y2="217.4270" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="73.3030" y1="217.4270" x2="678.3780" y2="217.4270" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <text fill="black" transform="translate(64.0280 157.2780) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">9</text>
 <line x1="68.9280" y1="157.2780" x2="77.6780" y2="157.2780" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="73.3030" y1="157.2780" x2="678.3780" y2="157.2780" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="73.3030" y1="157.2780" x2="678.3780" y2="157.2780" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <text fill="black" transform="translate(64.0280 97.1290) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">12</text>
 <line x1="68.9280" y1="97.1290" x2="77.6780" y2="97.1290" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="73.3030" y1="97.1290" x2="678.3780" y2="97.1290" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="73.3030" y1="97.1290" x2="678.3780" y2="97.1290" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <text fill="black" transform="translate(64.0280 36.9800) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">15</text>
 <line x1="68.9280" y1="36.9800" x2="77.6780" y2="36.9800" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="73.3030" y1="36.9800" x2="678.3780" y2="36.9800" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="73.3030" y1="36.9800" x2="678.3780" y2="36.9800" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <rect width="52" height="80.19866666666667" fill="royalblue" stroke="none" stroke-width="1" transform="translate(133.7423 257.5263) rotate(0.0000)" opacity="1" rx="0"/>
 <rect width="52" height="120.298" fill="royalblue" stroke="none" stroke-width="1" transform="translate(277.8078 217.4270) rotate(0.0000)" opacity="1" rx="0"/>
 <rect width="52" height="100.24833333333333" fill="royalblue" stroke="none" stroke-width="1" transform="translate(421.8732 237.4767) rotate(0.0000)" opacity="1" rx="0"/>

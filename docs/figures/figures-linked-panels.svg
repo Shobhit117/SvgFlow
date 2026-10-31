@@ -1,44 +1,90 @@
 <svg width="900" height="380" viewBox="0 0 900 380" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
 <defs>
-<path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
+<path id="arrow_stealth" d="M0 0 L-10 -4.5 L-7 0 L-10 4.5 Z"/>
 <path id="sp0_arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
 <path id="sp1_arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
 </defs>
 <g transform="translate(10.0000 10.0000)">
-<line x1="82.6320" y1="306.4000" x2="82.6320" y2="24.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<use xlink:href="#sp0_arrow" transform="translate(82.6320 23.4000) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
-<line x1="77.6320" y1="301.4000" x2="422.9840" y2="301.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<use xlink:href="#sp0_arrow" transform="translate(423.9840 301.4000) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
-<text fill="black" transform="translate(82.6320 312.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">0.00</text>
-<text fill="black" transform="translate(244.8080 312.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">5.00</text>
-<line x1="244.8080" y1="296.4000" x2="244.8080" y2="306.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<text fill="black" transform="translate(406.9840 312.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">10.00</text>
-<line x1="406.9840" y1="296.4000" x2="406.9840" y2="306.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<text fill="black" transform="translate(72.0320 301.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">0.00</text>
-<text fill="black" transform="translate(72.0320 170.9000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">5.00</text>
-<line x1="77.6320" y1="170.9000" x2="87.6320" y2="170.9000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<text fill="black" transform="translate(72.0320 40.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">10.00</text>
-<line x1="77.6320" y1="40.4000" x2="87.6320" y2="40.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<path d="M82.6320 249.2000 L406.9840 92.6000" stroke="royalblue" stroke-width="1" fill="none" opacity="1"/>
+<line x1="68.6360" y1="314.9500" x2="68.6360" y2="20.0300" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#sp0_arrow" transform="translate(68.6360 19.0300) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<line x1="64.5760" y1="310.8900" x2="425.6170" y2="310.8900" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#sp0_arrow" transform="translate(426.6170 310.8900) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(68.6360 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">0</text>
+<text fill="black" transform="translate(137.0562 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">2</text>
+<line x1="137.0562" y1="306.8300" x2="137.0562" y2="314.9500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="137.0562" y1="310.8900" x2="137.0562" y2="34.9100" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(205.4764 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">4</text>
+<line x1="205.4764" y1="306.8300" x2="205.4764" y2="314.9500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="205.4764" y1="310.8900" x2="205.4764" y2="34.9100" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(273.8966 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">6</text>
+<line x1="273.8966" y1="306.8300" x2="273.8966" y2="314.9500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="273.8966" y1="310.8900" x2="273.8966" y2="34.9100" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(342.3168 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">8</text>
+<line x1="342.3168" y1="306.8300" x2="342.3168" y2="314.9500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="342.3168" y1="310.8900" x2="342.3168" y2="34.9100" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(410.7370 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">10</text>
+<line x1="410.7370" y1="306.8300" x2="410.7370" y2="314.9500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="410.7370" y1="310.8900" x2="410.7370" y2="34.9100" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(60.0260 310.8900) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">0</text>
+<text fill="black" transform="translate(60.0260 255.6940) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">2</text>
+<line x1="64.5760" y1="255.6940" x2="72.6960" y2="255.6940" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="68.6360" y1="255.6940" x2="410.7370" y2="255.6940" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(60.0260 200.4980) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">4</text>
+<line x1="64.5760" y1="200.4980" x2="72.6960" y2="200.4980" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="68.6360" y1="200.4980" x2="410.7370" y2="200.4980" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(60.0260 145.3020) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">6</text>
+<line x1="64.5760" y1="145.3020" x2="72.6960" y2="145.3020" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="68.6360" y1="145.3020" x2="410.7370" y2="145.3020" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(60.0260 90.1060) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">8</text>
+<line x1="64.5760" y1="90.1060" x2="72.6960" y2="90.1060" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="68.6360" y1="90.1060" x2="410.7370" y2="90.1060" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(60.0260 34.9100) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">10</text>
+<line x1="64.5760" y1="34.9100" x2="72.6960" y2="34.9100" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="68.6360" y1="34.9100" x2="410.7370" y2="34.9100" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<path d="M68.6360 172.9000 L71.5108 168.2641 L74.3856 163.6428 L77.2604 159.0505 L80.1352 154.5016 L83.0100 150.0105 L85.8848 145.5912 L88.7596 141.2576 L91.6344 137.0233 L94.5092 132.9015 L97.3840 128.9053 L100.2588 125.0470 L103.1336 121.3390 L106.0084 117.7927 L108.8832 114.4193 L111.7580 111.2294 L114.6328 108.2331 L117.5076 105.4396 L120.3824 102.8578 L123.2572 100.4958 L126.1320 98.3609 L129.0068 96.4600 L131.8816 94.7988 L134.7564 93.3828 L137.6312 92.2162 L140.5060 91.3028 L143.3808 90.6454 L146.2556 90.2461 L149.1304 90.1062 L152.0052 90.2260 L154.8799 90.6053 L157.7547 91.2427 L160.6295 92.1364 L163.5043 93.2835 L166.3791 94.6804 L169.2539 96.3227 L172.1287 98.2053 L175.0035 100.3223 L177.8783 102.6670 L180.7531 105.2320 L183.6279 108.0094 L186.5027 110.9904 L189.3775 114.1656 L192.2523 117.5252 L195.1271 121.0585 L198.0019 124.7544 L200.8767 128.6014 L203.7515 132.5874 L206.6263 136.6999 L209.5011 140.9260 L212.3759 145.2524 L215.2507 149.6656 L218.1255 154.1516 L221.0003 158.6965 L223.8751 163.2860 L226.7499 167.9056 L229.6247 172.5409 L232.4995 177.1773 L235.3743 181.8003 L238.2491 186.3953 L241.1239 190.9481 L243.9987 195.4441 L246.8735 199.8695 L249.7483 204.2102 L252.6231 208.4527 L255.4979 212.5837 L258.3727 216.5901 L261.2475 220.4594 L264.1223 224.1795 L266.9971 227.7388 L269.8719 231.1259 L272.7467 234.3304 L275.6215 237.3421 L278.4963 240.1516 L281.3711 242.7500 L284.2459 245.1294 L287.1207 247.2820 L289.9955 249.2013 L292.8703 250.8812 L295.7451 252.3164 L298.6199 253.5025 L301.4947 254.4356 L304.3695 255.1129 L307.2443 255.5322 L310.1191 255.6922 L312.9939 255.5925 L315.8687 255.2333 L318.7435 254.6158 L321.6183 253.7419 L324.4931 252.6143 L327.3678 251.2366 L330.2426 249.6131 L333.1174 247.7489 L335.9922 245.6499 L338.8670 243.3226 L341.7418 240.7743 L344.6166 238.0130 L347.4914 235.0475 L350.3662 231.8869 L353.2410 228.5413 L356.1158 225.0211 L358.9906 221.3373 L361.8654 217.5016 L364.7402 213.5259 L367.6150 209.4227 L370.4898 205.2050 L373.3646 200.8858 L376.2394 196.4789 L379.1142 191.9980 L381.9890 187.4572 L384.8638 182.8707 L387.7386 178.2529 L390.6134 173.6183 L393.4882 168.9814 L396.3630 164.3569 L399.2378 159.7591 L402.1126 155.2026 L404.9874 150.7016 L407.8622 146.2703 L410.7370 141.9225" stroke="#2563eb" stroke-width="2.5" fill="none" opacity="1"/>
+<text fill="black" transform="translate(239.6865 25.9400) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14.95">Signal</text>
 </g>
 <g transform="translate(455.0000 10.0000)">
-<line x1="91.5280" y1="306.4000" x2="91.5280" y2="24.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<use xlink:href="#sp1_arrow" transform="translate(91.5280 23.4000) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
-<line x1="86.5280" y1="301.4000" x2="427.4320" y2="301.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<use xlink:href="#sp1_arrow" transform="translate(428.4320 301.4000) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
-<text fill="black" transform="translate(91.5280 312.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">0.00</text>
-<text fill="black" transform="translate(251.4800 312.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">0.50</text>
-<line x1="251.4800" y1="296.4000" x2="251.4800" y2="306.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<text fill="black" transform="translate(411.4320 312.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">1.00</text>
-<line x1="411.4320" y1="296.4000" x2="411.4320" y2="306.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<text fill="black" transform="translate(80.9280 301.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">0.00</text>
-<text fill="black" transform="translate(80.9280 170.9000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">50.00</text>
-<line x1="86.5280" y1="170.9000" x2="96.5280" y2="170.9000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<text fill="black" transform="translate(80.9280 40.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">100.00</text>
-<line x1="86.5280" y1="40.4000" x2="96.5280" y2="40.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<path d="M91.5280 249.2000 L411.4320 92.6000" stroke="teal" stroke-width="1" fill="none" opacity="1"/>
+<line x1="75.8640" y1="314.9500" x2="75.8640" y2="20.0300" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#sp1_arrow" transform="translate(75.8640 19.0300) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<line x1="71.8040" y1="310.8900" x2="429.0000" y2="310.8900" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#sp1_arrow" transform="translate(430.0000 310.8900) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<text fill="black" transform="translate(75.8640 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">0</text>
+<text fill="black" transform="translate(143.5152 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">0.2</text>
+<line x1="143.5152" y1="306.8300" x2="143.5152" y2="314.9500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="143.5152" y1="310.8900" x2="143.5152" y2="34.9100" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(211.1664 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">0.4</text>
+<line x1="211.1664" y1="306.8300" x2="211.1664" y2="314.9500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="211.1664" y1="310.8900" x2="211.1664" y2="34.9100" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(278.8176 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">0.6</text>
+<line x1="278.8176" y1="306.8300" x2="278.8176" y2="314.9500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="278.8176" y1="310.8900" x2="278.8176" y2="34.9100" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(346.4688 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">0.8</text>
+<line x1="346.4688" y1="306.8300" x2="346.4688" y2="314.9500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="346.4688" y1="310.8900" x2="346.4688" y2="34.9100" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(414.1200 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">1</text>
+<line x1="414.1200" y1="306.8300" x2="414.1200" y2="314.9500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="414.1200" y1="310.8900" x2="414.1200" y2="34.9100" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(67.2540 310.8900) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">0</text>
+<text fill="black" transform="translate(67.2540 255.6940) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">20</text>
+<line x1="71.8040" y1="255.6940" x2="79.9240" y2="255.6940" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="75.8640" y1="255.6940" x2="414.1200" y2="255.6940" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(67.2540 200.4980) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">40</text>
+<line x1="71.8040" y1="200.4980" x2="79.9240" y2="200.4980" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="75.8640" y1="200.4980" x2="414.1200" y2="200.4980" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(67.2540 145.3020) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">60</text>
+<line x1="71.8040" y1="145.3020" x2="79.9240" y2="145.3020" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="75.8640" y1="145.3020" x2="414.1200" y2="145.3020" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(67.2540 90.1060) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">80</text>
+<line x1="71.8040" y1="90.1060" x2="79.9240" y2="90.1060" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="75.8640" y1="90.1060" x2="414.1200" y2="90.1060" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(67.2540 34.9100) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">100</text>
+<line x1="71.8040" y1="34.9100" x2="79.9240" y2="34.9100" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="75.8640" y1="34.9100" x2="414.1200" y2="34.9100" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<path d="M75.8640 310.8900 L78.7065 299.5344 L81.5490 288.6461 L84.3915 278.2058 L87.2339 268.1951 L90.0764 258.5962 L92.9189 249.3924 L95.7614 240.5672 L98.6039 232.1052 L101.4464 223.9913 L104.2889 216.2113 L107.1314 208.7514 L109.9738 201.5985 L112.8163 194.7399 L115.6588 188.1635 L118.5013 181.8576 L121.3438 175.8113 L124.1863 170.0137 L127.0288 164.4547 L129.8713 159.1244 L132.7137 154.0134 L135.5562 149.1128 L138.3987 144.4137 L141.2412 139.9081 L144.0837 135.5878 L146.9262 131.4453 L149.7687 127.4732 L152.6112 123.6645 L155.4536 120.0126 L158.2961 116.5110 L161.1386 113.1534 L163.9811 109.9339 L166.8236 106.8470 L169.6661 103.8870 L172.5086 101.0489 L175.3511 98.3275 L178.1935 95.7181 L181.0360 93.2161 L183.8785 90.8170 L186.7210 88.5166 L189.5635 86.3109 L192.4060 84.1960 L195.2485 82.1680 L198.0910 80.2235 L200.9334 78.3590 L203.7759 76.5713 L206.6184 74.8571 L209.4609 73.2134 L212.3034 71.6373 L215.1459 70.1262 L217.9884 68.6771 L220.8309 67.2877 L223.6733 65.9555 L226.5158 64.6781 L229.3583 63.4533 L232.2008 62.2788 L235.0433 61.1527 L237.8858 60.0729 L240.7283 59.0375 L243.5708 58.0448 L246.4132 57.0929 L249.2557 56.1801 L252.0982 55.3049 L254.9407 54.4658 L257.7832 53.6611 L260.6257 52.8896 L263.4682 52.1498 L266.3107 51.4404 L269.1531 50.7603 L271.9956 50.1081 L274.8381 49.4827 L277.6806 48.8831 L280.5231 48.3082 L283.3656 47.7569 L286.2081 47.2283 L289.0506 46.7214 L291.8930 46.2354 L294.7355 45.7694 L297.5780 45.3226 L300.4205 44.8942 L303.2630 44.4834 L306.1055 44.0894 L308.9480 43.7117 L311.7905 43.3496 L314.6329 43.0023 L317.4754 42.6694 L320.3179 42.3501 L323.1604 42.0440 L326.0029 41.7504 L328.8454 41.4690 L331.6879 41.1991 L334.5304 40.9403 L337.3728 40.6922 L340.2153 40.4543 L343.0578 40.2261 L345.9003 40.0074 L348.7428 39.7977 L351.5853 39.5966 L354.4278 39.4037 L357.2703 39.2188 L360.1127 39.0415 L362.9552 38.8715 L365.7977 38.7085 L368.6402 38.5522 L371.4827 38.4024 L374.3252 38.2587 L377.1677 38.1209 L380.0102 37.9888 L382.8526 37.8621 L385.6951 37.7406 L388.5376 37.6242 L391.3801 37.5125 L394.2226 37.4054 L397.0651 37.3027 L399.9076 37.2043 L402.7501 37.1099 L405.5925 37.0193 L408.4350 36.9326 L411.2775 36.8493 L414.1200 36.7695" stroke="#2563eb" stroke-width="2.5" fill="none" opacity="1"/>
+<text fill="black" transform="translate(244.9920 25.9400) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14.95">Detail response</text>
 </g>
-<line x1="352.1136" y1="128.7000" x2="608.6232" y2="219.3834" stroke="darkorange" stroke-width="2" fill="none" opacity="1"/>
-<use xlink:href="#arrow" transform="translate(609.5660 219.7167) rotate(19.4699) scale(1.0000 1.0000)" stroke="darkorange" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
+<line x1="159.3718" y1="100.1060" x2="627.3413" y2="106.4220" stroke="#c2410c" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(632.3408 106.4895) rotate(0.7732) scale(1.0000 1.0000)" fill="#c2410c" stroke="none" opacity="1"/>
 <text fill="black" transform="translate(25.0000 30.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="bold">A</text>
 </svg>

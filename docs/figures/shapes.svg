@@ -1,5 +1,5 @@
 <svg width="760" height="230" viewBox="0 0 760 230" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-<rect width="760" height="230" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="760" height="230" fill="white" stroke="none"/>
 <text fill="black" transform="translate(380.0000 25.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22">Basic shapes</text>
 <rect width="120" height="80" fill="aliceblue" stroke="#2563eb" stroke-width="2" transform="translate(30.0000 70.0000) rotate(0.0000)" opacity="1" rx="12"/>
 <circle cx="255.0000" cy="110.0000" r="42.0000" fill="honeydew" stroke="#0f766e" stroke-width="2" opacity="1"/>

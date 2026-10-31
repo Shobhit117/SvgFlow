@@ -1,0 +1,53 @@
+<svg width="940" height="380" viewBox="0 0 940 380" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="grad_hdr" x1="0.0000%" y1="0.0000%" x2="100.0000%" y2="0.0000%" spreadMethod="pad">
+<stop offset="0.00%" stop-color="#1d4ed8"/>
+<stop offset="100.00%" stop-color="#0f766e"/>
+</linearGradient>
+<path id="arrow_stealth" d="M0 0 L-10 -4.5 L-7 0 L-10 4.5 Z"/>
+</defs>
+<rect width="940" height="380" fill="white" stroke="none"/>
+<rect width="940" height="54" fill="url(#grad_hdr)" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<text fill="white" transform="translate(470.0000 27.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22" font-weight="bold">Model training pipeline</text>
+<ellipse transform="translate(100.0000 150.0000) rotate(0.0000)" rx="76.0000" ry="38.0000" fill="lemonchiffon" stroke="#b45309" stroke-width="2" opacity="1"/>
+<text fill="#1e3a8a" transform="translate(100.0000 150.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">Raw data</text>
+<rect width="138" height="58" fill="aliceblue" stroke="#2563eb" stroke-width="2" transform="translate(221.0000 121.0000) rotate(0.0000)" opacity="1" rx="12"/>
+<text fill="#1e3a8a" transform="translate(290.0000 150.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">Clean &amp; split</text>
+<rect width="138" height="58" fill="aliceblue" stroke="#2563eb" stroke-width="2" transform="translate(411.0000 121.0000) rotate(0.0000)" opacity="1" rx="12"/>
+<text fill="#1e3a8a" transform="translate(480.0000 150.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">Features</text>
+<rect width="138" height="58" fill="honeydew" stroke="#15803d" stroke-width="2" transform="translate(601.0000 121.0000) rotate(0.0000)" opacity="1" rx="12"/>
+<text fill="#1e3a8a" transform="translate(670.0000 150.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">Train</text>
+<rect width="138" height="58" fill="honeydew" stroke="#15803d" stroke-width="2" transform="translate(601.0000 261.0000) rotate(0.0000)" opacity="1" rx="12"/>
+<text fill="#1e3a8a" transform="translate(670.0000 290.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">Evaluate</text>
+<polygon points="480.0000,252.0000 545.0000,290.0000 480.0000,328.0000 415.0000,290.0000" fill="lavender" stroke="#6d28d9" stroke-width="2" opacity="1"/>
+<text fill="#1e3a8a" transform="translate(480.0000 290.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">Pass?</text>
+<rect width="136" height="56" fill="#dcfce7" stroke="#15803d" stroke-width="2" transform="translate(222.0000 262.0000) rotate(0.0000)" opacity="1" rx="28.0"/>
+<text fill="#1e3a8a" transform="translate(290.0000 290.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">Deploy</text>
+<circle cx="840.0000" cy="150.0000" r="42.0000" fill="#fee2e2" stroke="#b91c1c" stroke-width="2" opacity="1"/>
+<text fill="#1e3a8a" transform="translate(840.0000 150.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15">Tune</text>
+<line x1="176.0000" y1="150.0000" x2="216.0000" y2="150.0000" stroke="#0f766e" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(221.0000 150.0000) rotate(0.0000) scale(1.0000 1.0000)" fill="#0f766e" stroke="none" opacity="1"/>
+<text fill="#0f172a" transform="translate(198.5000 144.8000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">ingest</text>
+<line x1="359.0000" y1="150.0000" x2="406.0000" y2="150.0000" stroke="#0f766e" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(411.0000 150.0000) rotate(0.0000) scale(1.0000 1.0000)" fill="#0f766e" stroke="none" opacity="1"/>
+<line x1="549.0000" y1="150.0000" x2="596.0000" y2="150.0000" stroke="#0f766e" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(601.0000 150.0000) rotate(0.0000) scale(1.0000 1.0000)" fill="#0f766e" stroke="none" opacity="1"/>
+<text fill="#0f172a" transform="translate(575.0000 144.8000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">X, y</text>
+<line x1="670.0000" y1="179.0000" x2="670.0000" y2="256.0000" stroke="#0f766e" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(670.0000 261.0000) rotate(90.0000) scale(1.0000 1.0000)" fill="#0f766e" stroke="none" opacity="1"/>
+<line x1="601.0000" y1="290.0000" x2="550.0000" y2="290.0000" stroke="#0f766e" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(545.0000 290.0000) rotate(180.0000) scale(1.0000 1.0000)" fill="#0f766e" stroke="none" opacity="1"/>
+<text fill="#0f172a" transform="translate(573.0000 284.8000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">metrics</text>
+<line x1="415.0000" y1="290.0000" x2="363.0000" y2="290.0000" stroke="#15803d" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(358.0000 290.0000) rotate(180.0000) scale(1.0000 1.0000)" fill="#15803d" stroke="none" opacity="1"/>
+<text fill="#0f172a" transform="translate(386.5000 284.8000) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">yes</text>
+<line x1="739.0000" y1="150.0000" x2="793.0000" y2="150.0000" stroke="#b91c1c" stroke-width="2" fill="none" opacity="1" stroke-dasharray="4"/>
+<use xlink:href="#arrow_stealth" transform="translate(798.0000 150.0000) rotate(0.0000) scale(1.0000 1.0000)" fill="#b91c1c" stroke="none" opacity="1"/>
+<path d="M480.0000 252.0000 L480.0000 184.0000" stroke="#b91c1c" stroke-width="2" fill="none" opacity="1" stroke-dasharray="4"/>
+<use xlink:href="#arrow_stealth" transform="translate(480.0000 179.0000) rotate(-90.0000) scale(1.0000 1.0000)" fill="#b91c1c" stroke="none" opacity="1"/>
+<text fill="#0f172a" transform="translate(485.2000 215.5000) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="13">no: iterate</text>
+<path d="M861.0000 113.6269 C883.1933 75.1870 802.6157 73.6878 816.7925 109.1293" stroke="#b91c1c" stroke-width="2" fill="none" opacity="1"/>
+<use xlink:href="#arrow_stealth" transform="translate(819.0000 113.6269) rotate(60.0000) scale(1.0000 1.0000)" fill="#b91c1c" stroke="none" opacity="1"/>
+<text fill="#0f172a" transform="translate(840.0000 77.4269) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">grid</text>
+<text fill="#64748b" transform="translate(470.0000 355.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">solid: main flow    dashed: feedback loops</text>
+</svg>

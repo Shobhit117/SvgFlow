@@ -2,7 +2,7 @@
 <defs>
 <path id="arrow_stealth" d="M0 0 L-10 -4.5 L-7 0 L-10 4.5 Z"/>
 </defs>
-<rect width="850" height="380" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="850" height="380" fill="white" stroke="none"/>
 <text fill="black" transform="translate(425.0000 28.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22">A workflow with explicit routing</text>
 <ellipse transform="translate(110.0000 145.0000) rotate(0.0000)" rx="65.0000" ry="32.0000" fill="aliceblue" stroke="#2563eb" stroke-width="2" opacity="1"/>
 <text fill="black" transform="translate(110.0000 145.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Load</text>

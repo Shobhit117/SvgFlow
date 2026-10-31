@@ -2,7 +2,7 @@
 <defs>
 <path id="arrow" d="M-10 -5 Q-5 -0.5 0 0 Q-5 0.5 -10 5"/>
 </defs>
-<rect width="700" height="290" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="700" height="290" fill="white" stroke="none"/>
 <text fill="black" transform="translate(350.0000 24.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20">SVG: origin at top-left, y increases downward</text>
 <line x1="45.0000" y1="65.0000" x2="643.0000" y2="65.0000" stroke="#2563eb" stroke-width="2" fill="none" opacity="1"/>
 <use xlink:href="#arrow" transform="translate(644.0000 65.0000) rotate(0.0000) scale(1.0000 1.0000)" stroke="#2563eb" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>

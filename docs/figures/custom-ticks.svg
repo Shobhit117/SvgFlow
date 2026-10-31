@@ -1,5 +1,5 @@
 <svg width="700" height="380" viewBox="0 0 700 380" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-<rect width="700" height="380" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="700" height="380" fill="white" stroke="none"/>
 <line x1="75.8640" y1="284.9500" x2="75.8640" y2="30.0300" stroke="black" stroke-width="1" fill="none" opacity="1"/>
 <line x1="71.8040" y1="280.8900" x2="684.0000" y2="280.8900" stroke="black" stroke-width="1" fill="none" opacity="1"/>
 <text fill="black" transform="translate(151.2710 295.1292) rotate(-30.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">North region</text>
@@ -13,16 +13,16 @@
 <text fill="black" transform="translate(67.2540 280.8900) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">0%</text>
 <text fill="black" transform="translate(67.2540 219.3950) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">25%</text>
 <line x1="71.8040" y1="219.3950" x2="79.9240" y2="219.3950" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="75.8640" y1="219.3950" x2="679.1200" y2="219.3950" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="75.8640" y1="219.3950" x2="679.1200" y2="219.3950" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <text fill="black" transform="translate(67.2540 157.9000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">50%</text>
 <line x1="71.8040" y1="157.9000" x2="79.9240" y2="157.9000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="75.8640" y1="157.9000" x2="679.1200" y2="157.9000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="75.8640" y1="157.9000" x2="679.1200" y2="157.9000" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <text fill="black" transform="translate(67.2540 96.4050) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">75%</text>
 <line x1="71.8040" y1="96.4050" x2="79.9240" y2="96.4050" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="75.8640" y1="96.4050" x2="679.1200" y2="96.4050" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="75.8640" y1="96.4050" x2="679.1200" y2="96.4050" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <text fill="black" transform="translate(67.2540 34.9100) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">100%</text>
 <line x1="71.8040" y1="34.9100" x2="79.9240" y2="34.9100" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="75.8640" y1="34.9100" x2="679.1200" y2="34.9100" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="75.8640" y1="34.9100" x2="679.1200" y2="34.9100" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <rect width="60" height="159.887" fill="#0f766e" stroke="none" stroke-width="1" transform="translate(121.2710 121.0030) rotate(0.0000)" opacity="1" rx="0"/>
 <rect width="60" height="209.08299999999997" fill="#0f766e" stroke="none" stroke-width="1" transform="translate(272.0850 71.8070) rotate(0.0000)" opacity="1" rx="0"/>
 <rect width="60" height="127.90960000000001" fill="#0f766e" stroke="none" stroke-width="1" transform="translate(422.8990 152.9804) rotate(0.0000)" opacity="1" rx="0"/>

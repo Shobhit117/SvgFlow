@@ -118,17 +118,20 @@ class Canvas:
     to write the SVG file or :meth:`export` to rasterize/convert with Inkscape.
     """
 
-    def __init__(self, height: Number, width: Number, *, executables: ExecutablePaths | None = None) -> None:
+    def __init__(self, height: Number, width: Number, *, background: Color | None = None, executables: ExecutablePaths | None = None) -> None:
         """Create a blank canvas, passing ``height`` before ``width``.
 
         Dimensions, positions, stroke widths and font sizes use SVG user units
-        (normally CSS pixels). The background is transparent. ``executables``
-        configures optional LaTeX/export commands; ordinary SVG needs no tools.
+        (normally CSS pixels). The background is transparent by default; pass
+        ``background`` (e.g. ``"white"``) for an opaque canvas fill.
+        ``executables`` configures optional LaTeX/export commands; ordinary SVG
+        needs no tools.
         """
         # self.arrowLen = 10 # Default arrow size
         self.gap = 7.5
         self.height = height
         self.width = width
+        self.background = background
         self.executables = executables or ExecutablePaths()
         self.contents = []
         self.defs = []
@@ -733,7 +736,7 @@ class Canvas:
 
         Temporary conversion files are removed automatically. Missing commands
         raise ``FileNotFoundError``; failing conversions raise ``RuntimeError``.
-        Each call performs a new conversion; expressions are not cached.
+        Compiled expressions are cached in memory for the current process.
         """
         # baseline: hanging, middle, text-top
         # anchor: start, middle, end
@@ -757,8 +760,8 @@ class Canvas:
         ordered by offset, and optionally one opacity per stop. Duplicate IDs
         raise ``KeyError``; invalid dimensions/counts raise ``ValueError``.
 
-        ``spread_method`` accepts pad/reflect/repeat but is currently validated
-        only: the emitted SVG uses the viewer's default spread (pad).
+        ``spread_method`` sets the SVG ``spreadMethod`` attribute (``"pad"``,
+        ``"reflect"`` or ``"repeat"``).
         """
         # some basic checks:
         grad_id = str(grad_id)
@@ -778,10 +781,13 @@ class Canvas:
         if stop_opacities is not None:
             if len(stop_opacities) != len(stop_points):
                 raise ValueError('length of stop points and stop opacities do not match')
+            for i, op in enumerate(stop_opacities):
+                if (op > 1) or (op < 0):
+                    raise ValueError(f'invalid opacity {op} at index {i}: all opacities should be >= 0 and <= 1')
 
         # define the gradient:
         x1, y1, x2, y2 = 100 * x1, 100 * y1, 100 * x2, 100 * y2
-        grad = [f'<linearGradient id="grad_{grad_id}" x1="{x1:.4f}%" y1="{y1:.4f}%" x2="{x2:.4f}%" y2="{y2:.4f}%">\n']
+        grad = [f'<linearGradient id="grad_{grad_id}" x1="{x1:.4f}%" y1="{y1:.4f}%" x2="{x2:.4f}%" y2="{y2:.4f}%" spreadMethod="{spread_method}">\n']
         if stop_opacities is None:
             for (stop_point, stop_color) in zip(stop_points, stop_colors):
                 grad.append(f'<stop offset="{100*stop_point:.2f}%" stop-color="{stop_color}"/>\n')
@@ -801,7 +807,8 @@ class Canvas:
         all as fractions in [0, 1] of the object bounding box. Stops follow
         :meth:`defineLinearGradient`; radial stop opacities must be in [0, 1].
         Duplicate IDs raise ``KeyError`` and invalid inputs ``ValueError``.
-        ``spread_method`` is validated but not emitted; SVG defaults to pad.
+        ``spread_method`` sets the SVG ``spreadMethod`` attribute (``"pad"``,
+        ``"reflect"`` or ``"repeat"``).
         """
         # some basic checks:
         grad_id = str(grad_id)
@@ -817,7 +824,7 @@ class Canvas:
             if (sp > 1) or (sp < 0):
                 raise ValueError(f'invalid stop point {sp} at index {i}: all stop points should be >= 0 and <= 1')
         if spread_method not in {"pad", "reflect", "repeat"}:
-            raise ValueError(f'invalid spread method: {spread_method}, allowed apread methods are: pad, reflect and repeat')
+            raise ValueError(f'invalid spread method: {spread_method}, allowed spread methods are: pad, reflect and repeat')
         if stop_opacities is not None:
             if len(stop_opacities) != len(stop_points):
                 raise ValueError('length of stop points and stop opacities do not match')
@@ -827,7 +834,7 @@ class Canvas:
 
         # define the gradient:
         cx, cy, fx, fy, r = 100*cx, 100*cy, 100*fx, 100*fy, 100*r
-        grad = [f'<radialGradient id="grad_{grad_id}" cx="{cx:.4f}%" cy="{cy:.4f}%" r="{r:.4f}%" fx="{fx:.4f}%" fy="{fy:.4f}%">']
+        grad = [f'<radialGradient id="grad_{grad_id}" cx="{cx:.4f}%" cy="{cy:.4f}%" r="{r:.4f}%" fx="{fx:.4f}%" fy="{fy:.4f}%" spreadMethod="{spread_method}">']
         if stop_opacities is None:
             for (stop_point, stop_color) in zip(stop_points, stop_colors):
                 grad.append(f'<stop offset="{100*stop_point:.2f}%" stop-color="{stop_color}"/>\n')
@@ -855,7 +862,8 @@ class Canvas:
         # Returns (defs, contents, used_fonts). Subclasses that compose other
         # canvases (e.g. Figure) override this to splice in their children.
         """Collect definitions, drawing markup and used fonts for final serialization."""
-        return list(self.defs), list(self.contents), set(self.used_fonts)
+        bg = [f'<rect width="{self.width}" height="{self.height}" fill="{self.background}" stroke="none"/>'] if self.background and self.background != "none" else []
+        return list(self.defs), bg + list(self.contents), set(self.used_fonts)
 
     def toSvg(self) -> str:
         """Return a complete SVG document without clearing the drawing.
@@ -1178,7 +1186,7 @@ class Plot(Canvas):
     for data annotations.
     """
 
-    def __init__(self, height: Number, width: Number, origin: Point | Literal["auto"] | None = "auto", margins: Point | Literal["auto"] | None = "auto", x_range: Point = (0, 1), y_range: Point = (0, 1), *, style: PlotStyle | None = None, extra_margins: Sequence[Number] = (0, 0, 0, 0), executables: ExecutablePaths | None = None) -> None:
+    def __init__(self, height: Number, width: Number, origin: Point | Literal["auto"] | None = "auto", margins: Point | Literal["auto"] | None = "auto", x_range: Point = (0, 1), y_range: Point = (0, 1), *, style: PlotStyle | None = None, extra_margins: Sequence[Number] = (0, 0, 0, 0), background: Color | None = None, executables: ExecutablePaths | None = None) -> None:
         """Create a plotting canvas with data-to-canvas coordinate mapping.
 
         ``origin`` is the canvas position of the bottom-left corner of the plot
@@ -1193,7 +1201,7 @@ class Plot(Canvas):
         construction time, not recomputed after every drawing call. Too-small
         automatic layouts warn and fall back to percentage margins.
         """
-        Canvas.__init__(self, height, width, executables=executables)
+        Canvas.__init__(self, height, width, background=background, executables=executables)
         self.style = style if style is not None else PlotStyle()
         (self._x, self.x_) = x_range # the values on the x axis will range between [_x, x_]
         (self._y, self.y_) = y_range # the values on the y axis will range between [_y, y_]
@@ -1393,7 +1401,7 @@ class Plot(Canvas):
             if x != self._x:
                 self.addLine(x1 = x_tick, x2 = x_tick, y1 = y_tick - notch_length / 2, y2 = y_tick + notch_length / 2, color = color, thickness = notch_thickness)
                 if grid:
-                    self.addLine(x1 = x_tick, x2 = x_tick, y1 = self.O_y, y2 = self.m_y, color = "gray", thickness = 1, dashed = True)
+                    self.addLine(x1 = x_tick, x2 = x_tick, y1 = self.O_y, y2 = self.m_y, color = "gray", thickness = 1, dashed = True, opacity = 0.45)
         self._recordTickExtent('x', extent)
 
     def addTicksY(self, labels: Iterable[tuple[Number, Any]], color: Color = "black", notch_thickness: Number = 2, notch_length: Number | None = None, rotation: Number = 0, text_baseline: TextBaseline = "middle", text_size: Number | None = None, grid: bool = True, *, pad: Number | None = None) -> None:
@@ -1427,19 +1435,36 @@ class Plot(Canvas):
             if y != self._y:
                 self.addLine(y1 = y_tick, y2 = y_tick, x1 = x_tick - notch_length / 2, x2 = x_tick + notch_length / 2, color = color, thickness = notch_thickness)
                 if grid:
-                    self.addLine(y1 = y_tick, y2 = y_tick, x1 = self.O_x, x2 = self.width - self.m_x, color = "gray", thickness = 1, dashed = True)
+                    self.addLine(y1 = y_tick, y2 = y_tick, x1 = self.O_x, x2 = self.width - self.m_x, color = "gray", thickness = 1, dashed = True, opacity = 0.45)
         self._recordTickExtent('y', extent)
 
-    def addBar(self, x: Number, y: Number, bar_width: Number, _y: Number = 0, bar_color: Color = "orange", opacity: Number = 1) -> None:
-        """Draw a vertical bar centered at data x, from data ``_y`` to ``y``.
+    def addBar(self, x: Number, y: Number, bar_width: Number, _y: Number = 0, bar_color: Color = "orange", opacity: Number = 1, border: Color = "none", thickness: Number = 1, corner_radius: Number = 0) -> None:
+        """Draw a vertical bar centered at data x, between data ``_y`` and ``y``.
 
-        ``bar_width`` is in canvas units, not data units; ``_y`` defaults to
-        zero here. Use ``y >= _y``: negative-height SVG rectangles are not
-        normalized. ``opacity`` affects the fill; there is no border.
+        ``bar_width`` and ``corner_radius`` are in canvas units, not data units;
+        ``_y`` defaults to zero here. Both ``y >= _y`` and ``y < _y`` (negative
+        or downward bars) are normalized automatically so the emitted SVG
+        rectangle always has a non-negative height.
         """
         (x1, y1) = self.mapToCanvas(x, _y)
         (_, y2) = self.mapToCanvas(x, y)
-        self.addRectangle(height=y1-y2, width=bar_width, x=(x1-bar_width/2), y=y2, color=bar_color, border='none', opacity=opacity)
+        top = min(y1, y2)
+        height = abs(y1 - y2)
+        self.addRectangle(height=height, width=bar_width, x=(x1 - bar_width / 2), y=top, color=bar_color, border=border, thickness=thickness, opacity=opacity, corner_radius=corner_radius)
+
+    def addHorizontalBar(self, y: Number, x_end: Number, bar_height: Number, x_start: Number = 0, bar_color: Color = "orange", opacity: Number = 1, border: Color = "none", thickness: Number = 1, corner_radius: Number = 0) -> None:
+        """Draw a horizontal bar centered at data y, between data ``x_start`` and ``x_end``.
+
+        ``bar_height`` and ``corner_radius`` are in canvas units, not data units;
+        ``x_start`` defaults to zero. Both ``x_end >= x_start`` and
+        ``x_end < x_start`` are normalized so the emitted SVG rectangle always
+        has a non-negative width.
+        """
+        (x1, y1) = self.mapToCanvas(x_start, y)
+        (x2, _) = self.mapToCanvas(x_end, y)
+        left = min(x1, x2)
+        width = abs(x2 - x1)
+        self.addRectangle(height=bar_height, width=width, x=left, y=(y1 - bar_height / 2), color=bar_color, border=border, thickness=thickness, opacity=opacity, corner_radius=corner_radius)
 
     def addAxisLabels(self, xlabel: str | None = None, ylabel: str | None = None, xsize: Number | None = None, ysize: Number | None = None, color: Color = "black", xpad: Number | None = None, ypad: Number | None = None, xrot: Number = 0, yrot: Number = 0, xlatex: bool = False, ylatex: bool = False) -> None:
         """Add optional x- and y-axis labels.
@@ -1461,7 +1486,7 @@ class Plot(Canvas):
             if not xlatex and y + self._blockSize(xlabel, xsize)[1] > self.height + 0.5:
                 warnings.warn(f"x axis label {xlabel!r} extends below the canvas; increase the bottom margin (e.g. extra_margins=(0, 30, 0, 0) with auto margins, or an explicit origin) or reduce font sizes", stacklevel=2)
             if xlatex:
-                self.addLaTeX(xlabel, x_mid, y, baseline="hanging", anchor="middle", scale=(xsize/16), rot=xrot)
+                self.addLaTeX(xlabel, x_mid, y, baseline="hanging", anchor="middle", scale=(xsize/16), rot=xrot, color=color)
             else:
                 self.addText(xlabel, x_mid, y, color=color, rotation=xrot, baseline="hanging", anchor="middle", size=xsize)
 
@@ -1471,9 +1496,9 @@ class Plot(Canvas):
             if ylatex:
                 if ypad is None:
                     # "text-top" pins the bottom of the rendered box (which faces the axis after the -90 deg rotation).
-                    self.addLaTeX(ylabel, x_axis - edge, y_mid, baseline="text-top", anchor="middle", scale=(ysize/16), rot=(yrot-90))
+                    self.addLaTeX(ylabel, x_axis - edge, y_mid, baseline="text-top", anchor="middle", scale=(ysize/16), rot=(yrot-90), color=color)
                 else:
-                    self.addLaTeX(ylabel, x_axis - ypad, y_mid, baseline="middle", anchor="middle", scale=(ysize/16), rot=(yrot-90))
+                    self.addLaTeX(ylabel, x_axis - ypad, y_mid, baseline="middle", anchor="middle", scale=(ysize/16), rot=(yrot-90), color=color)
             else:
                 if ypad is None:
                     _, h = self._blockSize(ylabel, ysize)
@@ -1489,28 +1514,55 @@ class Plot(Canvas):
         x_mid, y_top = self.mapToCanvas((self._x + self.x_)/2, self.y_)
         y = y_top - pad
         if latex:
-            self.addLaTeX(title, x_mid, y, scale=size/16, baseline="text-top")
+            self.addLaTeX(title, x_mid, y, scale=size/16, baseline="text-top", color=color)
         else:
             self.addText(title, x_mid, y, color=color, size=size, baseline="auto", anchor="middle")
 
-    def addPlot(self, x: Iterable[Number], y: Iterable[Number], color: Color | None = None, thickness: Number = 1, interp: bool = False, opacity: Number = 1, dashed: bool = False, label: str | None = None) -> None:
-        """Draw paired data with straight segments or an interpolating spline.
+    def addPlot(self, x: Iterable[Number], y: Iterable[Number], color: Color | None = None, thickness: Number = 1, interp: bool = False, opacity: Number = 1, dashed: bool = False, label: str | None = None, *, step: Literal["post", "pre", "mid"] | None = None) -> None:
+        """Draw paired data with straight segments, steps or an interpolating spline.
 
-        ``interp=True`` fits a cubic spline and may overshoot. At least two
-        pairs are required. Iterables are consumed with ``zip``: extra values
-        in a longer input are ignored. Data is neither clipped nor autoscaled.
-        A non-None ``label`` registers an entry for :meth:`addLegend`.
+        ``interp=True`` fits a cubic spline and may overshoot. ``step`` may be
+        ``"post"`` (hold y then step at next x), ``"pre"`` (step immediately at
+        each x) or ``"mid"`` (step halfway between adjacent x values), and
+        cannot be combined with ``interp=True``. At least two pairs are
+        required. Iterables are consumed with ``zip``: extra values in a longer
+        input are ignored. Data is neither clipped nor autoscaled. A non-None
+        ``label`` registers an entry for :meth:`addLegend`.
         """
+        if step is not None and interp:
+            raise ValueError("step cannot be combined with interp=True")
+        if step not in (None, "post", "pre", "mid"):
+            raise ValueError(f"invalid step mode {step!r}: supported modes are 'post', 'pre', 'mid'")
         color = self.nextColor() if color is None else color
-        arr = []
-        for (a, b) in zip(x, y):
-            arr.append(self.mapToCanvas(a, b))
-        
+        pairs = [(float(a), float(b)) for (a, b) in zip(x, y)]
+        if step is not None and len(pairs) >= 2:
+            expanded: list[tuple[float, float]] = []
+            if step == "post":
+                for (x0, y0), (x1, _) in zip(pairs[:-1], pairs[1:]):
+                    expanded.append((x0, y0))
+                    expanded.append((x1, y0))
+                expanded.append(pairs[-1])
+            elif step == "pre":
+                expanded.append(pairs[0])
+                for (x0, _), (x1, y1) in zip(pairs[:-1], pairs[1:]):
+                    expanded.append((x0, y1))
+                    expanded.append((x1, y1))
+            elif step == "mid":
+                expanded.append(pairs[0])
+                for (x0, y0), (x1, y1) in zip(pairs[:-1], pairs[1:]):
+                    xm = 0.5 * (x0 + x1)
+                    expanded.append((xm, y0))
+                    expanded.append((xm, y1))
+                expanded.append(pairs[-1])
+            pairs = expanded
+
+        arr = [self.mapToCanvas(a, b) for (a, b) in pairs]
+
         if interp:
             self.addCurve(arr, color, thickness, opacity=opacity, dashed=dashed)
         else:
             self.addLinePath(arr, color, thickness, opacity=opacity, dashed=dashed)
-        
+
         if label is not None:
             self.legend_items.append((label, {'type': 'plot', 'color': color, 'thickness': thickness, 'opacity': opacity, 'dashed': dashed}))
     
@@ -1529,24 +1581,356 @@ class Plot(Canvas):
         if label is not None:
             self.legend_items.append((label, {'type': 'scatter', 'color': color, 'marker_type': marker_type, 'marker_scale': marker_scale}))
     
-    def addBarPlot(self, x: Iterable[Number], y: Iterable[Number], _y: Iterable[Number] | None = None, color: Color | None = None, bar_width: Number = 20, label: str | None = None) -> None:
+    def addBarPlot(self, x: Iterable[Number], y: Iterable[Number], _y: Iterable[Number] | Number | None = None, color: Color | None = None, bar_width: Number = 20, label: str | None = None, *, opacity: Number = 1, border: Color = "none", thickness: Number = 1, corner_radius: Number = 0) -> None:
         """Draw data-space bars with a fixed canvas-unit ``bar_width``.
 
-        ``_y`` supplies one baseline per bar; when omitted the baseline is the
-        LOWER Y RANGE endpoint, unlike :meth:`addBar`'s zero default. Top values
-        should be >= baselines. Inputs are zipped, truncating to the shortest.
-        A non-None ``label`` registers a legend entry. See :meth:`addBar`.
+        ``_y`` supplies either a scalar baseline (e.g. ``_y=0`` for diverging
+        positive/negative bars) or one baseline per bar; when omitted the
+        baseline is the lower y-range endpoint ``self._y``. Both ``y >= _y``
+        and ``y < _y`` are normalized automatically. Inputs are zipped,
+        truncating to the shortest. A non-None ``label`` registers a legend
+        entry. See :meth:`addBar`.
         """
         color = self.nextColor() if color is None else color
         if _y is None:
             for (a, b) in zip(x, y):
-                self.addBar(a, b, bar_width, bar_color=color, _y=self._y)
+                self.addBar(a, b, bar_width, bar_color=color, _y=self._y, opacity=opacity, border=border, thickness=thickness, corner_radius=corner_radius)
+        elif isinstance(_y, (int, float, np.number)):
+            base = float(_y)
+            for (a, b) in zip(x, y):
+                self.addBar(a, b, bar_width, bar_color=color, _y=base, opacity=opacity, border=border, thickness=thickness, corner_radius=corner_radius)
         else:
             for (a, b, c) in zip(x, y, _y):
-                self.addBar(a, b, bar_width, bar_color=color, _y=c)
-        
+                self.addBar(a, b, bar_width, bar_color=color, _y=c, opacity=opacity, border=border, thickness=thickness, corner_radius=corner_radius)
+
         if label is not None:
             self.legend_items.append((label, {'type': 'bar', 'marker_type': 'square', 'marker_scale': 1, 'color': color}))
+
+    def addFillBetween(self, x: Iterable[Number], y1: Iterable[Number], y2: Iterable[Number] | Number = 0, color: Color | None = None, opacity: Number = 0.2, border: Color = "none", thickness: Number = 1, label: str | None = None) -> None:
+        """Shade the data-space region between ``(x, y1)`` and ``(x, y2)``.
+
+        ``y2`` may be an iterable of values paired with ``x`` or a scalar
+        baseline (default ``0``). When ``color`` is omitted, the next palette
+        color is used. A non-None ``label`` registers a square swatch in
+        :meth:`addLegend`.
+        """
+        xs = [float(v) for v in x]
+        y1s = [float(v) for v in y1]
+        if isinstance(y2, (int, float, np.number)):
+            n = min(len(xs), len(y1s))
+            y2s = [float(y2)] * n
+        else:
+            y2s = [float(v) for v in y2]
+            n = min(len(xs), len(y1s), len(y2s))
+        if n < 2:
+            raise ValueError("addFillBetween requires at least 2 points")
+        color = self.nextColor() if color is None else color
+        upper = [self.mapToCanvas(xs[i], y1s[i]) for i in range(n)]
+        lower = [self.mapToCanvas(xs[i], y2s[i]) for i in range(n - 1, -1, -1)]
+        self.addPolygon(upper + lower, color=color, border=border, thickness=thickness, opacity=opacity)
+        if label is not None:
+            self.legend_items.append((label, {'type': 'bar', 'marker_type': 'square', 'marker_scale': 1, 'color': color}))
+
+    def addHLine(self, y: Number, x_min: Number | None = None, x_max: Number | None = None, color: Color = "black", thickness: Number = 1.5, dashed: bool = True, opacity: Number = 1, label: str | None = None) -> None:
+        """Draw a horizontal data-space reference line at ``y``.
+
+        ``x_min`` and ``x_max`` default to the plot's full x-range endpoints.
+        A non-None ``label`` registers a line entry in :meth:`addLegend`.
+        """
+        x0 = self._x if x_min is None else x_min
+        x1 = self.x_ if x_max is None else x_max
+        (cx0, cy) = self.mapToCanvas(x0, y)
+        (cx1, _) = self.mapToCanvas(x1, y)
+        self.addLine(cx0, cy, cx1, cy, color=color, thickness=thickness, dashed=dashed, opacity=opacity)
+        if label is not None:
+            self.legend_items.append((label, {'type': 'plot', 'color': color, 'thickness': thickness, 'opacity': opacity, 'dashed': dashed}))
+
+    def addVLine(self, x: Number, y_min: Number | None = None, y_max: Number | None = None, color: Color = "black", thickness: Number = 1.5, dashed: bool = True, opacity: Number = 1, label: str | None = None) -> None:
+        """Draw a vertical data-space reference line at ``x``.
+
+        ``y_min`` and ``y_max`` default to the plot's full y-range endpoints.
+        A non-None ``label`` registers a line entry in :meth:`addLegend`.
+        """
+        y0 = self._y if y_min is None else y_min
+        y1 = self.y_ if y_max is None else y_max
+        (cx, cy0) = self.mapToCanvas(x, y0)
+        (_, cy1) = self.mapToCanvas(x, y1)
+        self.addLine(cx, cy0, cx, cy1, color=color, thickness=thickness, dashed=dashed, opacity=opacity)
+        if label is not None:
+            self.legend_items.append((label, {'type': 'plot', 'color': color, 'thickness': thickness, 'opacity': opacity, 'dashed': dashed}))
+
+    @staticmethod
+    def _normalizeErrors(err: Any, count: int) -> tuple[list[float], list[float]] | None:
+        """Normalize a scalar, 1D sequence or (low, high) pair into lower/upper error lists."""
+        if err is None:
+            return None
+        if isinstance(err, (int, float, np.number)):
+            v = abs(float(err))
+            return [v] * count, [v] * count
+        err_list = list(err)
+        if len(err_list) == 2 and isinstance(err_list[0], Iterable) and not isinstance(err_list[0], (str, bytes)):
+            lo = [abs(float(v)) for v in err_list[0]][:count]
+            hi = [abs(float(v)) for v in err_list[1]][:count]
+            return lo, hi
+        vals = [abs(float(v)) for v in err_list][:count]
+        return vals, vals
+
+    def addErrorBars(self, x: Iterable[Number], y: Iterable[Number], yerr: Iterable[Number] | Sequence[Iterable[Number]] | Number | None = None, xerr: Iterable[Number] | Sequence[Iterable[Number]] | Number | None = None, color: Color = "black", thickness: Number = 1.5, cap_size: Number = 6, opacity: Number = 1) -> None:
+        """Draw vertical and/or horizontal error bars at paired data points ``(x, y)``.
+
+        ``yerr`` and ``xerr`` each accept a scalar symmetric error, a 1D
+        sequence of symmetric errors, or a 2-sequence ``(low_errors, high_errors)``
+        of asymmetric magnitudes. ``cap_size`` sets the total cap length in
+        canvas units (``0`` omits caps).
+        """
+        pts = [(float(a), float(b)) for (a, b) in zip(x, y)]
+        n = len(pts)
+        y_bounds = self._normalizeErrors(yerr, n)
+        x_bounds = self._normalizeErrors(xerr, n)
+        half_cap = cap_size / 2
+
+        if y_bounds is not None:
+            y_lo, y_hi = y_bounds
+            for (xi, yi), dlo, dhi in zip(pts, y_lo, y_hi):
+                (cx, cy_lo) = self.mapToCanvas(xi, yi - dlo)
+                (_, cy_hi) = self.mapToCanvas(xi, yi + dhi)
+                self.addLine(cx, cy_lo, cx, cy_hi, color=color, thickness=thickness, opacity=opacity)
+                if cap_size > 0:
+                    self.addLine(cx - half_cap, cy_lo, cx + half_cap, cy_lo, color=color, thickness=thickness, opacity=opacity)
+                    self.addLine(cx - half_cap, cy_hi, cx + half_cap, cy_hi, color=color, thickness=thickness, opacity=opacity)
+
+        if x_bounds is not None:
+            x_lo, x_hi = x_bounds
+            for (xi, yi), dlo, dhi in zip(pts, x_lo, x_hi):
+                (cx_lo, cy) = self.mapToCanvas(xi - dlo, yi)
+                (cx_hi, _) = self.mapToCanvas(xi + dhi, yi)
+                self.addLine(cx_lo, cy, cx_hi, cy, color=color, thickness=thickness, opacity=opacity)
+                if cap_size > 0:
+                    self.addLine(cx_lo, cy - half_cap, cx_lo, cy + half_cap, color=color, thickness=thickness, opacity=opacity)
+                    self.addLine(cx_hi, cy - half_cap, cx_hi, cy + half_cap, color=color, thickness=thickness, opacity=opacity)
+
+    def addBoxPlot(self, data: Sequence[Sequence[Number] | dict[str, Any]], positions: Sequence[Number] | None = None, *, box_width: Number = 28, color: Color | Sequence[Color] | None = None, border: Color = "#1e293b", thickness: Number = 1.5, opacity: Number = 0.78, median_color: Color | None = None, whisker_scale: Number = 1.5, cap_width: Number | None = None, show_outliers: bool = True, show_means: bool = False, labels: Sequence[str] | None = None, grid: bool = False, label: str | None = None) -> None:
+        """Draw box-and-whisker distributions at ``positions`` along the x axis.
+
+        Each entry in ``data`` is either a 1D sample sequence (from which the
+        quartiles ``q1``, ``median``, ``q3``, Tukey whiskers within
+        ``whisker_scale * IQR``, mean, and outliers are computed automatically)
+        or a precomputed dictionary with keys ``'q1'``, ``'median'``, ``'q3'``,
+        ``'whislo'`` (or ``'whisker_low'``), ``'whishi'`` (or ``'whisker_high'``),
+        and optional ``'fliers'``/``'outliers'`` and ``'mean'``.
+
+        ``color`` may be ``None`` (takes one color from the plot palette),
+        ``"cycle"`` (advances the palette per box), a single color string, or a
+        sequence of colors per box. Passing ``labels`` also draws categorical
+        x-axis ticks at ``positions``.
+        """
+        n = len(data)
+        if n == 0:
+            return
+        if positions is None:
+            if self._x <= 0 and abs(self.x_ - n) < 1e-9:
+                pos_list = [i + 0.5 for i in range(n)]
+            elif self._x > 0:
+                pos_list = [float(i + 1) for i in range(n)]
+            else:
+                pos_list = [float(i) for i in range(n)]
+        else:
+            pos_list = [float(p) for p in positions]
+
+        if color is None:
+            base_color = self.nextColor()
+            box_colors = [base_color] * n
+        elif isinstance(color, str):
+            if color == "cycle":
+                box_colors = [self.nextColor() for _ in range(n)]
+            else:
+                box_colors = [color] * n
+        else:
+            palette_seq = list(color)
+            if not palette_seq:
+                raise ValueError("color sequence for addBoxPlot must not be empty")
+            box_colors = [palette_seq[i % len(palette_seq)] for i in range(n)]
+
+        cap_w = box_width * 0.5 if cap_width is None else cap_width
+        med_col = border if median_color is None else median_color
+
+        for i, (item, x_pos) in enumerate(zip(data, pos_list)):
+            b_color = box_colors[i]
+            if isinstance(item, dict):
+                q1 = float(item['q1'])
+                med = float(item['median'])
+                q3 = float(item['q3'])
+                wlo = float(item.get('whislo', item.get('whisker_low', q1)))
+                whi = float(item.get('whishi', item.get('whisker_high', q3)))
+                fliers = [float(v) for v in item.get('fliers', item.get('outliers', ()))]
+                mean_val = float(item['mean']) if 'mean' in item and item['mean'] is not None else None
+            else:
+                arr = np.asarray(list(item), dtype=float)
+                if arr.size == 0:
+                    raise ValueError("each sample in addBoxPlot must contain at least one value")
+                q1, med, q3 = (float(v) for v in np.percentile(arr, [25, 50, 75]))
+                iqr = q3 - q1
+                lo_fence = q1 - whisker_scale * iqr
+                hi_fence = q3 + whisker_scale * iqr
+                inside = arr[(arr >= lo_fence) & (arr <= hi_fence)]
+                wlo = float(np.min(inside)) if inside.size else q1
+                whi = float(np.max(inside)) if inside.size else q3
+                fliers = [float(v) for v in arr[(arr < lo_fence) | (arr > hi_fence)]]
+                mean_val = float(np.mean(arr))
+
+            (cx, y_q1) = self.mapToCanvas(x_pos, q1)
+            (_, y_q3) = self.mapToCanvas(x_pos, q3)
+            (_, y_med) = self.mapToCanvas(x_pos, med)
+            (_, y_wlo) = self.mapToCanvas(x_pos, wlo)
+            (_, y_whi) = self.mapToCanvas(x_pos, whi)
+
+            # Whiskers and caps
+            self.addLine(cx, y_q1, cx, y_wlo, color=border, thickness=thickness)
+            self.addLine(cx, y_q3, cx, y_whi, color=border, thickness=thickness)
+            if cap_w > 0:
+                self.addLine(cx - cap_w / 2, y_wlo, cx + cap_w / 2, y_wlo, color=border, thickness=thickness)
+                self.addLine(cx - cap_w / 2, y_whi, cx + cap_w / 2, y_whi, color=border, thickness=thickness)
+
+            # Interquartile box and median line
+            top = min(y_q1, y_q3)
+            box_h = max(abs(y_q1 - y_q3), 1.0)
+            self.addRectangle(height=box_h, width=box_width, x=cx - box_width / 2, y=top, color=b_color, border=border, thickness=thickness, opacity=opacity, corner_radius=2)
+            self.addLine(cx - box_width / 2, y_med, cx + box_width / 2, y_med, color=med_col, thickness=round(thickness * 1.4, 2))
+
+            if show_means and mean_val is not None:
+                (_, y_mean) = self.mapToCanvas(x_pos, mean_val)
+                self.addCircle(cx, y_mean, 3.5, color="white", border=border, thickness=thickness)
+
+            if show_outliers and fliers:
+                out_border = b_color if border == "none" else border
+                for out_v in fliers:
+                    (_, y_out) = self.mapToCanvas(x_pos, out_v)
+                    self.addCircle(cx, y_out, 3.5, color="none", border=out_border, thickness=max(1.0, round(thickness * 0.85, 2)), opacity=0.85)
+
+        if labels is not None:
+            self.addTicksX(list(zip(pos_list, labels)), grid=grid)
+
+        if label is not None:
+            self.legend_items.append((label, {'type': 'bar', 'marker_type': 'square', 'marker_scale': 1, 'color': box_colors[0]}))
+
+    def addGantt(self, tasks: Iterable[tuple[Any, ...] | dict[str, Any]], *, bar_height: Number = 22, color: Color | Sequence[Color] | None = None, opacity: Number = 0.9, border: Color = "none", thickness: Number = 1, corner_radius: Number = 4, show_labels: bool = True, text_color: Color = "black", text_size: Number | None = None, grid: bool = True, show_durations: bool = False, label: str | None = None) -> None:
+        """Draw a horizontal Gantt chart from task intervals.
+
+        Each item in ``tasks`` can be:
+
+        * a tuple ``(name, start, end[, color[, progress]])``, or
+        * a dictionary with keys ``'task'`` (or ``'name'``/``'label'``),
+          ``'start'``, and ``'end'`` (or ``'duration'``), plus optional
+          ``'color'``, ``'progress'`` (in ``[0, 1]``), ``'row'`` (explicit y
+          coordinate), and ``'text'`` (inline bar annotation).
+
+        Unique task names are ordered top-to-bottom automatically so the first
+        task appears on the top row. When ``start == end``, a diamond milestone
+        marker is drawn instead of a bar. When ``show_labels=True``, task names
+        are added as y-axis ticks via :meth:`addTicksY`.
+        """
+        parsed: list[dict[str, Any]] = []
+        unique_names: list[str] = []
+        for item in tasks:
+            if isinstance(item, dict):
+                name = str(item.get('task', item.get('name', item.get('label', ''))))
+                start = float(item['start'])
+                end = float(item['end']) if 'end' in item else start + float(item['duration'])
+                item_color = item.get('color')
+                progress = item.get('progress')
+                row = item.get('row', item.get('y'))
+                note = item.get('text')
+            else:
+                seq = tuple(item)
+                if len(seq) < 3:
+                    raise ValueError("each Gantt task tuple must have at least (name, start, end)")
+                name = str(seq[0])
+                start = float(seq[1])
+                end = float(seq[2])
+                item_color = seq[3] if len(seq) >= 4 else None
+                progress = seq[4] if len(seq) >= 5 else None
+                row = None
+                note = None
+            if name not in unique_names:
+                unique_names.append(name)
+            parsed.append({
+                'name': name,
+                'start': start,
+                'end': end,
+                'color': item_color,
+                'progress': float(progress) if progress is not None else None,
+                'row': float(row) if row is not None else None,
+                'text': note,
+            })
+
+        if not parsed:
+            return
+
+        m = len(unique_names)
+        # Map unique task names top-to-bottom within the plot's y_range
+        if self._y == 0 and abs(self.y_ - m) < 1e-9:
+            name_to_y = {name: m - 0.5 - idx for idx, name in enumerate(unique_names)}
+        else:
+            name_to_y = {name: float(m - 1 - idx) for idx, name in enumerate(unique_names)}
+
+        if color is None:
+            default_color = self.nextColor()
+            row_colors = {name: default_color for name in unique_names}
+        elif isinstance(color, str):
+            if color == "cycle":
+                row_colors = {name: self.nextColor() for name in unique_names}
+            else:
+                row_colors = {name: color for name in unique_names}
+        else:
+            palette_seq = list(color)
+            if not palette_seq:
+                raise ValueError("color sequence for addGantt must not be empty")
+            row_colors = {name: palette_seq[idx % len(palette_seq)] for idx, name in enumerate(unique_names)}
+
+        if show_labels:
+            y_ticks = [(name_to_y[name], name) for name in reversed(unique_names)]
+            self.addTicksY(y_ticks, color=text_color, text_size=text_size, grid=grid)
+
+        annot_size = max(10, round(0.8 * (self.style.tick_size if text_size is None else text_size), 2))
+        first_color = None
+        for entry in parsed:
+            y_val = entry['row'] if entry['row'] is not None else name_to_y[entry['name']]
+            t_color = entry['color'] if entry['color'] is not None else row_colors[entry['name']]
+            if first_color is None:
+                first_color = t_color
+            start, end = entry['start'], entry['end']
+            prog = entry['progress']
+
+            if abs(end - start) < 1e-9:
+                # Milestone diamond
+                (cx, cy) = self.mapToCanvas(start, y_val)
+                r = bar_height * 0.45
+                pts = [(cx, cy - r), (cx + r, cy), (cx, cy + r), (cx - r, cy)]
+                self.addPolygon(pts, color=t_color, border=border if border != "none" else "white", thickness=max(1.0, thickness), opacity=opacity)
+            elif prog is not None:
+                prog_clamped = max(0.0, min(1.0, prog))
+                self.addHorizontalBar(y_val, end, bar_height, x_start=start, bar_color=t_color, opacity=round(opacity * 0.35, 3), border=border, thickness=thickness, corner_radius=corner_radius)
+                if prog_clamped > 0:
+                    p_end = start + prog_clamped * (end - start)
+                    self.addHorizontalBar(y_val, p_end, bar_height, x_start=start, bar_color=t_color, opacity=opacity, border="none", corner_radius=corner_radius)
+            else:
+                self.addHorizontalBar(y_val, end, bar_height, x_start=start, bar_color=t_color, opacity=opacity, border=border, thickness=thickness, corner_radius=corner_radius)
+
+            note = entry['text']
+            if note is None and show_durations and abs(end - start) >= 1e-9:
+                dur = abs(end - start)
+                note = f"{int(round(dur))}" if abs(dur - round(dur)) < 1e-9 else f"{dur:g}"
+            if note is not None:
+                (x1, cy) = self.mapToCanvas(start, y_val)
+                (x2, _) = self.mapToCanvas(end, y_val)
+                bar_w = abs(x2 - x1)
+                if bar_w >= text_width(str(note), annot_size, self.default_font) + 10:
+                    self.addText(str(note), 0.5 * (x1 + x2), cy, color="white", size=annot_size, baseline="middle", anchor="middle", style="bold")
+                else:
+                    self.addText(str(note), max(x1, x2) + 6, cy, color=text_color, size=annot_size, baseline="middle", anchor="start")
+
+        if label is not None and first_color is not None:
+            self.legend_items.append((label, {'type': 'bar', 'marker_type': 'square', 'marker_scale': 1, 'color': first_color}))
     
     def _computeLegendPosition(self, legend_width: Number, legend_height: Number, anchor: LegendAnchor = 'NE') -> Point:
         """Place a legend by compass anchor inside the data rectangle."""
@@ -1596,7 +1980,7 @@ class Plot(Canvas):
             raise ValueError(f"invalid legend anchor: {anchor}. supported anchor types are: 'NE', 'N', 'NW', 'W', 'E', 'SW', 'S', 'SE'")
         return (ax, ay)
         
-    def addLegend(self, anchor: LegendAnchor | None = 'NE', text_size: Number | None = None, text_color: Color = 'black', marker_scale: Number = 1, box_color: Color = 'yellow', box_border_color: Color = 'red', box_opacity: Number = 0.5, position: Point | None = None) -> None:
+    def addLegend(self, anchor: LegendAnchor | None = 'NE', text_size: Number | None = None, text_color: Color = 'black', marker_scale: Number = 1, box_color: Color = 'white', box_border_color: Color = 'silver', box_opacity: Number = 0.92, position: Point | None = None) -> None:
         """Draw a legend from previously labeled line, scatter and bar series.
 
         At least one labeled series is required. Entries are sorted by type
@@ -1644,13 +2028,62 @@ class Plot(Canvas):
                 x1 = x + 5 * marker_scale
                 self.putMarker(x1, y_item, marker_type=plot_info['marker_type'], size=marker_scale, color=plot_info['color'], on_canvas=False)
     
-    def easyTicks(self, color: Color = 'black', ticks_per_unit: Number = 0.01, notch_thickness: Number = 2, notch_length: Number | None = None, rot_x: Number = 0, rot_y: Number = 0, text_size: Number | None = None, grid: bool = False) -> None:
-        """Draw evenly spaced ticks with labels formatted to two decimals.
+    @staticmethod
+    def _niceTicks(lo: Number, hi: Number, target_count: int) -> list[tuple[float, str]]:
+        """Generate rounded 1/2/2.5/5 x 10^k tick positions and clean display labels."""
+        if target_count <= 0:
+            return []
+        lo_f, hi_f = float(lo), float(hi)
+        span = abs(hi_f - lo_f)
+        if target_count == 1 or span < 1e-12:
+            val = 0.0 if abs(lo_f) < 1e-12 else lo_f
+            return [(val, f"{val:g}")]
+        raw_step = span / max(target_count - 1, 2)
+        mag = 10.0 ** float(np.floor(np.log10(raw_step)))
+        res = raw_step / mag
+        if res <= 1.5:
+            nice_mult = 1.0
+        elif res <= 2.25:
+            nice_mult = 2.0
+        elif res <= 3.5:
+            nice_mult = 2.5
+        elif res <= 7.5:
+            nice_mult = 5.0
+        else:
+            nice_mult = 10.0
+        step = nice_mult * mag
+        low_b, high_b = min(lo_f, hi_f), max(lo_f, hi_f)
+        k_min = int(np.ceil((low_b - 1e-9 * step) / step))
+        k_max = int(np.floor((high_b + 1e-9 * step) / step))
+        ks = range(k_min, k_max + 1) if lo_f <= hi_f else range(k_max, k_min - 1, -1)
+        decimals = max(0, int(-np.floor(np.log10(step)) + (1 if nice_mult == 2.5 else 0)))
+        result: list[tuple[float, str]] = []
+        for k in ks:
+            v = k * step
+            if abs(v) < 1e-12 * step:
+                v = 0.0
+            if decimals == 0 and abs(v - round(v)) < 1e-9:
+                lbl = f"{int(round(v))}"
+            elif decimals <= 6:
+                lbl = f"{v:.{decimals}f}"
+                if "." in lbl:
+                    lbl = lbl.rstrip("0").rstrip(".")
+                if lbl == "-0":
+                    lbl = "0"
+            else:
+                lbl = f"{v:g}"
+            result.append((float(v), lbl))
+        return result
 
-        ``ticks_per_unit`` is ticks per CANVAS unit, clamped to [0.005, 0.05].
-        Each axis gets ``round(length*ticks_per_unit)`` ticks via linspace;
-        these are not rounded to convenient data intervals. For categories or
-        custom formatting use :meth:`addTicksX` and :meth:`addTicksY`.
+    def easyTicks(self, color: Color = 'black', ticks_per_unit: Number = 0.01, notch_thickness: Number = 2, notch_length: Number | None = None, rot_x: Number = 0, rot_y: Number = 0, text_size: Number | None = None, grid: bool = False, *, nice: bool = True) -> None:
+        """Draw automatically spaced ticks along both axes.
+
+        ``ticks_per_unit`` is ticks per CANVAS unit, clamped to ``[0.005, 0.05]``.
+        When ``nice=True`` (default), tick intervals are rounded to convenient
+        ``1``, ``2``, ``2.5`` or ``5 x 10^k`` steps with compact labels (no
+        trailing ``.00`` clutter). Pass ``nice=False`` for legacy ``linspace``
+        ticks formatted to two decimal places. For categories or custom
+        formatting use :meth:`addTicksX` and :meth:`addTicksY`.
         """
         (x1, y1) = self.mapToCanvas(self._x, self._y)
         (x2, y2) = self.mapToCanvas(self.x_, self.y_)
@@ -1661,18 +2094,24 @@ class Plot(Canvas):
         num_y_ticks = int(round(Y * ticks_per_unit))
         
         if num_x_ticks > 0:
-            x_ticks = np.linspace(self._x, self.x_, num=num_x_ticks)
-            x_labels = [(x, f'{x:.2f}') for x in x_ticks]
+            if nice:
+                x_labels = self._niceTicks(self._x, self.x_, num_x_ticks)
+            else:
+                x_ticks = np.linspace(self._x, self.x_, num=num_x_ticks)
+                x_labels = [(x, f'{x:.2f}') for x in x_ticks]
             self.addTicksX(x_labels, color, notch_thickness, notch_length, rot_x, None, text_size, grid)
         if num_y_ticks > 0:
-            y_ticks = np.linspace(self._y, self.y_, num=num_y_ticks)
-            y_labels = [(y, f'{y:.2f}') for y in y_ticks]
+            if nice:
+                y_labels = self._niceTicks(self._y, self.y_, num_y_ticks)
+            else:
+                y_ticks = np.linspace(self._y, self.y_, num=num_y_ticks)
+                y_labels = [(y, f'{y:.2f}') for y in y_ticks]
             self.addTicksY(y_labels, color, notch_thickness, notch_length, rot_y, "middle", text_size, grid)
     
-    def easyAxes(self, color: Color = 'black', thickness: Number = 2, directed: bool = True, ticks_per_unit: Number = 0.01, notch_length: Number | None = None, rot_x: Number = 0, rot_y: Number = 0, text_size: Number | None = None, grid: bool = False, *, arrow_size: Number = 1, arrow_style: ArrowStyle | None = None) -> None:
+    def easyAxes(self, color: Color = 'black', thickness: Number = 2, directed: bool = True, ticks_per_unit: Number = 0.01, notch_length: Number | None = None, rot_x: Number = 0, rot_y: Number = 0, text_size: Number | None = None, grid: bool = False, *, nice: bool = True, arrow_size: Number = 1, arrow_style: ArrowStyle | None = None) -> None:
         """Draw axes and automatically chosen ticks."""
         self.addAxes(color, thickness, directed, arrow_size=arrow_size, arrow_style=arrow_style)
-        self.easyTicks(color, ticks_per_unit, thickness, notch_length, rot_x, rot_y, text_size, grid)
+        self.easyTicks(color, ticks_per_unit, thickness, notch_length, rot_x, rot_y, text_size, grid, nice=nice)
 
 class _SubplotSlot:
     # Placeholder stored in Figure.contents marking where (in z-order) a
@@ -1702,7 +2141,7 @@ class Figure(Canvas):
     sharing a style and compatible label-width estimates get aligned plot areas.
     """
 
-    def __init__(self, height: Number, width: Number, rows: int = 1, cols: int = 1, *, title: str | None = None, title_size: Number | None = None, style: PlotStyle | None = None, wspace: Number = 10, hspace: Number = 10, padding: Number = 10, width_ratios: Sequence[Number] | None = None, height_ratios: Sequence[Number] | None = None, executables: ExecutablePaths | None = None) -> None:
+    def __init__(self, height: Number, width: Number, rows: int = 1, cols: int = 1, *, title: str | None = None, title_size: Number | None = None, style: PlotStyle | None = None, wspace: Number = 10, hspace: Number = 10, padding: Number = 10, width_ratios: Sequence[Number] | None = None, height_ratios: Sequence[Number] | None = None, background: Color | None = None, executables: ExecutablePaths | None = None) -> None:
         """Create a grid with user-unit padding, inter-cell gaps and a title band.
 
         ``rows``/``cols`` must be positive. ``width_ratios`` and ``height_ratios``
@@ -1711,7 +2150,7 @@ class Figure(Canvas):
         Create plots separately with :meth:`subplot` or :meth:`subplots`;
         ``style`` supplies their defaults.
         """
-        Canvas.__init__(self, height, width, executables=executables)
+        Canvas.__init__(self, height, width, background=background, executables=executables)
         if rows < 1 or cols < 1:
             raise ValueError("rows and cols must both be >= 1")
         width_ratios = [1] * cols if width_ratios is None else list(width_ratios)
@@ -1815,7 +2254,8 @@ class Figure(Canvas):
 
     def _renderParts(self) -> tuple[list[str], list[str], set[str]]:
         """Collect definitions, drawing markup and used fonts for final serialization."""
-        defs, contents, fonts = list(self.defs), [], set(self.used_fonts)
+        bg = [f'<rect width="{self.width}" height="{self.height}" fill="{self.background}" stroke="none"/>'] if self.background and self.background != "none" else []
+        defs, contents, fonts = list(self.defs), bg, set(self.used_fonts)
         separator = '\n<!--svgflow:defs-end-->\n'
         for item in self.contents:
             if not isinstance(item, _SubplotSlot):
@@ -1909,9 +2349,9 @@ class Flow(Canvas):
     avoidance are the caller's responsibility; calls append SVG immediately.
     """
 
-    def __init__(self, height: Number, width: Number, *, style: FlowStyle | None = None, executables: ExecutablePaths | None = None) -> None:
+    def __init__(self, height: Number, width: Number, *, style: FlowStyle | None = None, background: Color | None = None, executables: ExecutablePaths | None = None) -> None:
         """Create an empty flow-diagram canvas whose defaults come from ``style``."""
-        Canvas.__init__(self, height, width, executables=executables)
+        Canvas.__init__(self, height, width, background=background, executables=executables)
         self.style = style if style is not None else FlowStyle()
         self.nodes = dict()
 
@@ -1937,6 +2377,8 @@ class Flow(Canvas):
 
         Supported shape tuples are ``('circle', radius)``,
         ``('rectangle', height, width[, corner_radius])``,
+        ``('stadium', height, width)`` (pill shape),
+        ``('diamond', height, width)`` (rhombus decision node),
         ``('ellipse', horizontal_radius, vertical_radius)``, and
         ``('parallelogram', diagonal1, diagonal2, angle_degrees)``.
         The legacy spelling ``'paralellogram'`` is also accepted. Diagonals
@@ -1966,6 +2408,16 @@ class Flow(Canvas):
                 corner = shape[3] if len(shape) >= 4 else 0
                 self.nodes[id] = {'x': x, 'y': y, 'h': h, 'w': w, 'rx': corner, 'label': label, 'type': 'rectangle'}
                 self.addRectangle(h, w, x-w/2, y-h/2, color=color, border=border, thickness=thickness, opacity=opacity, corner_radius=corner)
+            elif node_type == 'stadium':
+                h, w = shape[1], shape[2]
+                corner = min(h, w) / 2
+                self.nodes[id] = {'x': x, 'y': y, 'h': h, 'w': w, 'rx': corner, 'label': label, 'type': 'stadium'}
+                self.addRectangle(h, w, x-w/2, y-h/2, color=color, border=border, thickness=thickness, opacity=opacity, corner_radius=corner)
+            elif node_type == 'diamond':
+                h, w = shape[1], shape[2]
+                points = [(x, y - h / 2), (x + w / 2, y), (x, y + h / 2), (x - w / 2, y)]
+                self.nodes[id] = {'points': points, 'x': x, 'y': y, 'h': h, 'w': w, 'label': label, 'type': 'diamond'}
+                self.addPolygon(points, color=color, border=border, thickness=thickness, opacity=opacity)
             elif node_type == 'ellipse':
                 a, b = shape[1], shape[2]
                 self.nodes[id] = {'x': x, 'y': y, 'a': a, 'b': b, 'label': label, 'type': 'ellipse'}
@@ -1986,7 +2438,7 @@ class Flow(Canvas):
                 self.nodes[id] = {'points': [p1, p2, p3, p4], 'x': x, 'y': y, 'label': label, 'type': 'parallelogram'}
                 self.addPolygon(self.nodes[id]['points'], color=color, border=border, thickness=thickness, opacity=opacity)
             else:
-                raise ValueError(f"invalid node shape {node_type}: supported node shapes are: circle, rectangle, ellipse, parallelogram")
+                raise ValueError(f"invalid node shape {node_type}: supported node shapes are: circle, rectangle, stadium, diamond, ellipse, parallelogram")
             
             if label is not None:
                 if latex:
@@ -2010,7 +2462,7 @@ class Flow(Canvas):
         if node['type'] == 'circle':
             r = node['r']
             x1, y1 = x + r * ux, y + r * uy
-        elif node['type'] == 'rectangle':
+        elif node['type'] in ('rectangle', 'stadium'):
             h, w = node['h'], node['w']
             # Distance along the ray to the first vertical / horizontal side.
             tx = (w / 2) / abs(ux) if abs(ux) > 1e-12 else np.inf
@@ -2028,6 +2480,10 @@ class Flow(Canvas):
                     b = fx * ux + fy * uy
                     t = -b + np.sqrt(max(b * b - (fx * fx + fy * fy - r * r), 0.0))
                     x1, y1 = x + t * ux, y + t * uy
+        elif node['type'] == 'diamond':
+            h, w = node['h'], node['w']
+            t = 1.0 / (2.0 * abs(ux) / w + 2.0 * abs(uy) / h)
+            x1, y1 = x + t * ux, y + t * uy
         elif node['type'] == 'ellipse':
             # Polar radius of the ellipse in direction theta (not the parametric angle).
             a, b = node['a'], node['b']
@@ -2037,7 +2493,7 @@ class Flow(Canvas):
             points = node['points']
             (x1, y1) = self._computeInteresctionWithConvexPolygon(x, y, theta, points)
         else:
-            raise ValueError(f"invalid node shape {node['type']}: supported node shapes are: circle, rectangle, ellipse, parallelogram")
+            raise ValueError(f"invalid node shape {node['type']}: supported node shapes are: circle, rectangle, stadium, diamond, ellipse, parallelogram")
         return (x1, y1)
     
     def addEdge(self, node1: str, node2: str, label: Any | None = None, curvature: Number = 0, color: Color | None = None, thickness: Number | None = None, dashed: bool = False, directed: Directed = False, opacity: Number = 1, text_color: Color | None = None, text_size: Number | None = None, text_style: str | None = None, latex: bool = False, *, arrow_size: Number | None = None, arrow_style: ArrowStyle | None = None) -> None:

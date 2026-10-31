@@ -13,6 +13,7 @@ From the repository root with dependencies installed:
 ```bash
 python -m docs.examples.gallery
 python -m docs.examples.recipes
+python -m docs.examples.showcase
 python -m docs.tools.render_examples
 python -m docs.tools.build_reference
 python -m docs.tools.check_docs
@@ -33,7 +34,7 @@ approximation of the example in the gallery script. Only explicitly marked,
 repository-authored code is executed.
 
 The gallery writes 14 core SVGs (including the reusable icon) and recipes
-write 3 more. API generation writes five Markdown pages under `docs/api/`.
+write 3 more, and the showcase writes 5 (`showcase-*.svg`). API generation writes five Markdown pages under `docs/api/`.
 The checker validates local links/anchors, fenced Python syntax, package
 export/method coverage in the reference, docstring coverage, and SVG XML/ID
 references. It also checks that the reference matches current source output.

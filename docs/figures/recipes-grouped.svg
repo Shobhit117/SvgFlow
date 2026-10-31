@@ -15,19 +15,19 @@
 <text fill="black" transform="translate(64.0280 337.7250) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">0</text>
 <text fill="black" transform="translate(64.0280 277.5760) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">2</text>
 <line x1="68.9280" y1="277.5760" x2="77.6780" y2="277.5760" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="73.3030" y1="277.5760" x2="678.3780" y2="277.5760" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="73.3030" y1="277.5760" x2="678.3780" y2="277.5760" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <text fill="black" transform="translate(64.0280 217.4270) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">4</text>
 <line x1="68.9280" y1="217.4270" x2="77.6780" y2="217.4270" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="73.3030" y1="217.4270" x2="678.3780" y2="217.4270" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="73.3030" y1="217.4270" x2="678.3780" y2="217.4270" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <text fill="black" transform="translate(64.0280 157.2780) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">6</text>
 <line x1="68.9280" y1="157.2780" x2="77.6780" y2="157.2780" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="73.3030" y1="157.2780" x2="678.3780" y2="157.2780" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="73.3030" y1="157.2780" x2="678.3780" y2="157.2780" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <text fill="black" transform="translate(64.0280 97.1290) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">8</text>
 <line x1="68.9280" y1="97.1290" x2="77.6780" y2="97.1290" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="73.3030" y1="97.1290" x2="678.3780" y2="97.1290" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="73.3030" y1="97.1290" x2="678.3780" y2="97.1290" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <text fill="black" transform="translate(64.0280 36.9800) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="14">10</text>
 <line x1="68.9280" y1="36.9800" x2="77.6780" y2="36.9800" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="73.3030" y1="36.9800" x2="678.3780" y2="36.9800" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="73.3030" y1="36.9800" x2="678.3780" y2="36.9800" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <rect width="46.10095241909934" height="120.298" fill="royalblue" stroke="none" stroke-width="1" transform="translate(110.7600 217.4270) rotate(0.0000)" opacity="1" rx="0"/>
 <rect width="46.10095241909934" height="180.447" fill="royalblue" stroke="none" stroke-width="1" transform="translate(254.8255 157.2780) rotate(0.0000)" opacity="1" rx="0"/>
 <rect width="46.10095241909934" height="150.3725" fill="royalblue" stroke="none" stroke-width="1" transform="translate(398.8910 187.3525) rotate(0.0000)" opacity="1" rx="0"/>
@@ -39,7 +39,7 @@
 <text fill="black" transform="translate(375.8405 368.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Category</text>
 <text fill="black" transform="translate(34.4600 187.3525) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14">Score</text>
 <text fill="black" transform="translate(375.8405 27.3200) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16.1">Grouped bars</text>
-<rect width="85.40799983978272" height="33.6" fill="white" stroke="silver" stroke-width="2" transform="translate(98.5567 52.0173) rotate(0.0000)" opacity="0.5" rx="10"/>
+<rect width="85.40799983978272" height="33.6" fill="white" stroke="silver" stroke-width="2" transform="translate(98.5567 52.0173) rotate(0.0000)" opacity="0.92" rx="10"/>
 <text fill="black" transform="translate(118.5567 60.4173) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="14"><tspan x="0" dy="0.0000em" textLength="52.1360" lengthAdjust="spacingAndGlyphs">baseline</tspan><tspan x="0" dy="1.2em" textLength="57.5680" lengthAdjust="spacingAndGlyphs">improved</tspan></text>
 <use xlink:href="#square" transform="translate(108.5567 60.4173) scale(1.0000 1.0000)" stroke="none" fill="royalblue"/>
 <use xlink:href="#square" transform="translate(108.5567 77.2173) scale(1.0000 1.0000)" stroke="none" fill="teal"/>

@@ -10,23 +10,28 @@
 <use xlink:href="#sp0_arrow" transform="translate(61.2980 17.3400) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
 <line x1="57.5480" y1="240.5250" x2="443.5000" y2="240.5250" stroke="black" stroke-width="2" fill="none" opacity="1"/>
 <use xlink:href="#sp0_arrow" transform="translate(444.5000 240.5250) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
-<text fill="black" transform="translate(61.2980 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">0.00</text>
-<text fill="black" transform="translate(183.8653 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">2.00</text>
+<text fill="black" transform="translate(61.2980 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">0</text>
+<text fill="black" transform="translate(183.8653 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">2</text>
 <line x1="183.8653" y1="236.7750" x2="183.8653" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="183.8653" y1="240.5250" x2="183.8653" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
-<text fill="black" transform="translate(306.4327 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">4.00</text>
+<line x1="183.8653" y1="240.5250" x2="183.8653" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(306.4327 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">4</text>
 <line x1="306.4327" y1="236.7750" x2="306.4327" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="306.4327" y1="240.5250" x2="306.4327" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
-<text fill="black" transform="translate(429.0000 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">6.00</text>
+<line x1="306.4327" y1="240.5250" x2="306.4327" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(429.0000 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">6</text>
 <line x1="429.0000" y1="236.7750" x2="429.0000" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="429.0000" y1="240.5250" x2="429.0000" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
-<text fill="black" transform="translate(53.3480 240.5250) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">-1.20</text>
-<text fill="black" transform="translate(53.3480 32.8400) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">1.20</text>
-<line x1="57.5480" y1="32.8400" x2="65.0480" y2="32.8400" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="61.2980" y1="32.8400" x2="429.0000" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="429.0000" y1="240.5250" x2="429.0000" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(53.3480 223.2179) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">-1</text>
+<line x1="57.5480" y1="223.2179" x2="65.0480" y2="223.2179" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="61.2980" y1="223.2179" x2="429.0000" y2="223.2179" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(53.3480 136.6825) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">0</text>
+<line x1="57.5480" y1="136.6825" x2="65.0480" y2="136.6825" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="61.2980" y1="136.6825" x2="429.0000" y2="136.6825" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(53.3480 50.1471) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">1</text>
+<line x1="57.5480" y1="50.1471" x2="65.0480" y2="50.1471" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="61.2980" y1="50.1471" x2="429.0000" y2="50.1471" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <path d="M61.2980 136.6825 L68.8021 126.1128 L76.3062 115.7014 L83.8104 105.6041 L91.3145 95.9723 L98.8186 86.9501 L106.3227 78.6726 L113.8269 71.2639 L121.3310 64.8347 L128.8351 59.4816 L136.3392 55.2845 L143.8433 52.3063 L151.3475 50.5917 L158.8516 50.1662 L166.3557 51.0364 L173.8598 53.1891 L181.3640 56.5922 L188.8681 61.1945 L196.3722 66.9274 L203.8763 73.7048 L211.3804 81.4253 L218.8846 89.9733 L226.3887 99.2207 L233.8928 109.0292 L241.3969 119.2517 L248.9011 129.7353 L256.4052 140.3229 L263.9093 150.8560 L271.4134 161.1769 L278.9176 171.1309 L286.4217 180.5691 L293.9258 189.3501 L301.4299 197.3423 L308.9340 204.4262 L316.4382 210.4957 L323.9423 215.4598 L331.4464 219.2441 L338.9505 221.7922 L346.4547 223.0657 L353.9588 223.0456 L361.4629 221.7322 L368.9670 219.1452 L376.4711 215.3233 L383.9753 210.3238 L391.4794 204.2215 L398.9835 197.1078 L406.4876 189.0892 L413.9918 180.2858 L421.4959 170.8295 L429.0000 160.8618" stroke="teal" stroke-width="2" fill="none" opacity="1"/>
 <text fill="black" transform="translate(245.1490 266.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">Time</text>
-<text fill="black" transform="translate(14.0000 136.6825) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">Value</text>
+<text fill="black" transform="translate(30.6800 136.6825) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">Value</text>
 <text fill="black" transform="translate(245.1490 24.5600) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.8">sin</text>
 </g>
 <g transform="translate(492.5000 49.0500)">
@@ -34,23 +39,28 @@
 <use xlink:href="#sp1_arrow" transform="translate(61.2980 17.3400) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
 <line x1="57.5480" y1="240.5250" x2="443.5000" y2="240.5250" stroke="black" stroke-width="2" fill="none" opacity="1"/>
 <use xlink:href="#sp1_arrow" transform="translate(444.5000 240.5250) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
-<text fill="black" transform="translate(61.2980 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">0.00</text>
-<text fill="black" transform="translate(183.8653 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">2.00</text>
+<text fill="black" transform="translate(61.2980 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">0</text>
+<text fill="black" transform="translate(183.8653 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">2</text>
 <line x1="183.8653" y1="236.7750" x2="183.8653" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="183.8653" y1="240.5250" x2="183.8653" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
-<text fill="black" transform="translate(306.4327 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">4.00</text>
+<line x1="183.8653" y1="240.5250" x2="183.8653" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(306.4327 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">4</text>
 <line x1="306.4327" y1="236.7750" x2="306.4327" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="306.4327" y1="240.5250" x2="306.4327" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
-<text fill="black" transform="translate(429.0000 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">6.00</text>
+<line x1="306.4327" y1="240.5250" x2="306.4327" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(429.0000 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">6</text>
 <line x1="429.0000" y1="236.7750" x2="429.0000" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="429.0000" y1="240.5250" x2="429.0000" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
-<text fill="black" transform="translate(53.3480 240.5250) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">-1.20</text>
-<text fill="black" transform="translate(53.3480 32.8400) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">1.20</text>
-<line x1="57.5480" y1="32.8400" x2="65.0480" y2="32.8400" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="61.2980" y1="32.8400" x2="429.0000" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="429.0000" y1="240.5250" x2="429.0000" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(53.3480 223.2179) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">-1</text>
+<line x1="57.5480" y1="223.2179" x2="65.0480" y2="223.2179" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="61.2980" y1="223.2179" x2="429.0000" y2="223.2179" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(53.3480 136.6825) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">0</text>
+<line x1="57.5480" y1="136.6825" x2="65.0480" y2="136.6825" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="61.2980" y1="136.6825" x2="429.0000" y2="136.6825" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(53.3480 50.1471) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">1</text>
+<line x1="57.5480" y1="50.1471" x2="65.0480" y2="50.1471" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="61.2980" y1="50.1471" x2="429.0000" y2="50.1471" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <path d="M61.2980 50.1471 L68.8021 50.7950 L76.3062 52.7291 L83.8104 55.9204 L91.3145 60.3211 L98.8186 65.8654 L106.3227 72.4701 L113.8269 80.0364 L121.3310 88.4510 L128.8351 97.5878 L136.3392 107.3101 L143.8433 117.4723 L151.3475 127.9221 L158.8516 138.5031 L166.3557 149.0568 L173.8598 159.4253 L181.3640 169.4531 L188.8681 178.9903 L196.3722 187.8938 L203.8763 196.0305 L211.3804 203.2784 L218.8846 209.5291 L226.3887 214.6889 L233.8928 218.6805 L241.3969 221.4442 L248.9011 222.9386 L256.4052 223.1413 L263.9093 222.0493 L271.4134 219.6789 L278.9176 216.0657 L286.4217 211.2636 L293.9258 205.3448 L301.4299 198.3977 L308.9340 190.5264 L316.4382 181.8488 L323.9423 172.4948 L331.4464 162.6046 L338.9505 152.3261 L346.4547 141.8134 L353.9588 131.2239 L361.4629 120.7161 L368.9670 110.4474 L376.4711 100.5716 L383.9753 91.2365 L391.4794 82.5820 L398.9835 74.7377 L406.4876 67.8209 L413.9918 61.9354 L421.4959 57.1692 L429.0000 53.5938" stroke="teal" stroke-width="2" fill="none" opacity="1"/>
 <text fill="black" transform="translate(245.1490 266.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">Time</text>
-<text fill="black" transform="translate(14.0000 136.6825) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">Value</text>
+<text fill="black" transform="translate(30.6800 136.6825) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">Value</text>
 <text fill="black" transform="translate(245.1490 24.5600) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.8">cos</text>
 </g>
 <g transform="translate(18.0000 365.5250)">
@@ -58,35 +68,35 @@
 <use xlink:href="#sp2_arrow" transform="translate(57.3020 17.3400) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
 <line x1="53.5520" y1="240.5250" x2="918.0000" y2="240.5250" stroke="black" stroke-width="2" fill="none" opacity="1"/>
 <use xlink:href="#sp2_arrow" transform="translate(919.0000 240.5250) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
-<text fill="black" transform="translate(57.3020 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">0.00</text>
-<text fill="black" transform="translate(178.1874 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">0.86</text>
-<line x1="178.1874" y1="236.7750" x2="178.1874" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="178.1874" y1="240.5250" x2="178.1874" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
-<text fill="black" transform="translate(299.0729 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">1.71</text>
-<line x1="299.0729" y1="236.7750" x2="299.0729" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="299.0729" y1="240.5250" x2="299.0729" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
-<text fill="black" transform="translate(419.9583 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">2.57</text>
-<line x1="419.9583" y1="236.7750" x2="419.9583" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="419.9583" y1="240.5250" x2="419.9583" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
-<text fill="black" transform="translate(540.8437 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">3.43</text>
-<line x1="540.8437" y1="236.7750" x2="540.8437" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="540.8437" y1="240.5250" x2="540.8437" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
-<text fill="black" transform="translate(661.7291 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">4.29</text>
-<line x1="661.7291" y1="236.7750" x2="661.7291" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="661.7291" y1="240.5250" x2="661.7291" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
-<text fill="black" transform="translate(782.6146 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">5.14</text>
-<line x1="782.6146" y1="236.7750" x2="782.6146" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="782.6146" y1="240.5250" x2="782.6146" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
-<text fill="black" transform="translate(903.5000 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">6.00</text>
+<text fill="black" transform="translate(57.3020 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">0</text>
+<text fill="black" transform="translate(198.3350 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">1</text>
+<line x1="198.3350" y1="236.7750" x2="198.3350" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="198.3350" y1="240.5250" x2="198.3350" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(339.3680 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">2</text>
+<line x1="339.3680" y1="236.7750" x2="339.3680" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="339.3680" y1="240.5250" x2="339.3680" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(480.4010 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">3</text>
+<line x1="480.4010" y1="236.7750" x2="480.4010" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="480.4010" y1="240.5250" x2="480.4010" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(621.4340 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">4</text>
+<line x1="621.4340" y1="236.7750" x2="621.4340" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="621.4340" y1="240.5250" x2="621.4340" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(762.4670 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">5</text>
+<line x1="762.4670" y1="236.7750" x2="762.4670" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="762.4670" y1="240.5250" x2="762.4670" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(903.5000 248.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">6</text>
 <line x1="903.5000" y1="236.7750" x2="903.5000" y2="244.2750" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="903.5000" y1="240.5250" x2="903.5000" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
-<text fill="black" transform="translate(49.3520 240.5250) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">0.00</text>
-<text fill="black" transform="translate(49.3520 32.8400) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">1.10</text>
-<line x1="53.5520" y1="32.8400" x2="61.0520" y2="32.8400" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="57.3020" y1="32.8400" x2="903.5000" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="903.5000" y1="240.5250" x2="903.5000" y2="32.8400" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(49.3520 240.5250) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">0</text>
+<text fill="black" transform="translate(49.3520 146.1227) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">0.5</text>
+<line x1="53.5520" y1="146.1227" x2="61.0520" y2="146.1227" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="57.3020" y1="146.1227" x2="903.5000" y2="146.1227" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(49.3520 51.7205) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="12">1</text>
+<line x1="53.5520" y1="51.7205" x2="61.0520" y2="51.7205" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="57.3020" y1="51.7205" x2="903.5000" y2="51.7205" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <path d="M57.3020 51.7205 L74.5713 62.9332 L91.8407 73.4800 L109.1100 83.4004 L126.3794 92.7317 L143.6487 101.5089 L160.9181 109.7648 L178.1874 117.5303 L195.4568 124.8347 L212.7261 131.7054 L229.9955 138.1679 L247.2648 144.2467 L264.5342 149.9645 L281.8035 155.3427 L299.0729 160.4015 L316.3422 165.1598 L333.6116 169.6356 L350.8809 173.8456 L368.1502 177.8056 L385.4196 181.5303 L402.6889 185.0339 L419.9583 188.3294 L437.2276 191.4292 L454.4970 194.3449 L471.7663 197.0874 L489.0357 199.6671 L506.3050 202.0936 L523.5744 204.3759 L540.8437 206.5228 L558.1131 208.5421 L575.3824 210.4415 L592.6518 212.2281 L609.9211 213.9086 L627.1904 215.4893 L644.4598 216.9761 L661.7291 218.3746 L678.9985 219.6901 L696.2678 220.9274 L713.5372 222.0913 L730.8065 223.1860 L748.0759 224.2157 L765.3452 225.1843 L782.6146 226.0954 L799.8839 226.9523 L817.1533 227.7584 L834.4226 228.5166 L851.6920 229.2297 L868.9613 229.9005 L886.2307 230.5315 L903.5000 231.1250" stroke="teal" stroke-width="2" fill="none" opacity="1"/>
 <text fill="black" transform="translate(480.4010 266.4750) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">Time</text>
-<text fill="black" transform="translate(14.0000 136.6825) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">Value</text>
+<text fill="black" transform="translate(20.6720 136.6825) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12">Value</text>
 <text fill="black" transform="translate(480.4010 24.5600) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13.8">Spans both columns</text>
 </g>
 </svg>

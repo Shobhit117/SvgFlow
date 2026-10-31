@@ -111,7 +111,7 @@ def render_all():
                   "| `Port` | `'N'`, `'S'`, `'E'`, `'W'` |\n"
                   "| `SvgBackend` / `Backend` | `'inkscape'`, `'dvisvgm'`, `'pdf2svg'` |\n"
                   "| `ExportType` | `'png'`, `'pdf'` |\n"
-                  "| `GradientSpread` | `'pad'`, `'reflect'`, `'repeat'` (currently emits pad only) |\n"
+                  "| `GradientSpread` | `'pad'`, `'reflect'`, `'repeat'` |\n"
                   "| `PaletteName` | `'default'`, `'vibrant'`, `'pastel'`, `'colorblind'`, `'ocean'`, `'warm'`, `'monochrome'` |\n"
                   "| `FlowThemeName` | `'default'`, `'ocean'`, `'forest'`, `'sunset'`, `'slate'`, `'lavender'`, `'minimal'` |\n"
                   "| `NodeShape` | Shape tuple; see [flow guide](../flow-diagrams.md) |\n"]

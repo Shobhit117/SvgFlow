@@ -9,8 +9,8 @@ OUTPUT = Path(__file__).resolve().parents[1] / "figures"
 
 def base_plot(x_range, y_range):
     """Create a consistently styled plot with an explicit white background."""
-    p = Plot(390, 700, x_range=x_range, y_range=y_range, style=PlotStyle.scaled(14))
-    p.addRectangle(p.height, p.width, 0, 0, color="white", border="none")
+    p = Plot(390, 700, x_range=x_range, y_range=y_range, style=PlotStyle.scaled(14),
+             background="white")
     return p
 
 
@@ -21,17 +21,15 @@ def save(p, name):
 
 
 def uncertainty_band():
-    """Fill an uncertainty band behind a curve using mapped polygon points."""
+    """Fill an uncertainty band behind a curve using addFillBetween and addHLine."""
     x = np.linspace(0, 10, 60)
     mean = 3 + np.sin(x)
     low, high = mean - 0.5, mean + 0.5
     p = base_plot((0, 10), (0, 5))
     p.easyAxes(grid=True)
-    boundary = list(zip(x, high)) + list(zip(x[::-1], low[::-1]))
-    p.addPolygon([p.mapToCanvas(a, b) for a, b in boundary],
-                  color="royalblue", border="none", opacity=0.18)
+    p.addFillBetween(x, low, high, color="royalblue", opacity=0.18, label="±0.5 band")
     p.addPlot(x, mean, color="royalblue", thickness=3, label="mean")
-    p.addPlot([0, 10], [4.5, 4.5], color="firebrick", dashed=True, label="threshold")
+    p.addHLine(4.5, color="firebrick", dashed=True, label="threshold")
     cx, cy = p.mapToCanvas(7.5, 3 + np.sin(7.5))
     p.addLine(cx - 35, cy + 45, cx - 3, cy + 7, directed=True, color="darkorange")
     p.addText("mapped annotation", cx - 35, cy + 60, size=13, color="darkorange")

@@ -31,7 +31,7 @@ def main():
     parser.add_argument("--run-examples", action="store_true")
     args = parser.parse_args()
     if args.run_examples:
-        for module in ["docs.examples.gallery", "docs.examples.recipes", "docs.tools.render_examples"]:
+        for module in ["docs.examples.gallery", "docs.examples.recipes", "docs.examples.showcase", "docs.tools.render_examples"]:
             subprocess.run([sys.executable, "-m", module], cwd=ROOT, check=True)
     errors = []
     pages = sorted((ROOT / "docs").rglob("*.md")) + [ROOT / "README.md"]

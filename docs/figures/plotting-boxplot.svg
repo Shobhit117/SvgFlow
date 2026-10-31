@@ -1,0 +1,60 @@
+<svg width="680" height="360" viewBox="0 0 680 360" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<rect width="680" height="360" fill="white" stroke="none"/>
+<line x1="68.6360" y1="314.9500" x2="68.6360" y2="30.0300" stroke="black" stroke-width="1" fill="none" opacity="1"/>
+<line x1="64.5760" y1="310.8900" x2="664.0000" y2="310.8900" stroke="black" stroke-width="1" fill="none" opacity="1"/>
+<text fill="black" transform="translate(60.0260 290.1915) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">15</text>
+<line x1="64.5760" y1="290.1915" x2="72.6960" y2="290.1915" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="68.6360" y1="290.1915" x2="659.1200" y2="290.1915" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(60.0260 221.1965) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">25</text>
+<line x1="64.5760" y1="221.1965" x2="72.6960" y2="221.1965" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="68.6360" y1="221.1965" x2="659.1200" y2="221.1965" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(60.0260 152.2015) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">35</text>
+<line x1="64.5760" y1="152.2015" x2="72.6960" y2="152.2015" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="68.6360" y1="152.2015" x2="659.1200" y2="152.2015" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<text fill="black" transform="translate(60.0260 83.2065) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="13">45</text>
+<line x1="64.5760" y1="83.2065" x2="72.6960" y2="83.2065" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<line x1="68.6360" y1="83.2065" x2="659.1200" y2="83.2065" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
+<line x1="162.5766" y1="238.7122" x2="162.5766" y2="271.1717" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<line x1="162.5766" y1="214.0516" x2="162.5766" y2="180.8118" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<line x1="153.5766" y1="271.1717" x2="171.5766" y2="271.1717" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<line x1="153.5766" y1="180.8118" x2="171.5766" y2="180.8118" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<rect width="36" height="24.660569100979245" fill="#e63946" stroke="#1e293b" stroke-width="1.5" transform="translate(144.5766 214.0516) rotate(0.0000)" opacity="0.78" rx="2"/>
+<line x1="144.5766" y1="225.3966" x2="180.5766" y2="225.3966" stroke="#1e293b" stroke-width="2.1" fill="none" opacity="1"/>
+<circle cx="162.5766" cy="226.6546" r="3.5000" fill="white" stroke="#1e293b" stroke-width="1.5" opacity="1"/>
+<line x1="296.7775" y1="199.7477" x2="296.7775" y2="227.4701" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<line x1="296.7775" y1="167.4055" x2="296.7775" y2="143.9434" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<line x1="287.7775" y1="227.4701" x2="305.7775" y2="227.4701" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<line x1="287.7775" y1="143.9434" x2="305.7775" y2="143.9434" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<rect width="36" height="32.342273132207964" fill="#1d3557" stroke="#1e293b" stroke-width="1.5" transform="translate(278.7775 167.4055) rotate(0.0000)" opacity="0.78" rx="2"/>
+<line x1="278.7775" y1="186.9030" x2="314.7775" y2="186.9030" stroke="#1e293b" stroke-width="2.1" fill="none" opacity="1"/>
+<circle cx="296.7775" cy="185.4814" r="3.5000" fill="white" stroke="#1e293b" stroke-width="1.5" opacity="1"/>
+<circle cx="296.7775" cy="86.6562" r="3.5000" fill="none" stroke="#1e293b" stroke-width="1.27" opacity="0.85"/>
+<circle cx="296.7775" cy="268.1131" r="3.5000" fill="none" stroke="#1e293b" stroke-width="1.27" opacity="0.85"/>
+<line x1="430.9785" y1="221.9170" x2="430.9785" y2="244.1726" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<line x1="430.9785" y1="198.8880" x2="430.9785" y2="170.6841" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<line x1="421.9785" y1="244.1726" x2="439.9785" y2="244.1726" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<line x1="421.9785" y1="170.6841" x2="439.9785" y2="170.6841" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<rect width="36" height="23.029042290662602" fill="#2a9d8f" stroke="#1e293b" stroke-width="1.5" transform="translate(412.9785 198.8880) rotate(0.0000)" opacity="0.78" rx="2"/>
+<line x1="412.9785" y1="209.9626" x2="448.9785" y2="209.9626" stroke="#1e293b" stroke-width="2.1" fill="none" opacity="1"/>
+<circle cx="430.9785" cy="207.9076" r="3.5000" fill="white" stroke="#1e293b" stroke-width="1.5" opacity="1"/>
+<circle cx="430.9785" cy="157.1370" r="3.5000" fill="none" stroke="#1e293b" stroke-width="1.27" opacity="0.85"/>
+<line x1="565.1794" y1="168.5203" x2="565.1794" y2="205.9531" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<line x1="565.1794" y1="135.3267" x2="565.1794" y2="86.1981" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<line x1="556.1794" y1="205.9531" x2="574.1794" y2="205.9531" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<line x1="556.1794" y1="86.1981" x2="574.1794" y2="86.1981" stroke="#1e293b" stroke-width="1.5" fill="none" opacity="1"/>
+<rect width="36" height="33.193675127493236" fill="#f4a261" stroke="#1e293b" stroke-width="1.5" transform="translate(547.1794 135.3267) rotate(0.0000)" opacity="0.78" rx="2"/>
+<line x1="547.1794" y1="152.3358" x2="583.1794" y2="152.3358" stroke="#1e293b" stroke-width="2.1" fill="none" opacity="1"/>
+<circle cx="565.1794" cy="149.4631" r="3.5000" fill="white" stroke="#1e293b" stroke-width="1.5" opacity="1"/>
+<circle cx="565.1794" cy="69.4075" r="3.5000" fill="none" stroke="#1e293b" stroke-width="1.27" opacity="0.85"/>
+<text fill="black" transform="translate(162.5766 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">v1.0</text>
+<line x1="162.5766" y1="306.8300" x2="162.5766" y2="314.9500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(296.7775 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">v1.1</text>
+<line x1="296.7775" y1="306.8300" x2="296.7775" y2="314.9500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(430.9785 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">v1.2</text>
+<line x1="430.9785" y1="306.8300" x2="430.9785" y2="314.9500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(565.1794 319.5000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">v2.0</text>
+<line x1="565.1794" y1="306.8300" x2="565.1794" y2="314.9500" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(363.8780 339.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">Release</text>
+<text fill="black" transform="translate(32.5700 172.9000) rotate(-90.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13">Latency p50 / IQR (ms)</text>
+<text fill="black" transform="translate(363.8780 25.9400) rotate(0.0000)" dominant-baseline="auto" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14.95">Service latency distribution by release</text>
+</svg>

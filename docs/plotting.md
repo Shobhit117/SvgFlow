@@ -37,13 +37,15 @@ are right/top margins. Mapping is linear in each direction.
 
 | Method | Input coordinates or dimensions |
 | --- | --- |
-| `addPlot`, `addScatterPlot`, `addBarPlot`, `addBar` | Positions/heights in data coordinates |
+| `addPlot`, `addScatterPlot`, `addBarPlot`, `addBar`, `addHorizontalBar` | Positions/heights/lengths in data coordinates |
+| `addFillBetween`, `addHLine`, `addVLine`, `addErrorBars` | Data coordinates |
+| `addBoxPlot`, `addGantt` | Data coordinates for positions/intervals; box width / bar height in canvas units |
 | `addTicksX`, `addTicksY` | Tick values in data coordinates |
 | `mapToCanvas` | Data in, canvas coordinates out |
 | `putMarker(..., on_canvas=True)` | Data positions (despite the argument name) |
 | `putMarker(..., on_canvas=False)` | Raw canvas positions |
 | Inherited `addText`, `addCircle`, `addLine`, paths, polygons | Raw canvas coordinates |
-| Bar widths, marker sizes, strokes, fonts, padding overrides | Canvas units (marker sizes are multipliers) |
+| Bar widths/heights, box widths, error-bar caps, marker sizes, strokes, fonts, padding overrides | Canvas units (marker sizes are multipliers) |
 
 <!-- render: core -->
 ```python
@@ -90,12 +92,45 @@ p.save("interpolation.svg")
 `interp=True` uses the cubic spline described in [drawing](drawing.md).
 It interpolates points, rather than fitting a statistical model, and can
 overshoot between samples. At least two paired values are required.
-For step plots, create repeated x/y pairs yourself; there is no `step=` option.
+Pass `step="post"`, `"pre"`, or `"mid"` to draw a step function instead of
+diagonal segments (incompatible with `interp=True`).
 
 Inputs are consumed with Python `zip`. If lengths differ, unmatched trailing
 values are ignored. Check lengths in your data pipeline if that would hide
 a mistake. Generators work but are consumed once; create fresh iterators for
 each series or convert them to arrays/lists first.
+
+## Step plots, shaded bands, error bars, and reference lines
+
+Combine `addPlot(..., step=...)`, `addFillBetween()`, `addErrorBars()`,
+`addHLine()`, and `addVLine()` for empirical curves, confidence bands, and
+thresholds directly in data space:
+
+<!-- render: core -->
+```python
+import numpy as np
+from svgflow import Plot, PlotStyle
+
+x = np.array([1, 2, 3, 4, 5, 6])
+y = np.array([2.2, 3.1, 2.8, 4.4, 4.9, 5.6])
+yerr = np.array([0.35, 0.4, 0.3, 0.45, 0.35, 0.4])
+
+p = Plot(360, 680, x_range=(0.5, 6.5), y_range=(0, 7),
+         style=PlotStyle.theme("ocean", base_size=13), background="white")
+p.easyAxes(grid=True)
+p.addFillBetween(x, y - yerr, y + yerr, color="#0077b6", opacity=0.18, label="±1 SD band")
+p.addPlot(x, y, color="#03045e", thickness=2.5, step="mid", label="Step response")
+p.addErrorBars(x, y, yerr=yerr, color="#03045e", thickness=1.5, cap_size=7)
+p.addScatterPlot(x, y, color="#00b4d8", marker_scale=0.8)
+p.addHLine(4.0, color="#c2410c", dashed=True, thickness=1.8, label="SLA target")
+p.addVLine(3.5, color="#64748b", dashed=True, thickness=1.5, label="Rollout")
+p.addAxisLabels("Stage", "Throughput (req/s)")
+p.addTitle("Step response with error bars and reference lines")
+p.addLegend(anchor="NW")
+p.save("steps-errors.svg")
+```
+
+![Step plot with error bars, shaded band, and reference lines](figures/plotting-steps-errors.svg)
 
 ## Discontinuous functions
 
@@ -185,32 +220,109 @@ width_in_data = 0.6
 width_in_canvas = abs(p.mapToCanvas(width_in_data, 0)[0] - p.mapToCanvas(0, 0)[0])
 ```
 
-`addBar(x, y, bar_width, _y=0)` draws one bar from baseline `_y` to top `y`.
-`addBarPlot(..., _y=None)` instead uses the lower y-range endpoint as the
-baseline. Supplying `_y=[...]` gives per-bar baselines; the `y` input remains
-the absolute top coordinate, not a component height. See the
-[stacked/grouped recipes](recipes.md).
+`addBar(x, y, bar_width, _y=0)` draws one bar between baseline `_y` and `y`.
+`addBarPlot(..., _y=None)` uses the lower y-range endpoint by default, or
+accepts a scalar baseline (such as `_y=0` for diverging positive/negative
+bars) or a sequence of per-bar baselines (where `y` is the absolute top
+coordinate; see the [stacked/grouped recipes](recipes.md)). Both `y >= _y`
+and `y < _y` are normalized automatically so negative/downward bars emit valid
+positive-height SVG rectangles. Use `addHorizontalBar()` when drawing
+horizontal intervals directly.
 
-The current bar implementation emits `height=canvas_baseline-canvas_top`
-directly. Keep each top at or above its baseline for increasing y ranges.
-Negative/downward bars are not normalized; see the recipe for a manual
-rectangle workaround. There are no horizontal bar, histogram or boxplot
-helpers; you can build them with primitives.
+## Box-and-whisker plots
+
+`addBoxPlot(data, positions=..., ...)` summarizes distributions from either raw
+1D sample arrays (computing Q1, median, Q3, Tukey `1.5 * IQR` whiskers, mean,
+and outliers automatically) or precomputed dictionaries (`q1`, `median`, `q3`,
+`whislo`, `whishi`, `fliers`):
+
+<!-- render: core -->
+```python
+import numpy as np
+from svgflow import Plot, PlotStyle
+
+rng = np.random.default_rng(42)
+samples = [
+    rng.normal(24, 3.2, 60),
+    np.append(rng.normal(31, 4.0, 58), [44.5, 18.2]),
+    rng.normal(27, 2.5, 60),
+    np.append(rng.normal(35, 3.8, 58), [47.0]),
+]
+
+p = Plot(360, 680, x_range=(0.3, 4.7), y_range=(12, 52),
+         style=PlotStyle.theme("vibrant", base_size=13), background="white")
+p.addAxes()
+p.addTicksY([(y, str(y)) for y in range(15, 55, 10)], grid=True)
+p.addBoxPlot(
+    samples,
+    positions=[1, 2, 3, 4],
+    box_width=36,
+    color="cycle",
+    show_means=True,
+    show_outliers=True,
+    labels=["v1.0", "v1.1", "v1.2", "v2.0"],
+)
+p.addAxisLabels("Release", "Latency p50 / IQR (ms)")
+p.addTitle("Service latency distribution by release")
+p.save("boxplot.svg")
+```
+
+![Box-and-whisker plot example](figures/plotting-boxplot.svg)
+
+Pass `color="cycle"` to assign a distinct palette color to each box, a sequence
+of colors, or a single color string (leaving `color=None` uses one palette
+color for the whole series). `show_means=True` draws a white circle at each
+sample mean, and `show_outliers=True` marks points outside the whiskers.
+
+## Gantt charts
+
+`addGantt(tasks, ...)` plots project schedules, timelines, and horizontal
+execution intervals. Each task can be a tuple `(name, start, end[, color[, progress]])`
+or a dictionary (`task`, `start`, `end` or `duration`, optional `color`,
+`progress` in `[0, 1]`, `text`, or explicit `row`). Tasks with `start == end`
+render as diamond milestones:
+
+<!-- render: core -->
+```python
+from svgflow import Plot, PlotStyle
+
+tasks = [
+    {"task": "Specification", "start": 0, "end": 3, "progress": 1.0, "text": "100%"},
+    {"task": "Core Engine", "start": 2, "end": 7, "progress": 0.8, "text": "80%"},
+    {"task": "Vector Export", "start": 5, "end": 10, "progress": 0.5, "text": "50%"},
+    {"task": "Docs & Tests", "start": 7, "end": 12, "progress": 0.25, "text": "25%"},
+    {"task": "v2.0 Release", "start": 12, "end": 12},  # milestone diamond
+]
+
+p = Plot(360, 720, x_range=(0, 14), y_range=(0, 5),
+         style=PlotStyle.theme("default", base_size=13),
+         extra_margins=(60, 0, 0, 0), background="white")
+p.addAxes()
+p.addTicksX([(w, f"W{w}") for w in range(0, 15, 2)], grid=True)
+p.addGantt(tasks, bar_height=24, color="cycle", corner_radius=5)
+p.addVLine(6.0, color="#dc2626", dashed=True, thickness=1.8, label="Today (W6)")
+p.addAxisLabels("Timeline (weeks)", "Workstream")
+p.addTitle("Release roadmap Gantt chart")
+p.addLegend(anchor="NE")
+p.save("gantt.svg")
+```
+
+![Gantt chart example](figures/plotting-gantt.svg)
+
+Unique task names are ordered top-to-bottom automatically so the first task in
+the list sits on the top row. When `y_range=(0, len(unique_tasks))`, rows are
+centered at half-integer positions (`N - 0.5` down to `0.5`) so every row has
+comfortable vertical padding and a horizontal guide line.
 
 ## Automatic and manual ticks
 
 `easyAxes()` draws axes plus `easyTicks()`. Its defaults include directed
 axes, thickness 2, and no grid. `easyTicks()` uses about 0.01 ticks per canvas
-unit and formats values with two decimal places. Density is clamped between
-0.005 and 0.05; counts are computed from the plotted pixel/user-unit extent,
-not the numeric data range. It uses `linspace`, not “nice number” intervals.
-
-Each axis gets `round(axis_length * ticks_per_unit)` labels, including both
-endpoints when the count is at least two. A 221-unit axis therefore gets only
-two labels at the default density. Increase the density, for example with
-`easyAxes(ticks_per_unit=0.025)`, to get six labels on that axis. The
-minimum-range endpoint is labeled but has no notch, so two labels leave just
-one visible tick mark. `PlotStyle.scaled()` does not change tick density.
+unit (clamped between 0.005 and 0.05) and by default (`nice=True`) rounds tick
+intervals to clean `1`, `2`, `2.5`, or `5 x 10^k` steps with compact labels
+(no trailing `.00` clutter on integer ticks). Pass `nice=False` to restore
+legacy `linspace` ticks formatted with two decimal places (`f"{x:.2f}"`).
+`PlotStyle.scaled()` does not change tick density.
 
 Manual ticks take `(data_position, displayed_label)` pairs:
 
@@ -245,8 +357,7 @@ Call `addAxisLabels()` **after ticks**: it uses the measured tick extents.
 The y label rotates -90 degrees by default; `yrot` is added to that rotation.
 `xrot` is the x-label rotation. Optional `xlatex`, `ylatex` and `latex` on
 titles invoke external math rendering. In this version the `color` argument
-is used for plain labels/titles; their LaTeX branches render in the default
-black. Use `addLaTeX()` directly for explicitly colored math annotations.
+is applied to both plain and LaTeX labels/titles.
 
 `PlotStyle` defines consistent size and spacing defaults:
 
@@ -298,6 +409,20 @@ already emitted text or the layout estimated at construction.
 Explicit `pad`/`xpad`/`ypad` values are canvas units. `xpad` measures from
 the x-axis to the top of its label; `ypad` from the y-axis to the center line
 of its rotated label. They are not identical geometric conventions.
+
+## Anatomy of a plot
+
+The orange annotations name the layout values used by `PlotStyle` and the
+margin parameters of `Plot`:
+
+![Anatomy of a plot](figures/showcase-anatomy.svg)
+
+## Palettes and themes
+
+`PlotStyle.theme(name)` selects a series palette and `FlowStyle.theme(name)`
+a flow color scheme:
+
+![Built-in palettes and flow themes](figures/showcase-themes.svg)
 
 ## Automatic and explicit margins
 
@@ -357,8 +482,8 @@ p.save("legend-position.svg")
 Position is a canvas-space reference near the top-left; the box starts
 `5*marker_scale` units left of its x value. It overrides an anchor. If using
 `anchor=None`, provide a position. `box_opacity` affects the box only, so text
-and symbols remain readable. The default box is yellow with a red outline at
-0.5 opacity; specify a quieter style if desired. Legend marker sizes use the
+and symbols remain readable. The default box is white with a silver outline at
+0.92 opacity; override `box_color`/`box_border_color` to restyle it. Legend marker sizes use the
 legend's `marker_scale`, independently of the original scatter sizes.
 
 Next: [Subplots](figures.md) and [practical recipes](recipes.md).

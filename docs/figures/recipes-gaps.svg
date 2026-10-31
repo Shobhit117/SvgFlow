@@ -6,22 +6,22 @@
 <use xlink:href="#arrow" transform="translate(73.7360 23.4000) rotate(-90.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
 <line x1="68.7360" y1="261.4000" x2="592.4320" y2="261.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
 <use xlink:href="#arrow" transform="translate(593.4320 261.4000) rotate(0.0000) scale(1.0000 1.0000)" stroke="black" stroke-width="2.0000" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="1"/>
-<text fill="black" transform="translate(73.7360 272.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">0.00</text>
-<text fill="black" transform="translate(199.4100 272.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">1.75</text>
-<line x1="199.4100" y1="256.4000" x2="199.4100" y2="266.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<text fill="black" transform="translate(325.0840 272.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">3.50</text>
-<line x1="325.0840" y1="256.4000" x2="325.0840" y2="266.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<text fill="black" transform="translate(450.7580 272.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">5.25</text>
-<line x1="450.7580" y1="256.4000" x2="450.7580" y2="266.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<text fill="black" transform="translate(576.4320 272.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">7.00</text>
-<line x1="576.4320" y1="256.4000" x2="576.4320" y2="266.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<text fill="black" transform="translate(63.1360 261.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">0.00</text>
-<text fill="black" transform="translate(63.1360 40.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">6.00</text>
-<line x1="68.7360" y1="40.4000" x2="78.7360" y2="40.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(73.7360 272.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">0</text>
+<text fill="black" transform="translate(217.3634 272.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">2</text>
+<line x1="217.3634" y1="256.4000" x2="217.3634" y2="266.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(360.9909 272.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">4</text>
+<line x1="360.9909" y1="256.4000" x2="360.9909" y2="266.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(504.6183 272.0000) rotate(0.0000)" dominant-baseline="hanging" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">6</text>
+<line x1="504.6183" y1="256.4000" x2="504.6183" y2="266.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(63.1360 261.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">0</text>
+<text fill="black" transform="translate(63.1360 169.3167) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">2.5</text>
+<line x1="68.7360" y1="169.3167" x2="78.7360" y2="169.3167" stroke="black" stroke-width="2" fill="none" opacity="1"/>
+<text fill="black" transform="translate(63.1360 77.2333) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">5</text>
+<line x1="68.7360" y1="77.2333" x2="78.7360" y2="77.2333" stroke="black" stroke-width="2" fill="none" opacity="1"/>
 <path d="M73.7360 224.5667 L145.5497 150.9000 L217.3634 187.7333" stroke="royalblue" stroke-width="1" fill="none" opacity="1"/>
 <path d="M360.9909 114.0667 L432.8046 77.2333" stroke="royalblue" stroke-width="1" fill="none" opacity="1"/>
 <circle cx="576.4320" cy="150.9000" r="5.0000" fill="royalblue" stroke="none" stroke-width="1" opacity="1"/>
-<rect width="94.76799961090089" height="19.2" fill="white" stroke="gray" stroke-width="2" transform="translate(451.5292 51.4500) rotate(0.0000)" opacity="0.5" rx="10"/>
+<rect width="94.76799961090089" height="19.2" fill="white" stroke="gray" stroke-width="2" transform="translate(451.5292 51.4500) rotate(0.0000)" opacity="0.92" rx="10"/>
 <text textLength="65.8080" lengthAdjust="spacingAndGlyphs" fill="black" transform="translate(471.5292 61.0500) rotate(0.0000)" dominant-baseline="middle" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="16">observed</text>
 <line x1="456.5292" y1="61.0500" x2="466.5292" y2="61.0500" stroke="royalblue" stroke-width="1" fill="none" opacity="1"/>
 </svg>

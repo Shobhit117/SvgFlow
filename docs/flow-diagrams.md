@@ -48,6 +48,8 @@ Dimensions are canvas units:
 | `("circle", r)` | Radius r |
 | `("rectangle", h, w)` | Full height and width |
 | `("rectangle", h, w, radius)` | Rounded rectangle |
+| `("stadium", h, w)` | Pill shape (rounded rectangle with `radius = min(h, w) / 2`) |
+| `("diamond", h, w)` | Rhombus / decision node of full height `h` and width `w` |
 | `("ellipse", a, b)` | Horizontal radius a, vertical radius b |
 | `("parallelogram", d1, d2, angle)` | Diagonal lengths and angle between diagonals in degrees |
 
@@ -55,11 +57,13 @@ Dimensions are canvas units:
 ```python
 from svgflow import Flow
 
-f = Flow(140, 760)
-f.addNode("a", 65, 70, shape=("circle", 40), label="A", color="aliceblue")
-f.addNode("b", 240, 70, shape=("rectangle", 75, 135, 12), label="B")
-f.addNode("c", 440, 70, shape=("ellipse", 75, 40), label="C")
-f.addNode("d", 660, 70, shape=("parallelogram", 130, 100, 65), label="D")
+f = Flow(150, 860, background="white")
+f.addNode("a", 55, 75, shape=("circle", 36), label="Circle", color="aliceblue")
+f.addNode("b", 185, 75, shape=("rectangle", 68, 115, 10), label="Rect", color="honeydew")
+f.addNode("c", 330, 75, shape=("stadium", 56, 115), label="Stadium", color="lavender")
+f.addNode("d", 475, 75, shape=("diamond", 84, 125), label="Diamond", color="lemonchiffon")
+f.addNode("e", 625, 75, shape=("ellipse", 62, 36), label="Ellipse", color="mistyrose")
+f.addNode("p", 775, 75, shape=("parallelogram", 115, 90, 65), label="Skew", color="whitesmoke")
 f.save("node-shapes.svg")
 ```
 

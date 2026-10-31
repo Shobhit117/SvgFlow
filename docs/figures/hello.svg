@@ -1,5 +1,5 @@
 <svg width="300" height="150" viewBox="0 0 300 150" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-<rect width="300" height="150" fill="white" stroke="none" stroke-width="1" transform="translate(0.0000 0.0000) rotate(0.0000)" opacity="1" rx="0"/>
+<rect width="300" height="150" fill="white" stroke="none"/>
 <rect width="220" height="90" fill="aliceblue" stroke="steelblue" stroke-width="2" transform="translate(40.0000 30.0000) rotate(0.0000)" opacity="1" rx="12"/>
 <text fill="navy" transform="translate(150.0000 75.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22">Hello, SvgFlow!</text>
 </svg>

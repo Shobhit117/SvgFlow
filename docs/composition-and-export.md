@@ -207,8 +207,10 @@ These convenience methods use the default Inkscape math backend. For a
 different backend or explicitly colored plot math labels, call `addLaTeX`
 at mapped coordinates yourself. Plain `addText()` does not parse TeX.
 
-Each math call launches pdflatex and a converter in a fresh temporary directory;
-there is no expression cache. Large numbers of math labels can be slow. Reuse
+Each *distinct* math expression launches pdflatex and a converter in a fresh
+temporary directory. Results are cached in memory for the process, so repeated
+symbols (the same source, backend and tool paths) are compiled only once, but
+large numbers of different labels can still be slow. Reuse
 an exported self-contained math SVG as an imported subfigure when appropriate.
 The API accepts math source, not arbitrary preamble or full document options.
 

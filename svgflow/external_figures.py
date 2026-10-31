@@ -9,6 +9,7 @@ from __future__ import annotations
 import re
 import tempfile
 from dataclasses import dataclass
+from functools import lru_cache
 from os import PathLike
 from pathlib import Path
 from subprocess import run, CalledProcessError
@@ -84,38 +85,24 @@ def uniquify_svg_ids(svg: str, prefix: str | None = None) -> str:
     svg = href_re.sub(repl_href, svg)
     return svg
 
-def tex2svg(latex_math: str, eq_num: int, backend: Backend = "inkscape", *, executables: ExecutablePaths | None = None) -> tuple[str, float, float]:
-    """Render a LaTeX math expression to SVG contents and return ``(svg, width, height)``.
-
-    ``latex_math`` is math source without dollar delimiters; the standalone
-    template loads amsmath/amssymb and wraps it in display-style math. Requires
-    pdflatex plus the selected inkscape/dvisvgm/pdf2svg backend, found on PATH
-    or via ``executables``. Every call uses a fresh temporary directory.
-
-    The returned fragment excludes the outer svg element and has IDs prefixed
-    with ``eq{eq_num}``; use unique equation numbers when composing fragments.
-    Width and height come from the converter's viewBox in SVG user units.
-    Missing programs raise ``FileNotFoundError``; failed subprocesses or
-    unexpected SVG structure raise ``RuntimeError``. An unsupported backend
-    raises ``ValueError`` after LaTeX compilation.
-    """
-    commands = executables or ExecutablePaths()
+@lru_cache(maxsize=256)
+def _compile_tex_svg(latex_math: str, backend: Backend, commands: ExecutablePaths) -> tuple[str, float, float]:
+    """Compile LaTeX math to raw inner SVG markup and dimensions, cached in memory."""
     tex_source = TEMPLATE.format(content=latex_math)
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp = Path(tmpdir)
         tex = tmp / "tmp.tex"
         pdf = tmp / "tmp.pdf"
         svg = tmp / "tmp.svg"
-        # log = tmp / "tmp.log"
         tex.write_text(tex_source)
         try:
-            run([commands.pdflatex, tex.name], cwd=tmp, check=True, capture_output=True) # generate pdf output
+            run([commands.pdflatex, tex.name], cwd=tmp, check=True, capture_output=True)  # generate pdf output
         except CalledProcessError as e:
             raise RuntimeError(f"pdflatex failed: {e.stderr.decode(errors='ignore')}")
-        
+
         if backend == 'dvisvgm':
             try:
-                run([commands.dvisvgm, '--no-fonts', '--pdf', pdf.name, '-o', svg.name], cwd=tmp, check=True, capture_output=True) # convert the pdf to svg
+                run([commands.dvisvgm, '--no-fonts', '--pdf', pdf.name, '-o', svg.name], cwd=tmp, check=True, capture_output=True)
             except CalledProcessError as e:
                 raise RuntimeError(f"dvisvgm failed: {e.stderr.decode(errors='ignore')}")
         elif backend == 'pdf2svg':
@@ -130,18 +117,39 @@ def tex2svg(latex_math: str, eq_num: int, backend: Backend = "inkscape", *, exec
                 raise RuntimeError(f"inkscape failed: {e.stderr.decode(errors='ignore')}")
         else:
             raise ValueError(f"invalid pdf to svg conversion backend: {backend} -- supported backends are dvisvgm, pdf2svg, inkscape")
-        
+
         svgtxt = svg.read_text(encoding="utf-8")
         vb = re.search(r'viewBox=(["\'])(.+?)\1', svgtxt)
-        inner = re.search(r"<svg[^>]*>(.*)</svg>", svgtxt, re.S) # search for contents inside the svg tags
+        inner = re.search(r"<svg[^>]*>(.*)</svg>", svgtxt, re.S)  # search for contents inside the svg tags
         if (not vb) or (not inner):
             raise RuntimeError(f"unexpected svg structure from {backend}")
 
-        vb = [float(v) for v in vb.group(2).split()]
-        inner = inner.group(1).strip()
-        _, _, W, H = vb
-        inner = uniquify_svg_ids(inner, f'eq{eq_num}')
-        return inner, W, H
+        vb_vals = [float(v) for v in vb.group(2).split()]
+        inner_txt = inner.group(1).strip()
+        _, _, W, H = vb_vals
+        return inner_txt, W, H
+
+
+def tex2svg(latex_math: str, eq_num: int, backend: Backend = "inkscape", *, executables: ExecutablePaths | None = None) -> tuple[str, float, float]:
+    """Render a LaTeX math expression to SVG contents and return ``(svg, width, height)``.
+
+    ``latex_math`` is math source without dollar delimiters; the standalone
+    template loads amsmath/amssymb and wraps it in display-style math. Requires
+    pdflatex plus the selected inkscape/dvisvgm/pdf2svg backend, found on PATH
+    or via ``executables``. Identical expressions (for the same backend and
+    executable paths) are cached in memory for the current process.
+
+    The returned fragment excludes the outer svg element and has IDs prefixed
+    with ``eq{eq_num}``; use unique equation numbers when composing fragments.
+    Width and height come from the converter's viewBox in SVG user units.
+    Missing programs raise ``FileNotFoundError``; failed subprocesses or
+    unexpected SVG structure raise ``RuntimeError``. An unsupported backend
+    raises ``ValueError`` after LaTeX compilation.
+    """
+    commands = executables or ExecutablePaths()
+    inner, W, H = _compile_tex_svg(latex_math, backend, commands)
+    inner = uniquify_svg_ids(inner, f'eq{eq_num}')
+    return inner, W, H
 
 def import_svg_from_file(file_name: str | Path, fig_num: int | str) -> tuple[str, list[float]]:
     """Return ``(inner_markup, [min_x, min_y, width, height])`` from a UTF-8 SVG.

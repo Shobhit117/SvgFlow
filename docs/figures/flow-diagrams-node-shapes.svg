@@ -1,10 +1,15 @@
-<svg width="760" height="140" viewBox="0 0 760 140" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-<circle cx="65.0000" cy="70.0000" r="40.0000" fill="aliceblue" stroke="black" stroke-width="2" opacity="1"/>
-<text fill="black" transform="translate(65.0000 70.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">A</text>
-<rect width="135" height="75" fill="none" stroke="black" stroke-width="2" transform="translate(172.5000 32.5000) rotate(0.0000)" opacity="1" rx="12"/>
-<text fill="black" transform="translate(240.0000 70.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">B</text>
-<ellipse transform="translate(440.0000 70.0000) rotate(0.0000)" rx="75.0000" ry="40.0000" fill="none" stroke="black" stroke-width="2" opacity="1"/>
-<text fill="black" transform="translate(440.0000 70.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">C</text>
-<polygon points="716.1424,37.2428 697.7752,102.7572 603.8576,102.7572 622.2248,37.2428" fill="none" stroke="black" stroke-width="2" opacity="1"/>
-<text fill="black" transform="translate(660.0000 70.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">D</text>
+<svg width="860" height="150" viewBox="0 0 860 150" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<rect width="860" height="150" fill="white" stroke="none"/>
+<circle cx="55.0000" cy="75.0000" r="36.0000" fill="aliceblue" stroke="black" stroke-width="2" opacity="1"/>
+<text fill="black" transform="translate(55.0000 75.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Circle</text>
+<rect width="115" height="68" fill="honeydew" stroke="black" stroke-width="2" transform="translate(127.5000 41.0000) rotate(0.0000)" opacity="1" rx="10"/>
+<text fill="black" transform="translate(185.0000 75.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Rect</text>
+<rect width="115" height="56" fill="lavender" stroke="black" stroke-width="2" transform="translate(272.5000 47.0000) rotate(0.0000)" opacity="1" rx="28.0"/>
+<text fill="black" transform="translate(330.0000 75.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Stadium</text>
+<polygon points="475.0000,33.0000 537.5000,75.0000 475.0000,117.0000 412.5000,75.0000" fill="lemonchiffon" stroke="black" stroke-width="2" opacity="1"/>
+<text fill="black" transform="translate(475.0000 75.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Diamond</text>
+<ellipse transform="translate(625.0000 75.0000) rotate(0.0000)" rx="62.0000" ry="36.0000" fill="mistyrose" stroke="black" stroke-width="2" opacity="1"/>
+<text fill="black" transform="translate(625.0000 75.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Ellipse</text>
+<polygon points="824.6549,46.0063 809.4146,103.9937 725.3451,103.9937 740.5854,46.0063" fill="whitesmoke" stroke="black" stroke-width="2" opacity="1"/>
+<text fill="black" transform="translate(775.0000 75.0000) rotate(0.0000)" dominant-baseline="middle" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16">Skew</text>
 </svg>

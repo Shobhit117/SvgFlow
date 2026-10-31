@@ -12,13 +12,13 @@
 <text fill="black" transform="translate(72.0320 271.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">0</text>
 <text fill="black" transform="translate(72.0320 194.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">4</text>
 <line x1="77.6320" y1="194.4000" x2="87.6320" y2="194.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="82.6320" y1="194.4000" x2="576.4320" y2="194.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="82.6320" y1="194.4000" x2="576.4320" y2="194.4000" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <text fill="black" transform="translate(72.0320 117.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">8</text>
 <line x1="77.6320" y1="117.4000" x2="87.6320" y2="117.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="82.6320" y1="117.4000" x2="576.4320" y2="117.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="82.6320" y1="117.4000" x2="576.4320" y2="117.4000" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <text fill="black" transform="translate(72.0320 40.4000) rotate(0.0000)" dominant-baseline="middle" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="16">12</text>
 <line x1="77.6320" y1="40.4000" x2="87.6320" y2="40.4000" stroke="black" stroke-width="2" fill="none" opacity="1"/>
-<line x1="82.6320" y1="40.4000" x2="576.4320" y2="40.4000" stroke="gray" stroke-width="1" fill="none" opacity="1" stroke-dasharray="4"/>
+<line x1="82.6320" y1="40.4000" x2="576.4320" y2="40.4000" stroke="gray" stroke-width="1" fill="none" opacity="0.45" stroke-dasharray="4"/>
 <rect width="50" height="76.99999999999997" fill="teal" stroke="none" stroke-width="1" transform="translate(119.3570 194.4000) rotate(0.0000)" opacity="1" rx="0"/>
 <rect width="50" height="134.75" fill="teal" stroke="none" stroke-width="1" transform="translate(242.8070 136.6500) rotate(0.0000)" opacity="1" rx="0"/>
 <rect width="50" height="115.5" fill="teal" stroke="none" stroke-width="1" transform="translate(366.2570 155.9000) rotate(0.0000)" opacity="1" rx="0"/>

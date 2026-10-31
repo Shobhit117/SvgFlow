@@ -69,20 +69,32 @@ subplot removal/replacement API. Keep the plot you receive and draw on it.
 
 <!-- render: core -->
 ```python
+import numpy as np
 from svgflow import Figure, PlotStyle
 
 fig = Figure(700, 1000, rows=2, cols=3,
              width_ratios=[2, 1, 1], height_ratios=[1, 2],
              wspace=24, hspace=30, padding=20,
-             title="Weighted grid", title_size=24, style=PlotStyle.scaled(12))
+             title="Weighted grid", title_size=24,
+             style=PlotStyle.theme("default", base_size=12))
+def ticks(lo, hi, n):
+    """Evenly spaced (value, label) tick pairs with tidy labels."""
+    return [(v, f"{v:g}") for v in np.linspace(lo, hi, n)]
+
+
+t = np.linspace(0, 10, 200)
 main = fig.subplot(0, 0, rowspan=2, x_range=(0, 10), y_range=(0, 100))
-top = fig.subplot(0, 1, colspan=2)
-bottom = fig.subplot(1, 1, colspan=2)
-for ax, values in [(main, [15, 65, 90]), (top, [0.2, 0.8, 0.4]),
-                   (bottom, [0.8, 0.5, 0.2])]:
-    ax.easyAxes()
-    ax.addPlot([0, 5, 10] if ax is main else [0, 0.5, 1], values,
-               color="royalblue", thickness=2)
+top = fig.subplot(0, 1, colspan=2, x_range=(0, 10), y_range=(-1.2, 1.2))
+bottom = fig.subplot(1, 1, colspan=2, x_range=(0, 10), y_range=(0, 1.1))
+for ax, y, title, yticks in [
+        (main, 100 * (1 - np.exp(-t / 3)), "Saturating growth", ticks(0, 100, 5)),
+        (top, np.sin(2 * t) * np.exp(-t / 8), "Decaying oscillation", ticks(-1, 1, 5)),
+        (bottom, np.exp(-((t - 5) / 1.6) ** 2), "Gaussian pulse", ticks(0, 1, 5))]:
+    ax.addAxes(directed=True, thickness=2)
+    ax.addTicksX(ticks(0, 10, 6))
+    ax.addTicksY(yticks)
+    ax.addPlot(t, y, thickness=2.5)
+    ax.addTitle(title)
 fig.save("weighted-grid.svg")
 ```
 
@@ -111,19 +123,32 @@ instead converts local canvas coordinates:
 
 <!-- render: core -->
 ```python
-from svgflow import Figure
+import numpy as np
+from svgflow import Figure, PlotStyle
 
-fig = Figure(380, 900, rows=1, cols=2)
+fig = Figure(380, 900, rows=1, cols=2, style=PlotStyle.scaled(13))
 a = fig.subplot(0, 0, x_range=(0, 10), y_range=(0, 10))
 b = fig.subplot(0, 1, x_range=(0, 1), y_range=(0, 100))
-for ax in [a, b]:
-    ax.easyAxes()
-a.addPlot([0, 10], [2, 8], color="royalblue")
-b.addPlot([0, 1], [20, 80], color="teal")
+def ticks(lo, hi, n):
+    """Evenly spaced (value, label) tick pairs with tidy labels."""
+    return [(v, f"{v:g}") for v in np.linspace(lo, hi, n)]
 
-start = fig.mapToFigure(a, 8, 7)
-end = fig.mapToFigure(b, 0.2, 35)
-fig.addLine(*start, *end, directed=True, color="darkorange", thickness=2)
+
+for ax, xt, yt in [(a, ticks(0, 10, 6), ticks(0, 10, 6)), (b, ticks(0, 1, 6), ticks(0, 100, 6))]:
+    ax.addAxes(directed=True, thickness=2)
+    ax.addTicksX(xt)
+    ax.addTicksY(yt)
+x = np.linspace(0, 10, 120)
+u = np.linspace(0, 1, 120)
+a.addPlot(x, 5 + 3 * np.sin(x / 1.5), thickness=2.5)
+b.addPlot(u, 100 * (1 - np.exp(-5 * u)), thickness=2.5)
+a.addTitle("Signal")
+b.addTitle("Detail response")
+
+start = fig.mapToFigure(a, 2.36, 8)
+end = fig.mapToFigure(b, 0.3, 100 * (1 - np.exp(-1.5)))
+fig.addLine(*start, *end, directed=True, color="#c2410c", thickness=2,
+            arrow_style="stealth")
 label_x, label_y = fig.mapToFigure(a, 15, 20, data=False)
 fig.addText("A", label_x, label_y, weight="bold", anchor="start")
 fig.save("linked-panels.svg")
@@ -145,14 +170,19 @@ ranges, use the same explicit origin/right/top margins in equally sized cells:
 
 <!-- render: core -->
 ```python
+import numpy as np
 from svgflow import Figure
 
 fig = Figure(360, 900, rows=1, cols=2)
 a = fig.subplot(0, 0, origin=(85, 280), margins=(25, 45), y_range=(0, 1))
 b = fig.subplot(0, 1, origin=(85, 280), margins=(25, 45), y_range=(0, 100000))
-for ax, values in [(a, [0.2, 0.7, 0.4]), (b, [20000, 70000, 40000])]:
-    ax.easyAxes()
-    ax.addPlot([0, 0.5, 1], values, color="royalblue", thickness=2)
+u = np.linspace(0, 1, 120)
+curve = 0.5 + 0.4 * np.sin(2 * np.pi * u) * np.exp(-1.5 * u)
+for ax, values, top in [(a, curve, 1), (b, 100000 * curve, 100000)]:
+    ax.addAxes(directed=True, thickness=2)
+    ax.addTicksX([(v, f"{v:g}") for v in np.linspace(0, 1, 5)])
+    ax.addTicksY([(v, f"{v:g}") for v in np.linspace(0, top, 5)])
+    ax.addPlot(u, values, thickness=2.5)
 fig.save("aligned.svg")
 ```
 

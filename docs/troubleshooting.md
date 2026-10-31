@@ -122,8 +122,9 @@ are not fully normalized. Prefer self-contained SVG with internal definitions
 and explicit element styling. ID prefixing handles common SVG references,
 not every possible CSS/XML construct.
 
-**A gradient repeat/reflect looks padded**: `spread_method` is validated but
-not written into SVG in this version. Both gradient types use the default pad.
+**A gradient repeat/reflect looks padded**: spread only shows when the gradient
+vector is shorter than the object (e.g. `x2=0.3`); the default `pad` otherwise
+holds the end colors.
 Gradient coordinates are relative to each object's bounding box.
 
 **`FileNotFoundError` during math/export**: the needed command is missing from
@@ -148,7 +149,7 @@ SvgFlow is a compact SVG generator. It has no automatic data autoscaling,
 logarithmic or date-axis abstraction, plot-area clipping, axis sharing,
 interactive event system, general scene editing/undo, automatic flow layout,
 obstacle-avoiding routing, arbitrary dash/marker customization, full SVG
-sanitizer/parser, or LaTeX cache. Many presentation effects can be built with
+sanitizer/parser, or persistent (on-disk) LaTeX cache. Many presentation effects can be built with
 mapped primitives; the [recipes](recipes.md) show examples. For features
 outside the API, keep any preprocessing or custom SVG manipulation explicit.
 

@@ -231,8 +231,8 @@ offset. Provide at least two stops and matching color/opacity counts.
 
 IDs are unique per canvas; integer `1` and string `"1"` name the same
 gradient. Unknown IDs and duplicate definitions raise `KeyError`.
-`spread_method` accepts `pad`, `reflect`, and `repeat`, but the current
-implementation does not emit `spreadMethod`; all use the SVG default `pad`.
-Do not rely on reflected or repeated spread in this version.
+`spread_method` accepts `pad` (default), `reflect`, and `repeat` and is written
+to the SVG `spreadMethod` attribute. It matters when the gradient vector is
+shorter than the painted object (for example `x2=0.3`).
 
 Next: [Text and fonts](text-and-fonts.md) or [plotting](plotting.md).

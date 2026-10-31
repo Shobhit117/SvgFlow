@@ -57,7 +57,9 @@ canvas.save(out / "hello.svg")
 
 Open `output/hello.svg` in a browser or SVG editor. The rectangle is a vector
 shape and the label remains text. A white background is drawn explicitly;
-omitting the first rectangle makes the canvas transparent.
+omitting the first rectangle makes the canvas transparent. As a shortcut, every
+class accepts `background="white"` (e.g. `Canvas(150, 300, background="white")`),
+which paints an opaque rectangle behind everything else.
 
 `save()` overwrites a file and does not create its parent directory. It leaves
 the drawing in memory, so you can add elements and save another version.

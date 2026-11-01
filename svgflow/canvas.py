@@ -30,7 +30,7 @@ MarkerType: TypeAlias = Literal["circle", "cross", "square"]
 LegendAnchor: TypeAlias = Literal["NE", "N", "NW", "W", "E", "SW", "S", "SE"]
 ExportType: TypeAlias = Literal["png", "pdf"]
 GradientSpread: TypeAlias = Literal["pad", "reflect", "repeat"]
-NodeShape: TypeAlias = tuple[Any, ...]
+NodeShape: TypeAlias = tuple[Any, ...] | str
 Port: TypeAlias = Literal["N", "S", "E", "W"]
 ArrowStyle: TypeAlias = Literal["curved", "open", "triangle", "stealth"]
 Directed: TypeAlias = bool | Literal["start", "end", "both"]
@@ -2372,6 +2372,31 @@ class Flow(Canvas):
             if node_id not in self.nodes:
                 raise KeyError(f'node {node_id} does not exist')
 
+    @staticmethod
+    def _isAutoDim(val: Any) -> bool:
+        """Return True when a node dimension should be sized automatically from text metrics."""
+        return val is None or (isinstance(val, str) and val.strip().lower() == 'auto')
+
+    def _nodeTextBox(self, label: Any | None, text_size: Number, text_style: str | None = None, latex: bool = False) -> tuple[float, float, float, float]:
+        """Return ``(box_h, box_w, text_h, text_w)`` for ``label`` with font-relative padding."""
+        size = float(text_size)
+        if label is None:
+            text_w, text_h = 0.0, 1.2 * size
+        elif latex:
+            _, w, h = tex2svg(str(label), self.curr_latex_eq_num, executables=self.executables)
+            scale = size / 16.0
+            text_w, text_h = float(w) * scale, float(h) * scale
+        else:
+            font = self.default_font
+            bold, italic = is_bold(None), is_italic(text_style)
+            lines = self._textLines(label, size, font, bold, italic, None)
+            line_widths = [text_width(line, size, font, bold, italic) for line in lines]
+            text_w = max(line_widths, default=0.0)
+            text_h = len(lines) * 1.2 * size
+        pad_x = 0.6 * size
+        pad_y = 0.4 * size
+        return text_h + 2 * pad_y, text_w + 2 * pad_x, text_h, text_w
+
     def addNode(self, id: str, x: Number, y: Number, shape: NodeShape | None = None, label: Any | None = None, color: Color | None = None, border: Color | None = None, thickness: Number | None = None, opacity: Number = 1, text_color: Color | None = None, text_size: Number | None = None, text_style: str | None = None, latex: bool = False) -> None:
         """Add a uniquely named node centered at canvas point ``(x, y)``.
 
@@ -2385,9 +2410,15 @@ class Flow(Canvas):
         and angle must describe a nondegenerate shape. Duplicate IDs raise
         ``KeyError``; unknown shapes raise ``ValueError``.
 
+        Pass ``'auto'`` for any dimension (e.g. ``('rectangle', 'auto', 'auto')``,
+        ``('rectangle', 'auto', 'auto', 10)``, ``('circle', 'auto')``,
+        ``('stadium', 'auto', 'auto')``, ``('diamond', 'auto', 'auto')``,
+        ``('ellipse', 'auto', 'auto')``) or omit dimensions (e.g. ``('rectangle',)``)
+        to size the node automatically from ``label``'s measured font metrics
+        with a font-relative buffer on top, bottom, left and right.
+
         Arguments left as ``None`` use :class:`FlowStyle`. Labels accept
-        newlines/lists; they do not resize the node or wrap automatically.
-        ``latex=True`` renders math through external tools.
+        newlines/lists. ``latex=True`` renders math through external tools.
         """
         s = self.style
         shape = s.node_shape if shape is None else shape
@@ -2397,34 +2428,106 @@ class Flow(Canvas):
         text_color = s.text_color if text_color is None else text_color
         text_size = s.text_size if text_size is None else text_size
         text_style = s.text_style if text_style is None else text_style
+        if isinstance(shape, str):
+            if shape.strip().lower() == 'auto':
+                base = s.node_shape
+                base_type = base if isinstance(base, str) else base[0]
+                if base_type == 'rectangle' and not isinstance(base, str) and len(base) >= 4:
+                    shape = ('rectangle', 'auto', 'auto', base[3])
+                else:
+                    shape = (base_type, 'auto')
+            else:
+                shape = (shape,)
         node_type = shape[0]
         if id not in self.nodes.keys():
             if node_type == 'circle':
-                r = shape[1]
+                raw_r = shape[1] if len(shape) >= 2 else 'auto'
+                if self._isAutoDim(raw_r):
+                    box_h, box_w, _, _ = self._nodeTextBox(label, text_size, text_style, latex)
+                    r = float(np.hypot(box_w, box_h) / 2)
+                else:
+                    r = raw_r
                 self.nodes[id] = {'x' : x, 'y' : y, 'r' : r, 'label' : label, 'type': 'circle'}
                 self.addCircle(x, y, r, color, border, thickness, opacity)
             elif node_type == 'rectangle':
-                h, w = shape[1], shape[2]
-                corner = shape[3] if len(shape) >= 4 else 0
+                if len(shape) == 1 or (len(shape) == 2 and self._isAutoDim(shape[1])):
+                    raw_h, raw_w, corner = 'auto', 'auto', 0
+                else:
+                    raw_h, raw_w = shape[1], shape[2]
+                    corner = shape[3] if len(shape) >= 4 else 0
+                if self._isAutoDim(raw_h) or self._isAutoDim(raw_w):
+                    box_h, box_w, _, _ = self._nodeTextBox(label, text_size, text_style, latex)
+                    h = box_h if self._isAutoDim(raw_h) else raw_h
+                    w = box_w if self._isAutoDim(raw_w) else raw_w
+                else:
+                    h, w = raw_h, raw_w
                 self.nodes[id] = {'x': x, 'y': y, 'h': h, 'w': w, 'rx': corner, 'label': label, 'type': 'rectangle'}
                 self.addRectangle(h, w, x-w/2, y-h/2, color=color, border=border, thickness=thickness, opacity=opacity, corner_radius=corner)
             elif node_type == 'stadium':
-                h, w = shape[1], shape[2]
+                if len(shape) == 1 or (len(shape) == 2 and self._isAutoDim(shape[1])):
+                    raw_h, raw_w = 'auto', 'auto'
+                else:
+                    raw_h, raw_w = shape[1], shape[2]
+                if self._isAutoDim(raw_h) or self._isAutoDim(raw_w):
+                    box_h, box_w, text_h, _ = self._nodeTextBox(label, text_size, text_style, latex)
+                    h = box_h if self._isAutoDim(raw_h) else raw_h
+                    r_cap = float(h) / 2
+                    cap_inset = 2 * (r_cap - float(np.sqrt(max(r_cap**2 - (text_h / 2)**2, 0.0))))
+                    w = max(box_w + cap_inset, float(h)) if self._isAutoDim(raw_w) else raw_w
+                else:
+                    h, w = raw_h, raw_w
                 corner = min(h, w) / 2
                 self.nodes[id] = {'x': x, 'y': y, 'h': h, 'w': w, 'rx': corner, 'label': label, 'type': 'stadium'}
                 self.addRectangle(h, w, x-w/2, y-h/2, color=color, border=border, thickness=thickness, opacity=opacity, corner_radius=corner)
             elif node_type == 'diamond':
-                h, w = shape[1], shape[2]
+                if len(shape) == 1 or (len(shape) == 2 and self._isAutoDim(shape[1])):
+                    raw_h, raw_w = 'auto', 'auto'
+                else:
+                    raw_h, raw_w = shape[1], shape[2]
+                if self._isAutoDim(raw_h) or self._isAutoDim(raw_w):
+                    box_h, box_w, _, _ = self._nodeTextBox(label, text_size, text_style, latex)
+                    h = 2.0 * box_h if self._isAutoDim(raw_h) else raw_h
+                    w = 2.0 * box_w if self._isAutoDim(raw_w) else raw_w
+                else:
+                    h, w = raw_h, raw_w
                 points = [(x, y - h / 2), (x + w / 2, y), (x, y + h / 2), (x - w / 2, y)]
                 self.nodes[id] = {'points': points, 'x': x, 'y': y, 'h': h, 'w': w, 'label': label, 'type': 'diamond'}
                 self.addPolygon(points, color=color, border=border, thickness=thickness, opacity=opacity)
             elif node_type == 'ellipse':
-                a, b = shape[1], shape[2]
+                if len(shape) == 1 or (len(shape) == 2 and self._isAutoDim(shape[1])):
+                    raw_a, raw_b = 'auto', 'auto'
+                else:
+                    raw_a, raw_b = shape[1], shape[2]
+                if self._isAutoDim(raw_a) or self._isAutoDim(raw_b):
+                    box_h, box_w, _, _ = self._nodeTextBox(label, text_size, text_style, latex)
+                    a = float(box_w / np.sqrt(2)) if self._isAutoDim(raw_a) else raw_a
+                    b = float(box_h / np.sqrt(2)) if self._isAutoDim(raw_b) else raw_b
+                else:
+                    a, b = raw_a, raw_b
                 self.nodes[id] = {'x': x, 'y': y, 'a': a, 'b': b, 'label': label, 'type': 'ellipse'}
                 self.addEllipse(x, y, a, b, color=color, border=border, thickness=thickness, opacity=opacity)
             elif node_type in ('parallelogram', 'paralellogram'):  # old spelling kept for compatibility
-                d1, d2, angle = shape[1], shape[2], shape[3] # d1 and d2 are the lengths of the diagonals
+                if len(shape) == 1 or (len(shape) == 2 and self._isAutoDim(shape[1])):
+                    raw_d1, raw_d2, angle = 'auto', 'auto', 60
+                else:
+                    raw_d1, raw_d2 = shape[1], shape[2]
+                    angle = shape[3] if len(shape) >= 4 else 60
                 angle *= np.pi/180
+                if self._isAutoDim(raw_d1) or self._isAutoDim(raw_d2):
+                    box_h, box_w, _, _ = self._nodeTextBox(label, text_size, text_style, latex)
+                    u_d1, u_d2 = 4.0 / 3.0, 1.0
+                    u_a = np.sqrt((u_d1 / 2) ** 2 + (u_d2 / 2) ** 2 - u_d1 * u_d2 * np.cos(angle) / 2)
+                    u_b = np.sqrt((u_d1 / 2) ** 2 + (u_d2 / 2) ** 2 + u_d1 * u_d2 * np.cos(angle) / 2)
+                    u_w = np.abs(u_d1 ** 2 - u_d2 ** 2) / (4 * u_b)
+                    u_h = np.sqrt(u_a ** 2 + u_w ** 2)
+                    u_u = np.sqrt(max(u_d1 ** 2 - u_h ** 2, 0.0)) / 2
+                    u_v = np.sqrt(max(u_d2 ** 2 - u_h ** 2, 0.0)) / 2
+                    inscribed_w = max(2 * min(u_u, u_v), 1e-6)
+                    scale = max(box_h / max(u_h, 1e-6), box_w / inscribed_w)
+                    d1 = float(u_d1 * scale) if self._isAutoDim(raw_d1) else raw_d1
+                    d2 = float(u_d2 * scale) if self._isAutoDim(raw_d2) else raw_d2
+                else:
+                    d1, d2 = raw_d1, raw_d2
                 a = np.sqrt((d1/2)**2 + (d2/2)**2 - d1 * d2 * np.cos(angle)/2)
                 b = np.sqrt((d1/2)**2 + (d2/2)**2 + d1 * d2 * np.cos(angle)/2)
                 w = np.abs(d1**2 - d2**2)/(4*b)
@@ -2435,7 +2538,7 @@ class Flow(Canvas):
                 p2 = (x + v, y + h/2)
                 p3 = (x - u, y + h/2)
                 p4 = (x - v, y - h/2)
-                self.nodes[id] = {'points': [p1, p2, p3, p4], 'x': x, 'y': y, 'label': label, 'type': 'parallelogram'}
+                self.nodes[id] = {'points': [p1, p2, p3, p4], 'x': x, 'y': y, 'h': h, 'w': u + v, 'label': label, 'type': 'parallelogram'}
                 self.addPolygon(self.nodes[id]['points'], color=color, border=border, thickness=thickness, opacity=opacity)
             else:
                 raise ValueError(f"invalid node shape {node_type}: supported node shapes are: circle, rectangle, stadium, diamond, ellipse, parallelogram")

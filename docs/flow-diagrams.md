@@ -80,8 +80,13 @@ already emitted node or its existing edges; regenerate the drawing instead.
 
 ## Labels and sizing
 
-Node labels accept strings, newlines, or lists. Nodes do not resize or wrap
-labels automatically. Use `wrap_text` when you want a paragraph-sized label:
+Node labels accept strings, newlines, or lists. Pass `'auto'` for any shape
+dimension (e.g. `("rectangle", "auto", "auto")`, `("rectangle", "auto", "auto", 10)`,
+`("circle", "auto")`, `("stadium", "auto", "auto")`, `("diamond", "auto", "auto")`,
+`("ellipse", "auto", "auto")`) or omit the dimensions (e.g. `("rectangle",)` or
+`shape="auto"`) to size the node automatically from the measured text metrics
+plus a font-relative buffer on the top, bottom, left, and right. Use `wrap_text`
+when you want a paragraph-sized label wrapped to a target width:
 
 <!-- render: core -->
 ```python

@@ -4,8 +4,9 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from svgflow import Canvas, Figure, Flow, Plot
+from svgflow import Canvas, Figure, Flow, FlowStyle, Plot
 from svgflow import external_figures
+from svgflow.text_metrics import text_width
 
 
 def _orthogonal(points):
@@ -242,6 +243,54 @@ class HighValueFeatureTests(unittest.TestCase):
         val = abs(px - 300.0) / 60.0 + abs(py - 150.0) / 40.0
         self.assertAlmostEqual(val, 1.0, places=6)
         f.addEdge("start", "check", directed=True)
+
+    def test_auto_node_dimensions_from_text_metrics(self):
+        f = Flow(400, 600)
+        f.addNode("wide", 100, 100, ("rectangle", "auto", "auto", 8), label="WWWW")
+        f.addNode("narrow", 300, 100, ("rectangle", "auto", "auto", 8), label="iiii")
+        self.assertGreater(f.nodes["wide"]["w"], f.nodes["narrow"]["w"])
+        self.assertEqual(f.nodes["wide"]["rx"], 8)
+
+        label = "Process step"
+        f.addNode("step", 200, 200, ("rectangle", "auto", "auto"), label=label, text_size=16)
+        expected_w = text_width(label, 16) + 2 * 0.6 * 16
+        expected_h = 1.2 * 16 + 2 * 0.4 * 16
+        self.assertAlmostEqual(f.nodes["step"]["w"], expected_w, places=4)
+        self.assertAlmostEqual(f.nodes["step"]["h"], expected_h, places=4)
+
+        # Multi-line label and partial auto dimension
+        f.addNode("multi", 400, 200, ("rectangle", "auto", 140), label=["First", "Second line"], text_size=14)
+        self.assertEqual(f.nodes["multi"]["w"], 140)
+        self.assertAlmostEqual(f.nodes["multi"]["h"], 2 * 1.2 * 14 + 2 * 0.4 * 14, places=4)
+
+    def test_auto_node_dimensions_all_shapes_and_edges(self):
+        style = FlowStyle(node_shape=("rectangle", "auto", "auto", 6), text_size=15)
+        f = Flow(400, 800, style=style)
+        f.addNode("rect", 100, 100, label="Default Auto")
+        f.addNode("circ", 250, 100, ("circle", "auto"), label="Node")
+        f.addNode("stad", 400, 100, ("stadium", "auto", "auto"), label="Deploy")
+        f.addNode("diam", 550, 100, ("diamond", "auto", "auto"), label="Valid?")
+        f.addNode("ell", 700, 100, ("ellipse", "auto", "auto"), label="Input")
+        f.addNode("para", 400, 250, ("parallelogram", "auto", "auto", 60), label="Data")
+
+        for nid in ("rect", "stad", "diam", "para"):
+            box_h, box_w, _, _ = f._nodeTextBox(f.nodes[nid]["label"], 15)
+            self.assertGreaterEqual(f.nodes[nid]["h"], box_h - 1e-6)
+            self.assertGreaterEqual(f.nodes[nid]["w"], box_w - 1e-6)
+
+        c_h, c_w, _, _ = f._nodeTextBox("Node", 15)
+        self.assertGreaterEqual(2 * f.nodes["circ"]["r"], max(c_h, c_w))
+
+        e_h, e_w, _, _ = f._nodeTextBox("Input", 15)
+        # Padded box corners (e_w/2, e_h/2) lie on or inside the ellipse
+        a, b = f.nodes["ell"]["a"], f.nodes["ell"]["b"]
+        self.assertLessEqual((e_w / 2 / a) ** 2 + (e_h / 2 / b) ** 2, 1.0 + 1e-6)
+
+        f.addEdge("rect", "circ", directed=True)
+        f.addEdge("circ", "stad", directed=True)
+        f.addEdge("stad", "diam", directed=True)
+        f.addEdge("diam", "ell", directed=True)
+        f.addElbowEdge("diam", "para")
 
 
 if __name__ == "__main__":

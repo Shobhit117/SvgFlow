@@ -169,9 +169,15 @@ The legacy spelling `'paralellogram'` is also accepted. Diagonals
 and angle must describe a nondegenerate shape. Duplicate IDs raise
 `KeyError`; unknown shapes raise `ValueError`.
 
+Pass `'auto'` for any dimension (e.g. `('rectangle', 'auto', 'auto')`,
+`('rectangle', 'auto', 'auto', 10)`, `('circle', 'auto')`,
+`('stadium', 'auto', 'auto')`, `('diamond', 'auto', 'auto')`,
+`('ellipse', 'auto', 'auto')`) or omit dimensions (e.g. `('rectangle',)`)
+to size the node automatically from `label`'s measured font metrics
+with a font-relative buffer on top, bottom, left and right.
+
 Arguments left as `None` use `FlowStyle`. Labels accept
-newlines/lists; they do not resize the node or wrap automatically.
-`latex=True` renders math through external tools.
+newlines/lists. `latex=True` renders math through external tools.
 
 | Parameter | Default | Type / calling convention |
 | --- | --- | --- |
